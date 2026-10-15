@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>11-1 Web前端的长度单位</title>
+  <style>
+    :root {
+      --qyy-primary: #2563eb;
+      --qyy-primary-dark: #1e40af;
+      --qyy-accent: #f59e0b;
+      --qyy-text: #1f2937;
+      --qyy-muted: #6b7280;
+      --qyy-line: #e5e7eb;
+      --qyy-card: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      color: var(--qyy-text);
+      background: linear-gradient(160deg, #eef2ff, #f8fafc 40%, #ecfeff);
+      line-height: 1.7;
+    }
+
+    .qyy_page {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0 60px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 34px;
+    }
+
+    header .qyy_tag {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--qyy-primary), #7c3aed);
+      color: #fff;
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    header h1 {
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      color: var(--qyy-primary-dark);
+    }
+
+    header p {
+      margin-top: 8px;
+      color: var(--qyy-muted);
+      font-size: 0.98rem;
+    }
+
+    h2.qyy_section-title {
+      margin: 34px 0 16px;
+      padding-left: 12px;
+      border-left: 5px solid var(--qyy-primary);
+      font-size: 1.35rem;
+      color: var(--qyy-primary-dark);
+    }
+
+    .qyy_grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .qyy_card {
+      flex: 1 1 320px;
+      background: var(--qyy-card);
+      border: 1px solid var(--qyy-line);
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 0 6px 16px rgba(30, 64, 175, 0.06);
+    }
+
+    .qyy_card h3 {
+      font-size: 1.05rem;
+      color: var(--qyy-primary-dark);
+      margin-bottom: 6px;
+    }
+
+    .qyy_card h3 code {
+      background: #eff6ff;
+      color: var(--qyy-primary);
+      padding: 1px 8px;
+      border-radius: 6px;
+      font-family: Consolas, monospace;
+      font-size: 1rem;
+    }
+
+    .qyy_card p {
+      font-size: 0.92rem;
+      color: var(--qyy-muted);
+      margin-bottom: 10px;
+    }
+
+    .qyy_demo {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+
+    .qyy_bar {
+      height: 26px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, var(--qyy-primary), #60a5fa);
+      color: #fff;
+      font-size: 12px;
+      line-height: 26px;
+      padding-left: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .qyy_bar.qyy_amber {
+      background: linear-gradient(90deg, #d97706, var(--qyy-accent));
+    }
+
+    .qyy_bar.qyy_green {
+      background: linear-gradient(90deg, #059669, #34d399);
+    }
+
+    .qyy_box {
+      background: #dbeafe;
+      border: 2px dashed var(--qyy-primary);
+      border-radius: 8px;
+      color: var(--qyy-primary-dark);
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .qyy_table-wrap {
+      overflow-x: auto;
+      background: var(--qyy-card);
+      border: 1px solid var(--qyy-line);
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgba(30, 64, 175, 0.06);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+      min-width: 640px;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--qyy-line);
+    }
+
+    th {
+      background: #eff6ff;
+      color: var(--qyy-primary-dark);
+      font-weight: 700;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td code {
+      font-family: Consolas, monospace;
+      background: #f3f4f6;
+      padding: 1px 6px;
+      border-radius: 5px;
+      color: #b45309;
+    }
+
+    /* em 演示：父元素 20px，子元素 1.5em = 30px */
+    .qyy_em-parent {
+      font-size: 20px;
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .qyy_em-child {
+      font-size: 1.5em;
+      color: #92400e;
+      font-weight: 700;
+    }
+
+    /* rem 演示：根元素 16px，与父元素字号无关 */
+    .qyy_rem-parent {
+      font-size: 12px;
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .qyy_rem-child {
+      font-size: 2rem;
+      color: #166534;
+      font-weight: 700;
+    }
+
+    .qyy_viewport-demo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .qyy_viewport-demo .qyy_box {
+      flex: 1 1 240px;
+      height: 12vh;
+      min-height: 90px;
+    }
+
+    .qyy_percent-demo {
+      width: 100%;
+    }
+
+    .qyy_percent-demo .qyy_outer {
+      width: 100%;
+      background: #ede9fe;
+      border: 1px solid #c4b5fd;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 0.88rem;
+      color: #5b21b6;
+    }
+
+    .qyy_percent-demo .qyy_inner {
+      width: 60%;
+      margin-top: 6px;
+      height: 32px;
+      background: #8b5cf6;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 12px;
+      line-height: 32px;
+      text-align: center;
+    }
+
+    .qyy_note {
+      margin-top: 30px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 5px solid var(--qyy-accent);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.94rem;
+      color: #92400e;
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: var(--qyy-muted);
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 640px) {
+      .qyy_card {
+        flex-basis: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="qyy_page">
+    <header>
+      <span class="qyy_tag">11-1 · CSS 长度单位</span>
+      <h1>Web 前端的长度单位</h1>
+      <p>齐英伊 · 学号 829 · 绝对单位与相对单位对照演示</p>
+    </header>
+
+    <h2 class="qyy_section-title">一、常见长度单位速查表</h2>
+    <div class="qyy_table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>单位</th>
+            <th>类型</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>px</code></td><td>绝对单位</td><td>像素，最常用，1px ≈ 1/96 英寸</td></tr>
+          <tr><td><code>in</code></td><td>绝对单位</td><td>英寸，1in = 96px</td></tr>
+          <tr><td><code>cm</code></td><td>绝对单位</td><td>厘米，1cm ≈ 37.8px</td></tr>
+          <tr><td><code>mm</code></td><td>绝对单位</td><td>毫米，1mm ≈ 3.78px</td></tr>
+          <tr><td><code>pt</code></td><td>绝对单位</td><td>磅（打印单位），1pt = 4/3 px</td></tr>
+          <tr><td><code>pc</code></td><td>绝对单位</td><td>派卡，1pc = 12pt = 16px</td></tr>
+          <tr><td><code>%</code></td><td>相对单位</td><td>相对父元素同属性的百分比</td></tr>
+          <tr><td><code>em</code></td><td>相对单位</td><td>相对【当前元素】父级的 font-size</td></tr>
+          <tr><td><code>rem</code></td><td>相对单位</td><td>相对根元素 html 的 font-size，推荐</td></tr>
+          <tr><td><code>vw</code></td><td>视口单位</td><td>相对视口宽度，1vw = 视口宽的 1%</td></tr>
+          <tr><td><code>vh</code></td><td>视口单位</td><td>相对视口高度，1vh = 视口高的 1%</td></tr>
+          <tr><td><code>ch</code></td><td>相对单位</td><td>相对当前字体数字 0 的宽度</td></tr>
+          <tr><td><code>ex</code></td><td>相对单位</td><td>相对当前字体 x 的高度（x-height）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="qyy_section-title">二、绝对单位演示</h2>
+    <div class="qyy_grid">
+      <div class="qyy_card">
+        <h3><code>px</code> 像素</h3>
+        <p>屏幕上的固定点数，不随父元素或窗口变化。</p>
+        <div class="qyy_demo">
+          <div class="qyy_bar" style="width: 100px;">width: 100px</div>
+          <div class="qyy_bar" style="width: 200px;">width: 200px</div>
+          <div class="qyy_bar" style="width: 300px;">width: 300px</div>
+        </div>
+      </div>
+      <div class="qyy_card">
+        <h3><code>cm / mm / in / pt</code></h3>
+        <p>来自印刷业的绝对单位，网页中较少使用，1in 恒等于 96px。</p>
+        <div class="qyy_demo">
+          <div class="qyy_bar qyy_amber" style="width: 1cm;">width: 1cm ≈ 37.8px</div>
+          <div class="qyy_bar qyy_amber" style="width: 1in;">width: 1in = 96px</div>
+          <div class="qyy_bar qyy_amber" style="width: 72pt;">width: 72pt = 96px</div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="qyy_section-title">三、相对单位演示</h2>
+    <div class="qyy_grid">
+      <div class="qyy_card">
+        <h3><code>%</code> 百分比</h3>
+        <p>相对父元素的宽度（宽度属性）或 font-size（字号属性）。</p>
+        <div class="qyy_percent-demo">
+          <div class="qyy_outer">
+            父元素 width: 100%
+            <div class="qyy_inner">子元素 width: 60%</div>
+          </div>
+        </div>
+      </div>
+      <div class="qyy_card">
+        <h3><code>em</code> 相对父元素</h3>
+        <p>父元素 font-size: 20px，子元素 1.5em = 30px；层层嵌套会倍乘。</p>
+        <div class="qyy_demo">
+          <div class="qyy_em-parent">
+            父级 20px
+            <div class="qyy_em-child">1.5em = 30px</div>
+          </div>
+        </div>
+      </div>
+      <div class="qyy_card">
+        <h3><code>rem</code> 相对根元素</h3>
+        <p>只看 html 的 font-size（默认 16px），2rem = 32px，不受父级影响。</p>
+        <div class="qyy_demo">
+          <div class="qyy_rem-parent">
+            父级 12px（不影响 rem）
+            <div class="qyy_rem-child">2rem = 32px</div>
+          </div>
+        </div>
+      </div>
+      <div class="qyy_card">
+        <h3><code>ch / ex</code> 字符相关</h3>
+        <p>随字体变化：ch 是数字 0 的宽，ex 是小写 x 的高。</p>
+        <div class="qyy_demo">
+          <div class="qyy_bar qyy_green" style="width: 10ch;">width: 10ch</div>
+          <div class="qyy_bar qyy_green" style="width: 30ex;">width: 30ex</div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="qyy_section-title">四、视口单位演示（vw / vh）</h2>
+    <div class="qyy_card">
+      <h3>相对浏览器可视区域</h3>
+      <p>随窗口缩放实时变化，常用于响应式大屏排版；下方方块高度为 12vh，宽度各占剩余空间。</p>
+      <div class="qyy_viewport-demo">
+        <div class="qyy_box">height: 12vh<br />视口高的 12%</div>
+        <div class="qyy_box">width: 约 50% 容器<br />height: 12vh</div>
+      </div>
+    </div>
+
+    <div class="qyy_note">
+      提示：实际开发中优先使用 <strong>rem</strong>（配合根字号做整体缩放）与
+      <strong>%</strong> / <strong>vw</strong> / <strong>vh</strong>（做自适应布局）；
+      px 适合边框、阴影等不需要缩放的细节。<strong>em</strong> 适合局部成比例缩放，但要注意嵌套倍乘。
+    </div>
+
+    <footer>《高级网页设计》课堂实践 · 11-1 Web前端的长度单位 · 齐英伊</footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>10-2 幻灯片</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #e9ecef;
+      font-family: "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    .slider {
+      width: 620px;
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .slide-area {
+      position: relative;
+      height: 420px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      animation: slideMove 12s infinite;
+    }
+
+    .slide:nth-child(1) { animation-delay: 0s; }
+    .slide:nth-child(2) { animation-delay: 4s; }
+    .slide:nth-child(3) { animation-delay: 8s; }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .slide .label {
+      position: absolute;
+      left: 26px;
+      bottom: 24px;
+      background: rgba(0, 0, 0, 0.45);
+      color: #fff;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(4px);
+    }
+
+    .text-box {
+      background: #111;
+      color: #fff;
+      padding: 26px 30px 32px;
+    }
+
+    .text-box h2 {
+      font-size: 32px;
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+    }
+
+    .text-box p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #ddd;
+    }
+
+    @keyframes slideMove {
+      0% {
+        transform: translateX(100%);
+        z-index: 1;
+      }
+      12% {
+        transform: translateX(0);
+        z-index: 2;
+      }
+      32% {
+        transform: translateX(0);
+        z-index: 2;
+      }
+      44% {
+        transform: translateX(-100%);
+        z-index: 1;
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="slider">
+    <div class="slide-area">
+      <div class="slide">
+        <img src="img/1.jpg" alt="图片1" />
+        <div class="label">齐英伊</div>
+      </div>
+      <div class="slide">
+        <img src="img/2.jpg" alt="图片2" />
+        <div class="label">齐英伊</div>
+      </div>
+      <div class="slide">
+        <img src="img/3.jpg" alt="图片3" />
+        <div class="label">齐英伊</div>
+      </div>
+    </div>
+
+    <div class="text-box">
+      <h2>齐英伊</h2>
+      <p>图片使用位置动画切换，带来更强的节奏感与层次感，符合“上图下文”的页面结构。</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>11-3 CSS3 3D动画</title>
+  <style>
+    :root {
+      --qyy-primary: #2563eb;
+      --qyy-primary-dark: #1e40af;
+      --qyy-accent: #f59e0b;
+      --qyy-text: #1f2937;
+      --qyy-muted: #6b7280;
+      --qyy-line: #e5e7eb;
+      --qyy-card: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      color: var(--qyy-text);
+      background: linear-gradient(160deg, #eef2ff, #f8fafc 40%, #ecfeff);
+      line-height: 1.7;
+    }
+
+    .qyy_page {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0 60px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 34px;
+    }
+
+    header .qyy_tag {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--qyy-primary), #7c3aed);
+      color: #fff;
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    header h1 {
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      color: var(--qyy-primary-dark);
+    }
+
+    header p {
+      margin-top: 8px;
+      color: var(--qyy-muted);
+      font-size: 0.98rem;
+    }
+
+    h2.qyy_section-title {
+      margin: 34px 0 16px;
+      padding-left: 12px;
+      border-left: 5px solid var(--qyy-primary);
+      font-size: 1.35rem;
+      color: var(--qyy-primary-dark);
+    }
+
+    .qyy_grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .qyy_card {
+      flex: 1 1 320px;
+      background: var(--qyy-card);
+      border: 1px solid var(--qyy-line);
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 0 6px 16px rgba(30, 64, 175, 0.06);
+    }
+
+    .qyy_card h3 {
+      font-size: 1.05rem;
+      color: var(--qyy-primary-dark);
+      margin-bottom: 6px;
+    }
+
+    .qyy_card h3 code {
+      background: #eff6ff;
+      color: var(--qyy-primary);
+      padding: 1px 8px;
+      border-radius: 6px;
+      font-family: Consolas, monospace;
+      font-size: 1rem;
+    }
+
+    .qyy_card p {
+      font-size: 0.92rem;
+      color: var(--qyy-muted);
+      margin-bottom: 12px;
+    }
+
+    .qyy_stage {
+      height: 200px;
+      border-radius: 10px;
+      background: radial-gradient(circle at 50% 30%, #f8fafc, #e2e8f0);
+      border: 1px dashed #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      perspective: 700px;
+    }
+
+    /* ===== 1. 旋转立方体 ===== */
+    @keyframes qyy_cube-spin {
+      from { transform: rotateX(-20deg) rotateY(0deg); }
+      to   { transform: rotateX(-20deg) rotateY(360deg); }
+    }
+
+    .qyy_cube {
+      width: 90px;
+      height: 90px;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: qyy_cube-spin 8s linear infinite;
+    }
+
+    .qyy_cube-face {
+      position: absolute;
+      width: 90px;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.7);
+      background: rgba(37, 99, 235, 0.75);
+    }
+
+    .qyy_cube-face.qyy_face-front  { transform: translateZ(45px); }
+    .qyy_cube-face.qyy_face-back   { transform: rotateY(180deg) translateZ(45px); background: rgba(124, 58, 237, 0.75); }
+    .qyy_cube-face.qyy_face-right  { transform: rotateY(90deg) translateZ(45px); background: rgba(14, 165, 233, 0.75); }
+    .qyy_cube-face.qyy_face-left   { transform: rotateY(-90deg) translateZ(45px); background: rgba(244, 63, 94, 0.75); }
+    .qyy_cube-face.qyy_face-top    { transform: rotateX(90deg) translateZ(45px); background: rgba(245, 158, 11, 0.8); }
+    .qyy_cube-face.qyy_face-bottom { transform: rotateX(-90deg) translateZ(45px); background: rgba(16, 185, 129, 0.8); }
+
+    /* ===== 2. 陀螺式翻转卡片 ===== */
+    @keyframes qyy_tumble {
+      0%   { transform: rotateX(0deg) rotateY(0deg); }
+      50%  { transform: rotateX(180deg) rotateY(180deg); }
+      100% { transform: rotateX(360deg) rotateY(360deg); }
+    }
+
+    .qyy_tumble {
+      width: 96px;
+      height: 64px;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: qyy_tumble 4s ease-in-out infinite;
+    }
+
+    .qyy_tumble-face {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      border-radius: 10px;
+      backface-visibility: hidden;
+    }
+
+    .qyy_tumble-face.qyy_front {
+      background: linear-gradient(135deg, #2563eb, #60a5fa);
+      color: #fff;
+      transform: translateZ(8px);
+    }
+
+    .qyy_tumble-face.qyy_back {
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+      color: #7c2d12;
+      transform: rotateY(180deg) translateZ(8px);
+    }
+
+    /* ===== 3. 3D 旋转木马 ===== */
+    @keyframes qyy_carousel {
+      from { transform: rotateY(0deg); }
+      to   { transform: rotateY(360deg); }
+    }
+
+    .qyy_carousel {
+      width: 120px;
+      height: 150px;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: qyy_carousel 10s linear infinite;
+    }
+
+    .qyy_carousel-item {
+      position: absolute;
+      width: 100px;
+      height: 130px;
+      left: 10px;
+      top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      border-radius: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      background: rgba(99, 102, 241, 0.85);
+    }
+
+    .qyy_carousel-item:nth-child(1) { transform: rotateY(0deg)   translateZ(150px); background: rgba(239, 68, 68, 0.85); }
+    .qyy_carousel-item:nth-child(2) { transform: rotateY(72deg)  translateZ(150px); background: rgba(245, 158, 11, 0.85); }
+    .qyy_carousel-item:nth-child(3) { transform: rotateY(144deg) translateZ(150px); background: rgba(34, 197, 94, 0.85); }
+    .qyy_carousel-item:nth-child(4) { transform: rotateY(216deg) translateZ(150px); background: rgba(14, 165, 233, 0.85); }
+    .qyy_carousel-item:nth-child(5) { transform: rotateY(288deg) translateZ(150px); background: rgba(168, 85, 247, 0.85); }
+
+    /* ===== 4. 鼠标跟随 3D 倾斜卡片 ===== */
+    .qyy_tilt {
+      width: 200px;
+      height: 120px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb 55%, #38bdf8);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transform: rotateX(0) rotateY(0);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 10px 24px rgba(30, 58, 138, 0.35);
+      cursor: pointer;
+    }
+
+    .qyy_tilt:hover {
+      box-shadow: 0 20px 40px rgba(30, 58, 138, 0.5);
+    }
+
+    .qyy_tilt strong {
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+    }
+
+    .qyy_tilt small {
+      opacity: 0.85;
+      font-size: 0.8rem;
+    }
+
+    /* ===== 5. 翻牌正反面（hover 触发） ===== */
+    .qyy_flip-scene {
+      width: 170px;
+      height: 100px;
+      perspective: 600px;
+    }
+
+    .qyy_flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.7s ease;
+    }
+
+    .qyy_flip-scene:hover .qyy_flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .qyy_flip-side {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      backface-visibility: hidden;
+      font-weight: 700;
+    }
+
+    .qyy_flip-side.qyy_flip-front {
+      background: #0ea5e9;
+      color: #fff;
+    }
+
+    .qyy_flip-side.qyy_flip-rear {
+      background: #f97316;
+      color: #fff;
+      transform: rotateY(180deg);
+    }
+
+    /* ===== 6. 星空隧道 ===== */
+    @keyframes qyy_tunnel {
+      from { transform: translateZ(0); opacity: 1; }
+      to   { transform: translateZ(560px); opacity: 0; }
+    }
+
+    .qyy_tunnel {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      transform-style: preserve-3d;
+    }
+
+    .qyy_star {
+      position: absolute;
+      inset: 0;
+      border: 3px solid #6366f1;
+      border-radius: 8px;
+      animation: qyy_tunnel 3s linear infinite;
+    }
+
+    .qyy_star:nth-child(2) { animation-delay: 0.6s; border-color: #22c55e; }
+    .qyy_star:nth-child(3) { animation-delay: 1.2s; border-color: #f59e0b; }
+    .qyy_star:nth-child(4) { animation-delay: 1.8s; border-color: #ef4444; }
+    .qyy_star:nth-child(5) { animation-delay: 2.4s; border-color: #0ea5e9; }
+
+    /* ===== 7. 鼠标跟随 3D 倾斜的 JS 控制 ===== */
+    .qyy_controls {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .qyy_btn {
+      border: none;
+      cursor: pointer;
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #fff;
+      background: var(--qyy-primary);
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .qyy_btn:hover {
+      transform: translateY(-3px);
+      background: var(--qyy-primary-dark);
+    }
+
+    .qyy_paused * {
+      animation-play-state: paused !important;
+    }
+
+    /* ===== 8. 3D 属性速查表 ===== */
+    .qyy_table-wrap {
+      overflow-x: auto;
+      background: var(--qyy-card);
+      border: 1px solid var(--qyy-line);
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgba(30, 64, 175, 0.06);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+      min-width: 640px;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--qyy-line);
+    }
+
+    th {
+      background: #eff6ff;
+      color: var(--qyy-primary-dark);
+      font-weight: 700;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td code {
+      font-family: Consolas, monospace;
+      background: #f3f4f6;
+      padding: 1px 6px;
+      border-radius: 5px;
+      color: #b45309;
+    }
+
+    .qyy_note {
+      margin-top: 30px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 5px solid var(--qyy-accent);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.94rem;
+      color: #92400e;
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: var(--qyy-muted);
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 640px) {
+      .qyy_card {
+        flex-basis: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="qyy_page" id="qyy_page">
+    <header>
+      <span class="qyy_tag">11-3 · CSS3 3D Transform</span>
+      <h1>CSS3 3D 动画</h1>
+      <p>齐英伊 · 学号 829 · perspective / preserve-3d / rotateX·Y·Z 综合演示</p>
+    </header>
+
+    <h2 class="qyy_section-title">一、3D 核心属性速查表</h2>
+    <div class="qyy_table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>属性</th>
+            <th>取值示例</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>perspective</code></td><td><code>700px</code></td><td>父容器设置视距，值越小透视越强（也可写在元素自身的 transform 里）</td></tr>
+          <tr><td><code>transform-style</code></td><td><code>preserve-3d</code></td><td>子元素保持 3D 空间，是嵌套 3D 的关键，默认 flat 会压平</td></tr>
+          <tr><td><code>rotateX() / rotateY()</code></td><td><code>rotateY(45deg)</code></td><td>绕横轴 / 纵轴旋转</td></tr>
+          <tr><td><code>rotateZ()</code></td><td><code>rotateZ(45deg)</code></td><td>绕垂直屏幕的轴旋转，等价于 2D rotate</td></tr>
+          <tr><td><code>translateZ()</code></td><td><code>translateZ(45px)</code></td><td>沿 Z 轴前后移动，配合 perspective 产生近大远小</td></tr>
+          <tr><td><code>rotate3d()</code></td><td><code>rotate3d(1,1,0,45deg)</code></td><td>自定义轴旋转，4 个参数 x,y,z,angle</td></tr>
+          <tr><td><code>backface-visibility</code></td><td><code>hidden</code></td><td>隐藏背面，翻牌卡片必备</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="qyy_controls">
+      <button class="qyy_btn" id="qyy_toggle" type="button">暂停全部动画</button>
+    </div>
+
+    <h2 class="qyy_section-title">二、自动播放的 3D 动画</h2>
+    <div class="qyy_grid">
+      <div class="qyy_card">
+        <h3>旋转立方体 <code>preserve-3d</code></h3>
+        <p>6 个面各自 <code>rotate + translateZ(半边长)</code> 拼成立方体，父级保持 3D 并绕 X/Y 轴旋转。</p>
+        <div class="qyy_stage">
+          <div class="qyy_cube">
+            <div class="qyy_cube-face qyy_face-front">前</div>
+            <div class="qyy_cube-face qyy_face-back">后</div>
+            <div class="qyy_cube-face qyy_face-right">右</div>
+            <div class="qyy_cube-face qyy_face-left">左</div>
+            <div class="qyy_cube-face qyy_face-top">顶</div>
+            <div class="qyy_cube-face qyy_face-bottom">底</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qyy_card">
+        <h3>双面翻转 <code>backface-visibility</code></h3>
+        <p>正反两面背靠背（相隔 8px），同时旋转 X/Y 轴，背面因隐藏背面属性始终不穿帮。</p>
+        <div class="qyy_stage">
+          <div class="qyy_tumble">
+            <div class="qyy_tumble-face qyy_front">FRONT</div>
+            <div class="qyy_tumble-face qyy_back">BACK</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qyy_card">
+        <h3>旋转木马 <code>rotateY + translateZ</code></h3>
+        <p>5 张卡片均匀分布在圆周上：每张先 <code>rotateY(72°×n)</code> 再沿 Z 轴推出 150px，整体绕 Y 轴公转。</p>
+        <div class="qyy_stage">
+          <div class="qyy_carousel">
+            <div class="qyy_carousel-item">1</div>
+            <div class="qyy_carousel-item">2</div>
+            <div class="qyy_carousel-item">3</div>
+            <div class="qyy_carousel-item">4</div>
+            <div class="qyy_carousel-item">5</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qyy_card">
+        <h3>星空隧道 <code>translateZ</code></h3>
+        <p>多层边框从视点冲向观察者（<code>translateZ: 0 → 560px</code>），配合错峰 <code>animation-delay</code> 形成无限隧道。</p>
+        <div class="qyy_stage">
+          <div class="qyy_tunnel">
+            <div class="qyy_star"></div>
+            <div class="qyy_star"></div>
+            <div class="qyy_star"></div>
+            <div class="qyy_star"></div>
+            <div class="qyy_star"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="qyy_section-title">三、交互式 3D 动画</h2>
+    <div class="qyy_grid">
+      <div class="qyy_card">
+        <h3>鼠标跟随倾斜卡片</h3>
+        <p>JS 读取鼠标在卡片内的坐标换算成 <code>rotateX / rotateY</code>（仅一个元素时无需 preserve-3d）。把鼠标移上去试试。</p>
+        <div class="qyy_stage">
+          <div class="qyy_tilt" id="qyy_tilt">
+            <strong>3D TILT</strong>
+            <small>鼠标移入查看跟随倾斜</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="qyy_card">
+        <h3>Hover 翻牌</h3>
+        <p>外层 <code>perspective</code> + 内层 <code>preserve-3d</code>，hover 时内层 <code>rotateY(180deg)</code> 过渡翻面。</p>
+        <div class="qyy_stage">
+          <div class="qyy_flip-scene">
+            <div class="qyy_flip-inner">
+              <div class="qyy_flip-side qyy_flip-front">正面 · hover 翻转</div>
+              <div class="qyy_flip-side qyy_flip-rear">背面 · 谢谢观看</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="qyy_note">
+      提示：3D 动画的三要素 —— 祖先容器给 <strong>perspective</strong>（视距）、中间层给
+      <strong>transform-style: preserve-3d</strong>（不压平子元素）、各面用
+      <strong>rotate + translateZ</strong> 摆位。动画仍优先只动 transform，浏览器走合成器渲染，流畅省电。
+    </div>
+
+    <footer>《高级网页设计》课堂实践 · 11-3 CSS3 3D动画 · 齐英伊</footer>
+  </div>
+
+  <script>
+    var qyy_toggleBtn = document.getElementById('qyy_toggle');
+    var qyy_page = document.getElementById('qyy_page');
+    qyy_toggleBtn.addEventListener('click', function () {
+      var qyy_paused = qyy_page.classList.toggle('qyy_paused');
+      qyy_toggleBtn.textContent = qyy_paused ? '继续全部动画' : '暂停全部动画';
+    });
+
+    var qyy_tilt = document.getElementById('qyy_tilt');
+    qyy_tilt.addEventListener('mousemove', function (e) {
+      var qyy_rect = qyy_tilt.getBoundingClientRect();
+      var qyy_x = (e.clientX - qyy_rect.left) / qyy_rect.width - 0.5;
+      var qyy_y = (e.clientY - qyy_rect.top) / qyy_rect.height - 0.5;
+      qyy_tilt.style.transform =
+        'rotateY(' + (qyy_x * 30) + 'deg) rotateX(' + (-qyy_y * 30) + 'deg)';
+    });
+    qyy_tilt.addEventListener('mouseleave', function () {
+      qyy_tilt.style.transform = 'rotateY(0deg) rotateX(0deg)';
+    });
+  </script>
+</body>
+</html>

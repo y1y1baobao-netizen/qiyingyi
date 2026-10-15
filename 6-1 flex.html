@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body{
+            padding:40px 20px;
+            background: linear-gradient(135deg, #eef6ff, #f0faff);
+        }
+        h2{
+            text-align:center;
+            color:#1a3b70;
+            margin-bottom:40px;
+            font-size:30px;
+            letter-spacing:3px;
+            font-weight:600;
+            text-shadow: 1px 1px 3px #c6d8f0;
+        }
+        .flex{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap:28px;
+        }
+        .flex li{ 
+            width:22%;
+            min-width:210px;
+            height: 320px;
+            border: none;
+            list-style: none;
+            display: flex;
+            border-radius:16px;
+            background:#ffffff;
+            box-shadow: 0 4px 14px rgba(40,80,160,0.12);
+            padding:20px;
+            transition: all 0.3s ease;
+        }
+        /* 悬浮动画效果 */
+        .flex li:hover{
+            transform: translateY(-8px);
+            box-shadow: 0 10px 24px rgba(40,80,160,0.2);
+        }
+        .box{
+            border-radius:8px;
+            transition:0.3s;
+        }
+        .box:hover{
+            opacity:0.8;
+            transform: scale(1.03);
+        }
+        /* 第1个：单个方块居中，紫色 */
+        .flex li:nth-child(1){
+            align-items: center;
+            justify-content: center;
+        }
+        .flex li:nth-child(1) .box{
+            width:100px;
+            height:100px;
+            background-color:#8b5cf6;
+        }
+        /* 第2个：上下两个，青绿色 */
+        .flex li:nth-child(2){
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap:14px;
+        }
+        .flex li:nth-child(2) .box{
+            width:120px;
+            height:52px;
+            background-color:#22c55e;
+        }
+        /* 第3个：2行2列，橙色 */
+        .flex li:nth-child(3){
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: center;
+            gap:14px;
+        }
+        .flex li:nth-child(3) .box{
+            width:92px;
+            height:62px;
+            background-color:#f97316;
+        }
+        /* 第4个：上1下2布局，蓝色 */
+        .flex li:nth-child(4){
+            flex-direction: column;
+            gap:12px;
+        }
+        .row-top{
+            flex:1;
+            background:#3b82f6;
+            border-radius:8px;
+            transition:0.3s;
+        }
+        .row-top:hover{
+            opacity:0.8;
+            transform: scale(1.02);
+        }
+        .row-bottom{
+            display:flex;
+            gap:12px;
+            flex:1;
+        }
+        .row-bottom .box{
+            flex:1;
+            height:100%;
+            background-color:#3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <h2>齐英伊的flex布局</h2>
+    <ul class="flex">
+        <li>
+            <div class="box"></div>
+        </li>
+        <li>
+            <div class="box"></div>
+            <div class="box"></div>
+        </li>
+        <li>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+        </li>
+        <li>
+            <div class="row-top"></div>
+            <div class="row-bottom">
+                <div class="box"></div>
+                <div class="box"></div>
+            </div>
+        </li>
+    </ul>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>829齐英伊</title>
+    <style>
+        h3{
+            color: red;
+        }
+        p{
+            color: blue;
+        }
+        /* 1. h2黑底白字 */
+        h2 {
+            background-color: black;
+            color: white;
+        }
+        /* 标签选择器，选择器名称为标签 */
+        #box{
+            background-color: #ccc;
+            width: 500px;
+            height: 500px;
+        }
+        /* id选择器，以#开始，唯一 */
+        .n1{
+            color: rgb(255, 179, 0);
+        }
+        .n2{
+            color: rgb(0, 213, 255);
+        }
+        .n3{
+            color: rgb(0, 255, 0);
+        }
+        /* 3. 选择器三个字白色类 */
+        .word-white {
+            color: #ffffff;
+        }
+        /* 4.学号盒子，宽高背景色 */
+        .id-box {
+            width: 320px;
+            height: 100px;
+            background-color: #2860b8;
+            /*文字居中好看*/
+            line-height: 100px;
+            text-align: center;
+            color: white;
+            font-size:22px;
+        }
+    </style>
+</head>
+<body>
+    <h2>层叠样式表CSS</h2>
+    <div id="box">
+        <h3>CSS<span class="word-white">选择器</span></h3>
+        <p><span class="n1">齐</span>
+            <span class="n2">英</span>
+            <span class="n3">伊</span>
+            </p>
+        <p>CSS属性</p>
+    </div>
+    <!--4.新增学号盒子，替换成你的学号-->
+    <div class="id-box">24001010829</div>
+    
+</body>
+</html>

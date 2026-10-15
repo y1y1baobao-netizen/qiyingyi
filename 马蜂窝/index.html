@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<!--
+  《高级网页设计 I》网页元素设计实验
+  项目选题：马蜂窝旅游网（mafengwo.cn）首页三个典型元素静态复刻
+  学号：24001010829  姓名：齐英伊
+  类名前缀：qyy-（齐英伊缩写）
+  布局技术：Flexbox（未使用 float / 表格布局 / id 选择器）
+  三个典型元素：1.导航栏  2.Tab标签页  3.左图右文游记列表
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>马蜂窝旅游 · 首页三个典型元素复刻</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="qyy-page">
+
+    <!-- ===== 典型元素 1：顶部导航栏 ===== -->
+    <header class="qyy-header">
+      <div class="qyy-header-inner">
+        <a class="qyy-logo" href="#" title="马蜂窝自由行">马蜂窝旅游</a>
+        <nav class="qyy-nav" aria-label="主导航">
+          <ul class="qyy-nav-list">
+            <li class="qyy-nav-item qyy-nav-cur"><a href="#">首页</a></li>
+            <li class="qyy-nav-item"><a href="#">目的地</a></li>
+            <li class="qyy-nav-item qyy-nav-dropdown">
+              <a href="#">去旅行<i class="qyy-caret"></i></a>
+            </li>
+            <li class="qyy-nav-item"><a href="#">订酒店</a></li>
+            <li class="qyy-nav-item qyy-nav-dropdown">
+              <a href="#">社区<i class="qyy-caret"></i></a>
+            </li>
+            <li class="qyy-nav-item"><a href="#">APP</a></li>
+            <li class="qyy-nav-item"><a href="#">无障碍</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <!-- ===== 典型元素 2：Tab 标签页 + 搜索框 ===== -->
+    <section class="qyy-banner">
+      <div class="qyy-banner-inner">
+        <h1 class="qyy-banner-slogan">旅游之前，先上马蜂窝！</h1>
+        <div class="qyy-search-container">
+          <div class="qyy-searchtab">
+            <ul class="qyy-searchtab-list">
+              <li class="qyy-searchtab-item qyy-searchtab-cur"><i></i>全部</li>
+              <li class="qyy-searchtab-item"><i></i>酒店</li>
+              <li class="qyy-searchtab-item"><i></i>目的地</li>
+              <li class="qyy-searchtab-item"><i></i>去旅行</li>
+            </ul>
+          </div>
+          <div class="qyy-searchbar">
+            <div class="qyy-search-input">
+              <input type="text" placeholder="搜目的地/攻略/酒店/旅行特价">
+            </div>
+            <button class="qyy-search-btn" type="button">搜&ensp;索</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 典型元素 3：左图右文游记列表 ===== -->
+    <main class="qyy-main">
+      <div class="qyy-container">
+        <div class="qyy-notes-header">
+          <h2 class="qyy-notes-title">热门游记</h2>
+          <a class="qyy-notes-more" href="#">更多游记&ensp;&gt;</a>
+        </div>
+        <div class="qyy-tn-list">
+
+          <!-- 游记 1 -->
+          <article class="qyy-tn-item">
+            <div class="qyy-tn-image">
+              <a href="#"><img src="images/card1.jpg" alt="最后冲刺中秋国庆发文有奖"></a>
+            </div>
+            <div class="qyy-tn-wrapper">
+              <dl>
+                <dt><a href="#">最后冲刺！中秋国庆发文有奖[表情]#我在马蜂窝写游记🧧2W现金[表情]12...</a></dt>
+                <dd><a href="#">[表情] 蝉鸣、晚风、看不到尽头的夏天—— 翻翻手机，2026年已经过半。 AI越来越聪明，能规划路线、生成攻略， 可路上被海风吹乱的头发、和陌生人碰杯的温度、 走错路撞见的意外风景—— 这些乱...</a></dd>
+              </dl>
+              <div class="qyy-tn-extra">
+                <span class="qyy-tn-place"><i></i><a href="#">北京</a>，by</span>
+                <span class="qyy-tn-user">
+                  <a href="#"><img src="images/avatar1.png" alt="">游记总编辑</a>
+                </span>
+                <span class="qyy-tn-stat">18511/66</span>
+                <span class="qyy-tn-ding">
+                  <em>724</em>
+                  <a class="qyy-btn-ding" href="#"></a>
+                </span>
+              </div>
+            </div>
+          </article>
+
+          <!-- 游记 2 -->
+          <article class="qyy-tn-item">
+            <div class="qyy-tn-image">
+              <a href="#"><img src="images/card2.jpg" alt="从西双版纳到琅勃拉邦"></a>
+            </div>
+            <div class="qyy-tn-wrapper">
+              <dl>
+                <dt><a href="#">从西双版纳到琅勃拉邦丨跨境高铁度假之旅</a></dt>
+                <dd><a href="#"> 缘起 遥远的2008年，我在 怒江 大峡谷徒步时，在秋那桶的老乡家里和一个老哥拼房。老哥年长我几岁，自助游经验显然丰富得多。他跟我强烈推荐 老挝 的 琅勃拉邦 ，说："那是一个非常舒适惬...</a></dd>
+              </dl>
+              <div class="qyy-tn-extra">
+                <span class="qyy-tn-place"><i></i><a href="#">老挝</a>，by</span>
+                <span class="qyy-tn-user qyy-tn-user-normal">
+                  <a href="#"><img src="images/avatar2.jpg" alt="">AK·沙罗双树</a>
+                </span>
+                <span class="qyy-tn-stat">1106/1</span>
+                <span class="qyy-tn-ding">
+                  <em>55</em>
+                  <a class="qyy-btn-ding" href="#"></a>
+                </span>
+              </div>
+            </div>
+          </article>
+
+          <!-- 游记 3 -->
+          <article class="qyy-tn-item">
+            <div class="qyy-tn-image">
+              <a href="#"><img src="images/card3.png" alt="藏西秘境天上阿里"></a>
+            </div>
+            <div class="qyy-tn-wrapper">
+              <dl>
+                <dt><a href="#">【藏西秘境，天上阿里】｜11天穿行西藏阿里旷野，一措再措，...</a></dt>
+                <dd><a href="#"> 【前序】 一个轮回是12年，人生能有几个轮回？ 12年前转 冈仁波齐 ，许下诺言，12年后再转一次。12年了，念念不忘，魂牵梦绕。 12年后再转 冈仁波齐 ，不敢许下12年后再转一次的诺言。 12年...</a></dd>
+              </dl>
+              <div class="qyy-tn-extra">
+                <span class="qyy-tn-place"><i></i><a href="#">西藏</a>，by</span>
+                <span class="qyy-tn-user qyy-tn-user-normal">
+                  <a href="#"><img src="images/avatar3.jpg" alt="">栗子</a>
+                </span>
+                <span class="qyy-tn-stat">1606/11</span>
+                <span class="qyy-tn-ding">
+                  <em>74</em>
+                  <a class="qyy-btn-ding" href="#"></a>
+                </span>
+              </div>
+            </div>
+          </article>
+
+          <!-- 游记 4 -->
+          <article class="qyy-tn-item">
+            <div class="qyy-tn-image">
+              <a href="#"><img src="images/card4.jpg" alt="大兴安岭追寻金秋之路"></a>
+            </div>
+            <div class="qyy-tn-wrapper">
+              <dl>
+                <dt><a href="#">在大兴安岭追寻金秋之路——呼伦贝尔北线自驾七天六晚</a></dt>
+                <dd><a href="#"> 大兴安岭 的秋天是什么样子的呢？ 我不知道，所以，我想去看看。 去看看草原、桦树林、语文书里层林浸染的样子； 去看看牛羊小马的生活； 去看看边境线上的景色； 去看看我心里的还能否被撕...</a></dd>
+              </dl>
+              <div class="qyy-tn-extra">
+                <span class="qyy-tn-place"><i></i><a href="#">呼伦贝尔</a>，by</span>
+                <span class="qyy-tn-user qyy-tn-user-normal">
+                  <a href="#"><img src="images/avatar4.jpg" alt="">阿破丫</a>
+                </span>
+                <span class="qyy-tn-stat">625/0</span>
+                <span class="qyy-tn-ding">
+                  <em>33</em>
+                  <a class="qyy-btn-ding" href="#"></a>
+                </span>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </main>
+
+    <!-- ===== 典型元素 4：旅游产品卡片网格（2×4） ===== -->
+    <section class="qyy-products">
+      <div class="qyy-container">
+        <div class="qyy-products-header">
+          <h2 class="qyy-products-title">去旅行</h2>
+          <a class="qyy-products-more" href="#">查看更多&nbsp;&gt;</a>
+        </div>
+        <div class="qyy-products-grid">
+          <!-- 产品 1 -->
+          <article class="qyy-product-card">
+            <a class="qyy-product-img" href="#">
+              <img src="images/prod1.jpg" alt="云南丽江玉龙雪山">
+              <span class="qyy-product-tag">一日游</span>
+            </a>
+            <div class="qyy-product-body">
+              <h3 class="qyy-product-name"><a href="#">【8人团 保出票 可选日照金山】云南丽江玉龙雪山纯玩一日游（冰川</a></h3>
+              <div class="qyy-product-price"><span class="qyy-yen">&yen;</span>198<span class="qyy-qi">起</span></div>
+              <div class="qyy-product-meta">已售 16625&nbsp;<span class="qyy-divider">|</span>&nbsp;店铺: H...</div>
+            </div>
+          </article>
+          <!-- 产品 2 -->
+          <article class="qyy-product-card">
+            <a class="qyy-product-img" href="#">
+              <img src="images/prod2.jpg" alt="雨崩徒步">
+              <span class="qyy-product-tag">多日游</span>
+            </a>
+            <div class="qyy-product-body">
+              <h3 class="qyy-product-name"><a href="#">雨崩徒步4日游&middot;2-14人团 西当乘车进雨崩村+徒步冰湖神瀑尼农线+梅</a></h3>
+              <div class="qyy-product-price"><span class="qyy-yen">&yen;</span>1880<span class="qyy-qi">起</span></div>
+              <div class="qyy-product-meta">已售 2241&nbsp;<span class="qyy-divider">|</span>&nbsp;店铺: 西...</div>
+            </div>
+          </article>
+          <!-- 产品 3 -->
+          <article class="qyy-product-card">
+            <a class="qyy-product-img" href="#">
+              <img src="images/prod3.png" alt="西藏林芝">
+              <span class="qyy-product-tag">多日游</span>
+            </a>
+            <div class="qyy-product-body">
+              <h3 class="qyy-product-name"><a href="#">【赠拉萨住宿】西藏林芝5日游 空座率&middot;轻徒步 墨脱+新措+雅鲁藏布</a></h3>
+              <div class="qyy-product-price"><span class="qyy-yen">&yen;</span>2380<span class="qyy-qi">起</span></div>
+              <div class="qyy-product-meta">已售 1983&nbsp;<span class="qyy-divider">|</span>&nbsp;店铺: 思...</div>
+            </div>
+          </article>
+          <!-- 产品 4 -->
+          <article class="qyy-product-card">
+            <a class="qyy-product-img" href="#">
+              <img src="images/prod4.jpg" alt="西藏珠峰">
+              <span class="qyy-product-tag">多日游</span>
+            </a>
+            <div class="qyy-product-body">
+              <h3 class="qyy-product-name"><a href="#">【冬游免门票+3升氧气】西藏珠峰5日游&middot;射箭体验&middot;供氧酒店 纳木措</a></h3>
+              <div class="qyy-product-price"><span class="qyy-yen">&yen;</span>1290<span class="qyy-qi">起</span></div>
+              <div class="qyy-product-meta">已售 8730&nbsp;<span class="qyy-divider">|</span>&nbsp;店铺: 思...</div>
+            </div>
+          </article>
+          <!-- 产品 5 -->
+          <article class="qyy-product-card">
+            <a class="qyy-product-img" href="#">
+              <img src="images/prod5.jpg" alt="新疆环线">
+              <span class="qyy-product-tag">包车/拼车</span>
+            </a>
+            <div class="qyy-product-body">
+              <h3 class="qyy-product-name"><a href="#">【最高减500/人&middot;豪华1+1】秋游新疆环线7日游&middot;6人VIP精致团（喀纳</a></h3>
+              <div class="qyy-product-price"><span class="qyy-yen">&yen;</span>3480<span class="qyy-qi">起</span></div>
+              <div class="qyy-product-meta">已售 1912&nbsp;<span class="qyy-divider">|</span>&nbsp;店铺: 爱...</div>
+            </div>
+          </article>
+          <!-- 产品 6（与4相同） -->
+          <article class="qyy-product-card">
+            <a class="qyy-product-img" href="#">
+              <img src="images/prod4.jpg" alt="西藏珠峰">
+              <span class="qyy-product-tag">多日游</span>
+            </a>
+            <div class="qyy-product-body">
+              <h3 class="qyy-product-name"><a href="#">【冬游免门票+3升氧气】西藏珠峰5日游&middot;射箭体验&middot;供氧酒店 纳木措</a></h3>
+              <div class="qyy-product-price"><span class="qyy-yen">&yen;</span>1290<span class="qyy-qi">起</span></div>
+              <div class="qyy-product-meta">已售 8730&nbsp;<span class="qyy-divider">|</span>&nbsp;店铺: 思...</div>
+            </div>
+          </article>
+          <!-- 产品 7 -->
+          <article class="qyy-product-card">
+            <a class="qyy-product-img" href="#">
+              <img src="images/prod7.jpg" alt="北疆环线">
+              <span class="qyy-product-tag">多日游</span>
+            </a>
+            <div class="qyy-product-body">
+              <h3 class="qyy-product-name"><a href="#">【最高减500/人&middot;豪华1+1】秋游北疆环线8日游&middot;6人VIP精致团（住喀</a></h3>
+              <div class="qyy-product-price"><span class="qyy-yen">&yen;</span>4080<span class="qyy-qi">起</span></div>
+              <div class="qyy-product-meta">已售 3868&nbsp;<span class="qyy-divider">|</span>&nbsp;店铺: 爱...</div>
+            </div>
+          </article>
+          <!-- 产品 8（与2相同） -->
+          <article class="qyy-product-card">
+            <a class="qyy-product-img" href="#">
+              <img src="images/prod2.jpg" alt="雨崩徒步">
+              <span class="qyy-product-tag">多日游</span>
+            </a>
+            <div class="qyy-product-body">
+              <h3 class="qyy-product-name"><a href="#">雨崩徒步4日游&middot;2-14人团 西当乘车进雨崩村+徒步冰湖神瀑尼农线+梅</a></h3>
+              <div class="qyy-product-price"><span class="qyy-yen">&yen;</span>1880<span class="qyy-qi">起</span></div>
+              <div class="qyy-product-meta">已售 2241&nbsp;<span class="qyy-divider">|</span>&nbsp;店铺: 西...</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 典型元素 5：资讯列表 ===== -->
+    <section class="qyy-news">
+      <div class="qyy-container">
+        <h2 class="qyy-news-title">马蜂窝旅游网最新资讯</h2>
+        <ul class="qyy-news-list">
+          <li class="qyy-news-item">
+            <span class="qyy-news-date">04月07日</span>
+            <a href="#" class="qyy-news-link">马蜂窝&ldquo;云旅游&rdquo;直播的攻与守</a>
+          </li>
+          <li class="qyy-news-item">
+            <span class="qyy-news-date">04月01日</span>
+            <a href="#" class="qyy-news-link">马蜂窝的&ldquo;云上战疫&rdquo;</a>
+          </li>
+          <li class="qyy-news-item">
+            <span class="qyy-news-date">02月19日</span>
+            <a href="#" class="qyy-news-link">科技&ldquo;战疫&rdquo;：马蜂窝大数据赋能旅游业</a>
+          </li>
+          <li class="qyy-news-item">
+            <span class="qyy-news-date">02月13日</span>
+            <a href="#" class="qyy-news-link">陈罡：疫情下旅游业的&ldquo;守恒与求变&rdquo;</a>
+          </li>
+          <li class="qyy-news-item">
+            <span class="qyy-news-date">02月06日</span>
+            <a href="#" class="qyy-news-link">马蜂窝将退订完成率定为最高KPI</a>
+          </li>
+          <li class="qyy-news-item">
+            <span class="qyy-news-date">09月28日</span>
+            <a href="#" class="qyy-news-link">马蜂窝国庆白领出游偏好调查：超7...</a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== 页脚 ===== -->
+    <footer class="qyy-footer">
+      <div class="qyy-container">
+        <p class="qyy-footer-text">Copyright©2008-2026 马蜂窝旅游·mafengwo.cn 复刻版</p>
+        <p class="qyy-stu">《高级网页设计 I》网页元素设计实验 · 学号：24001010829 · 姓名：齐英伊</p>
+      </div>
+    </footer>
+
+  </div>
+</body>
+</html>

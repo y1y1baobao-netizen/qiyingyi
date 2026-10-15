@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>11-5 3D图片画廊 · 24001010829齐英伊</title>
+  <style>
+    :root {
+      --qyy-primary: #2563eb;
+      --qyy-primary-dark: #1e40af;
+      --qyy-accent: #f59e0b;
+      --qyy-text: #1f2937;
+      --qyy-muted: #6b7282;
+      --qyy-line: #e5e7eb;
+      --qyy-card: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      color: var(--qyy-text);
+      background: linear-gradient(160deg, #eef2ff, #f8fafc 40%, #ecfeff);
+      line-height: 1.7;
+    }
+
+    .qyy_page {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0 60px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    header .qyy_tag {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--qyy-primary), #7c3aed);
+      color: #fff;
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    header h1 {
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      color: var(--qyy-primary-dark);
+    }
+
+    header p {
+      margin-top: 8px;
+      color: var(--qyy-muted);
+      font-size: 0.98rem;
+    }
+
+    h2.qyy_section-title {
+      margin: 34px 0 16px;
+      padding-left: 12px;
+      border-left: 5px solid var(--qyy-primary);
+      font-size: 1.35rem;
+      color: var(--qyy-primary-dark);
+    }
+
+    /* ===== 3D Coverflow 舞台 ===== */
+    .qyy_showcase {
+      background: radial-gradient(circle at 50% 20%, #1e293b, #0f172a 70%);
+      border-radius: 18px;
+      padding: 30px 16px 26px;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
+    }
+
+    .qyy_stage {
+      position: relative;
+      height: 340px;
+      perspective: 1100px;
+      perspective-origin: 50% 45%;
+      transform-style: preserve-3d;
+    }
+
+    .qyy_slide {
+      position: absolute;
+      left: 50%;
+      top: 20px;
+      width: 300px;
+      height: 210px;
+      margin-left: -150px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 3px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.45);
+      transform-style: preserve-3d;
+      cursor: pointer;
+      background: #1e293b;
+      will-change: transform, opacity;
+    }
+
+    .qyy_slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    .qyy_slide .qyy_caption {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 26px 12px 8px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.78), transparent);
+      color: #fff;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .qyy_slide.qyy_active .qyy_caption {
+      opacity: 1;
+    }
+
+    /* 图片倒影（仅中间卡片显示） */
+    .qyy_slide::after {
+      content: "";
+      position: absolute;
+      left: 4%;
+      right: 4%;
+      top: 100%;
+      height: 46%;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.28), transparent 75%);
+      transform: rotateX(180deg);
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      pointer-events: none;
+    }
+
+    .qyy_slide.qyy_active::after {
+      opacity: 0.5;
+    }
+
+    .qyy_badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 60;
+      padding: 5px 14px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(125, 211, 252, 0.6);
+      color: #7dd3fc;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      font-family: Consolas, monospace;
+    }
+
+    /* ===== 控制区 ===== */
+    .qyy_controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .qyy_btn {
+      border: none;
+      cursor: pointer;
+      padding: 9px 22px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+      background: var(--qyy-primary);
+      transition: transform 0.3s ease, background 0.3s ease;
+      font-family: inherit;
+    }
+
+    .qyy_btn:hover {
+      transform: translateY(-3px);
+      background: var(--qyy-primary-dark);
+    }
+
+    .qyy_btn.qyy_btn-ghost {
+      background: rgba(148, 163, 184, 0.25);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+    }
+
+    .qyy_btn.qyy_btn-ghost:hover {
+      background: rgba(148, 163, 184, 0.45);
+    }
+
+    .qyy_dots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 16px;
+    }
+
+    .qyy_dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      background: rgba(148, 163, 184, 0.5);
+      transition: transform 0.3s ease, background 0.3s ease;
+      padding: 0;
+    }
+
+    .qyy_dot.qyy_dot-active {
+      background: var(--qyy-accent);
+      transform: scale(1.4);
+    }
+
+    .qyy_counter {
+      text-align: center;
+      margin-top: 12px;
+      color: #94a3b8;
+      font-size: 0.86rem;
+      letter-spacing: 2px;
+      font-family: Consolas, monospace;
+    }
+
+    /* ===== 说明卡片 ===== */
+    .qyy_grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .qyy_card {
+      flex: 1 1 300px;
+      background: var(--qyy-card);
+      border: 1px solid var(--qyy-line);
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 0 6px 16px rgba(30, 64, 175, 0.06);
+    }
+
+    .qyy_card h3 {
+      font-size: 1.05rem;
+      color: var(--qyy-primary-dark);
+      margin-bottom: 6px;
+    }
+
+    .qyy_card h3 code {
+      background: #eff6ff;
+      color: var(--qyy-primary);
+      padding: 1px 8px;
+      border-radius: 6px;
+      font-family: Consolas, monospace;
+      font-size: 0.95rem;
+    }
+
+    .qyy_card p {
+      font-size: 0.92rem;
+      color: var(--qyy-muted);
+    }
+
+    .qyy_note {
+      margin-top: 30px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 5px solid var(--qyy-accent);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.94rem;
+      color: #92400e;
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: var(--qyy-muted);
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 640px) {
+      .qyy_slide {
+        width: 230px;
+        height: 165px;
+        margin-left: -115px;
+      }
+
+      .qyy_stage {
+        height: 280px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="qyy_page" id="qyy_page">
+    <header>
+      <span class="qyy_tag">11-5 · 3D Image Coverflow</span>
+      <h1>3D 图片画廊（Coverflow）</h1>
+      <p>24001010829 齐英伊 · 图片的 3D 排布 · 点击 / 按钮 / 圆点切换</p>
+    </header>
+
+    <div class="qyy_showcase">
+      <div class="qyy_badge">24001010829 齐英伊</div>
+      <div class="qyy_stage" id="qyy_stage">
+        <div class="qyy_slide" data-qyy-index="0">
+          <img src="img/A1.jpg" alt="作品1" />
+          <div class="qyy_caption">作品一 · A1</div>
+        </div>
+        <div class="qyy_slide" data-qyy-index="1">
+          <img src="img/A2.jpg" alt="作品2" />
+          <div class="qyy_caption">作品二 · A2</div>
+        </div>
+        <div class="qyy_slide" data-qyy-index="2">
+          <img src="img/a3.jpg" alt="作品3" />
+          <div class="qyy_caption">作品三 · A3</div>
+        </div>
+        <div class="qyy_slide" data-qyy-index="3">
+          <img src="img/1.jpg" alt="图片4" />
+          <div class="qyy_caption">图片四 · 1.jpg</div>
+        </div>
+        <div class="qyy_slide" data-qyy-index="4">
+          <img src="img/2.jpg" alt="图片5" />
+          <div class="qyy_caption">图片五 · 2.jpg</div>
+        </div>
+        <div class="qyy_slide" data-qyy-index="5">
+          <img src="img/3.jpg" alt="图片6" />
+          <div class="qyy_caption">图片六 · 3.jpg</div>
+        </div>
+      </div>
+
+      <div class="qyy_controls">
+        <button class="qyy_btn qyy_btn-ghost" id="qyy_prev" type="button">‹ 上一张</button>
+        <button class="qyy_btn" id="qyy_toggle" type="button">暂停自动播放</button>
+        <button class="qyy_btn qyy_btn-ghost" id="qyy_next" type="button">下一张 ›</button>
+      </div>
+      <div class="qyy_dots" id="qyy_dots"></div>
+      <div class="qyy_counter" id="qyy_counter">01 / 06</div>
+    </div>
+
+    <h2 class="qyy_section-title">一、3D 排布原理</h2>
+    <div class="qyy_grid">
+      <div class="qyy_card">
+        <h3><code>perspective</code> 舞台透视</h3>
+        <p>舞台容器设置 <code>perspective: 1100px</code>，所有图片共享同一视点，靠近/远离观察者时自然近大远小。</p>
+      </div>
+      <div class="qyy_card">
+        <h3>每张图 = 偏移量函数</h3>
+        <p>JS 算出每张图与当前张的差值 <code>offset</code>，映射成 <code>rotateY(offset×-42°)</code>、<code>translateX(offset×235px)</code>、<code>translateZ(-|offset|×170px)</code>，形成 Coverflow 曲面。</p>
+      </div>
+      <div class="qyy_card">
+        <h3>环形取模避免跳变</h3>
+        <p><code>offset</code> 先做环形归一化（差值超过一半张数时反向绕行），6 张图首尾相连，从最后一张可无缝切回第一张。</p>
+      </div>
+      <div class="qyy_card">
+        <h3><code>z-index</code> + 遮挡</h3>
+        <p>越靠中心 <code>z-index</code> 越高、<code>scale</code> 越大、越亮；两侧图片压暗虚化并被中心图遮挡，层次感来自 3D 排布而非贴图。</p>
+      </div>
+      <div class="qyy_card">
+        <h3>倒影与题注</h3>
+        <p>中心图用 <code>::after</code> + <code>rotateX(180deg)</code> 渐变模拟水面倒影，题注 <code>opacity</code> 只在 <code>.qyy_active</code> 时显现。</p>
+      </div>
+      <div class="qyy_card">
+        <h3>三种交互</h3>
+        <p>按钮切换、圆点直达、点击两侧图片跳转；画廊本身由 <code>requestAnimationFrame</code> 驱动，持续平滑自转，松开手也不停。</p>
+      </div>
+    </div>
+
+    <div class="qyy_note">
+      提示：图片全部用 <code>object-fit: cover</code> 统一裁切成同比例，避免尺寸不一破坏 3D 排布；
+      位移/旋转只写在 <code>transform</code> 上，6 张图同时过渡也不触发重排。
+      图片引用遵循磁盘实际大小写（<code>img/a3.jpg</code>）。
+    </div>
+
+    <footer>《高级网页设计》课堂实践 · 11-5 3D图片画廊 · 24001010829 齐英伊</footer>
+  </div>
+
+  <script>
+    var qyy_slides = document.querySelectorAll('.qyy_slide');
+    var qyy_total = qyy_slides.length;
+    var qyy_pos = 0;
+    var qyy_target = 0;
+    var qyy_playing = true;
+    var qyy_autoSpeed = 0.45;
+    var qyy_lastTime = null;
+
+    var qyy_dotsBox = document.getElementById('qyy_dots');
+    var qyy_counter = document.getElementById('qyy_counter');
+    var qyy_toggleBtn = document.getElementById('qyy_toggle');
+    var qyy_stage = document.getElementById('qyy_stage');
+
+    for (var qyy_i = 0; qyy_i < qyy_total; qyy_i++) {
+      var qyy_dot = document.createElement('button');
+      qyy_dot.type = 'button';
+      qyy_dot.className = 'qyy_dot';
+      qyy_dot.setAttribute('data-qyy-dot', qyy_i);
+      qyy_dotsBox.appendChild(qyy_dot);
+    }
+    var qyy_dots = document.querySelectorAll('.qyy_dot');
+    var qyy_lastActive = -1;
+
+    function qyy_layout() {
+      for (var qyy_i = 0; qyy_i < qyy_total; qyy_i++) {
+        var qyy_offset = qyy_i - qyy_pos;
+        if (qyy_offset > qyy_total / 2) {
+          qyy_offset -= qyy_total;
+        }
+        if (qyy_offset < -qyy_total / 2) {
+          qyy_offset += qyy_total;
+        }
+        var qyy_abs = Math.abs(qyy_offset);
+        var qyy_el = qyy_slides[qyy_i];
+        qyy_el.style.transform =
+          'translateX(' + qyy_offset * 235 + 'px)' +
+          ' translateZ(' + -qyy_abs * 170 + 'px)' +
+          ' rotateY(' + qyy_offset * -42 + 'deg)' +
+          ' scale(' + (1 - qyy_abs * 0.14 > 0.6 ? 1 - qyy_abs * 0.14 : 0.6) + ')';
+        qyy_el.style.zIndex = String(100 - Math.round(qyy_abs * 10));
+        qyy_el.style.opacity = qyy_abs > 2.5 ? '0' : String(1 - qyy_abs * 0.16);
+        qyy_el.style.filter = 'brightness(' + (1 - qyy_abs * 0.22) + ') saturate(' + (1 - qyy_abs * 0.14) + ')';
+
+        var qyy_isActive = qyy_abs < 0.5;
+        qyy_el.classList.toggle('qyy_active', qyy_isActive);
+
+        var qyy_actIdx = ((Math.round(qyy_pos) % qyy_total) + qyy_total) % qyy_total;
+        qyy_dots[qyy_i].classList.toggle('qyy_dot-active', qyy_i === qyy_actIdx);
+      }
+
+      var qyy_act = ((Math.round(qyy_pos) % qyy_total) + qyy_total) % qyy_total;
+      if (qyy_act !== qyy_lastActive) {
+        qyy_lastActive = qyy_act;
+        var qyy_num = function (n) { return n < 10 ? '0' + n : '' + n; };
+        qyy_counter.textContent = qyy_num(qyy_act + 1) + ' / ' + qyy_num(qyy_total);
+      }
+    }
+
+    function qyy_frame(qyy_time) {
+      if (qyy_lastTime === null) {
+        qyy_lastTime = qyy_time;
+      }
+      var qyy_dt = Math.min((qyy_time - qyy_lastTime) / 1000, 0.1);
+      qyy_lastTime = qyy_time;
+
+      if (qyy_playing) {
+        qyy_target += qyy_autoSpeed * qyy_dt;
+      }
+
+      qyy_pos += (qyy_target - qyy_pos) * Math.min(1, qyy_dt * 4.5);
+      qyy_layout();
+      window.requestAnimationFrame(qyy_frame);
+    }
+
+    function qyy_jump(n) {
+      var qyy_k = ((n % qyy_total) + qyy_total) % qyy_total;
+      var qyy_delta = qyy_pos - qyy_k;
+      var qyy_wrapped = ((qyy_delta % qyy_total) + qyy_total) % qyy_total;
+      if (qyy_wrapped > qyy_total / 2) {
+        qyy_wrapped -= qyy_total;
+      }
+      qyy_target = qyy_pos - qyy_wrapped;
+    }
+
+    document.getElementById('qyy_prev').addEventListener('click', function () {
+      qyy_target -= 1;
+    });
+    document.getElementById('qyy_next').addEventListener('click', function () {
+      qyy_target += 1;
+    });
+
+    qyy_toggleBtn.addEventListener('click', function () {
+      qyy_playing = !qyy_playing;
+      qyy_toggleBtn.textContent = qyy_playing ? '暂停自动播放' : '继续自动播放';
+    });
+
+    for (var qyy_d = 0; qyy_d < qyy_total; qyy_d++) {
+      (function (qyy_idx) {
+        qyy_dots[qyy_idx].addEventListener('click', function () {
+          qyy_jump(qyy_idx);
+        });
+      })(qyy_d);
+    }
+
+    for (var qyy_s = 0; qyy_s < qyy_total; qyy_s++) {
+      (function (qyy_idx) {
+        qyy_slides[qyy_idx].addEventListener('click', function () {
+          qyy_jump(qyy_idx);
+        });
+      })(qyy_s);
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') {
+        qyy_target -= 1;
+      } else if (e.key === 'ArrowRight') {
+        qyy_target += 1;
+      }
+    });
+
+    window.requestAnimationFrame(qyy_frame);
+  </script>
+</body>
+</html>

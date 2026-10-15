@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>盒模型，框模型,box model </title>
+    <style>
+        body,ul,p,h1,h2,h3,h4,h5,h6{
+            margin: 0;
+            padding: 0;
+        }
+        ul{
+            list-style: none;
+        }
+        .a{
+            width: 500px;
+            height: 500px;
+            border:2px dotted #039;
+            padding: 70px 60px 50px 40px;
+            margin:40px auto;
+        }
+        
+        .b{
+            width: 500px;
+            height: 300px;
+            border:2px dotted #039;
+            margin:50px auto 40px;
+            box-sizing:border-box;
+        }
+        .c{
+            width: 500px;
+            height: 300px;
+            border:2px solid #039; /* solid实线 */
+            margin:50px auto 40px;
+            box-sizing:border-box;
+            padding: 70px 60px 50px 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="a">829齐英伊</div>
+    <div class="b">829齐英伊</div>
+    <div class="c">829齐英伊</div>
+</body>
+</html>

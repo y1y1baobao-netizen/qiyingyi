@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>11-2 CSS3动画</title>
+  <style>
+    :root {
+      --qyy-primary: #2563eb;
+      --qyy-primary-dark: #1e40af;
+      --qyy-accent: #f59e0b;
+      --qyy-text: #1f2937;
+      --qyy-muted: #6b7280;
+      --qyy-line: #e5e7eb;
+      --qyy-card: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      color: var(--qyy-text);
+      background: linear-gradient(160deg, #eef2ff, #f8fafc 40%, #ecfeff);
+      line-height: 1.7;
+    }
+
+    .qyy_page {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0 60px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 34px;
+    }
+
+    header .qyy_tag {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--qyy-primary), #7c3aed);
+      color: #fff;
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    header h1 {
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      color: var(--qyy-primary-dark);
+    }
+
+    header p {
+      margin-top: 8px;
+      color: var(--qyy-muted);
+      font-size: 0.98rem;
+    }
+
+    h2.qyy_section-title {
+      margin: 34px 0 16px;
+      padding-left: 12px;
+      border-left: 5px solid var(--qyy-primary);
+      font-size: 1.35rem;
+      color: var(--qyy-primary-dark);
+    }
+
+    .qyy_grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .qyy_card {
+      flex: 1 1 320px;
+      background: var(--qyy-card);
+      border: 1px solid var(--qyy-line);
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 0 6px 16px rgba(30, 64, 175, 0.06);
+    }
+
+    .qyy_card h3 {
+      font-size: 1.05rem;
+      color: var(--qyy-primary-dark);
+      margin-bottom: 6px;
+    }
+
+    .qyy_card h3 code {
+      background: #eff6ff;
+      color: var(--qyy-primary);
+      padding: 1px 8px;
+      border-radius: 6px;
+      font-family: Consolas, monospace;
+      font-size: 1rem;
+    }
+
+    .qyy_card p {
+      font-size: 0.92rem;
+      color: var(--qyy-muted);
+      margin-bottom: 12px;
+    }
+
+    .qyy_stage {
+      height: 120px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      border: 1px dashed #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ===== 1. @keyframes 位移 + 变色 ===== */
+    @keyframes qyy_move {
+      0%   { left: 4%;  background: #ef4444; border-radius: 50%; }
+      50%  { background: #f59e0b; }
+      100% { left: calc(100% - 44px); background: #22c55e; border-radius: 12px; }
+    }
+
+    .qyy_ball {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: #ef4444;
+      animation: qyy_move 2.4s ease-in-out infinite alternate;
+    }
+
+    /* ===== 2. 缩放脉冲 ===== */
+    @keyframes qyy_pulse {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.35); }
+    }
+
+    .qyy_pulse-dot {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      animation: qyy_pulse 1.2s ease-in-out infinite;
+    }
+
+    /* ===== 3. 旋转 ===== */
+    @keyframes qyy_spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .qyy-spinner {
+      width: 56px;
+      height: 56px;
+      border: 6px solid #dbeafe;
+      border-top-color: var(--qyy-primary);
+      border-radius: 50%;
+      animation: qyy_spin 0.9s linear infinite;
+    }
+
+    /* ===== 4. 翻转 ===== */
+    @keyframes qyy_flip {
+      0%   { transform: perspective(400px) rotateY(0deg); }
+      50%  { transform: perspective(400px) rotateY(180deg); }
+      100% { transform: perspective(400px) rotateY(360deg); }
+    }
+
+    .qyy_flip-card {
+      width: 88px;
+      height: 56px;
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      color: #fff;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      animation: qyy_flip 2.6s ease-in-out infinite;
+    }
+
+    /* ===== 5. 呼吸透明度 ===== */
+    @keyframes qyy_breathe {
+      0%, 100% { opacity: 0.2; }
+      50%      { opacity: 1; }
+    }
+
+    .qyy_breathe-box {
+      display: flex;
+      gap: 8px;
+    }
+
+    .qyy_breathe-box span {
+      width: 26px;
+      height: 46px;
+      background: #14b8a6;
+      border-radius: 5px;
+      animation: qyy_breathe 1.4s ease-in-out infinite;
+    }
+
+    .qyy_breathe-box span:nth-child(2) { animation-delay: 0.2s; }
+    .qyy_breathe-box span:nth-child(3) { animation-delay: 0.4s; }
+    .qyy_breathe-box span:nth-child(4) { animation-delay: 0.6s; }
+    .qyy_breathe-box span:nth-child(5) { animation-delay: 0.8s; }
+
+    /* ===== 6. 弹跳 ===== */
+    @keyframes qyy_bounce {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-46px); }
+    }
+
+    .qyy_bounce-ball {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #f97316;
+      animation: qyy_bounce 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+    }
+
+    /* ===== 7. 加载进度条 ===== */
+    @keyframes qyy_progress {
+      0%   { width: 0; }
+      100% { width: 100%; }
+    }
+
+    .qyy_progress-track {
+      width: 100%;
+      height: 16px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .qyy_progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #22c55e, #84cc16);
+      border-radius: 999px;
+      animation: qyy_progress 2.2s ease-in-out infinite;
+    }
+
+    /* ===== 8. transition 对比（hover 触发） ===== */
+    .qyy_btn {
+      border: none;
+      cursor: pointer;
+      padding: 12px 26px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      background: var(--qyy-primary);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    }
+
+    .qyy_btn:hover {
+      transform: translateY(-4px) scale(1.05);
+      background: var(--qyy-primary-dark);
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.35);
+    }
+
+    .qyy_btn.qyy_btn-outline {
+      background: #fff;
+      color: var(--qyy-primary);
+      border: 2px solid var(--qyy-primary);
+    }
+
+    .qyy_btn.qyy_btn-outline:hover {
+      background: var(--qyy-primary);
+      color: #fff;
+    }
+
+    .qyy_hover-row {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ===== 9. animation 属性速查 ===== */
+    .qyy_table-wrap {
+      overflow-x: auto;
+      background: var(--qyy-card);
+      border: 1px solid var(--qyy-line);
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgba(30, 64, 175, 0.06);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+      min-width: 640px;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--qyy-line);
+    }
+
+    th {
+      background: #eff6ff;
+      color: var(--qyy-primary-dark);
+      font-weight: 700;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td code {
+      font-family: Consolas, monospace;
+      background: #f3f4f6;
+      padding: 1px 6px;
+      border-radius: 5px;
+      color: #b45309;
+    }
+
+    /* ===== 10. 暂停动画按钮（切换动画播放状态） ===== */
+    .qyy_controls {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .qyy_controls .qyy_btn {
+      padding: 8px 18px;
+      font-size: 0.88rem;
+    }
+
+    /* 父级添加此类后，内部动画全部暂停 */
+    .qyy_paused * {
+      animation-play-state: paused !important;
+    }
+
+    .qyy_note {
+      margin-top: 30px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 5px solid var(--qyy-accent);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.94rem;
+      color: #92400e;
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: var(--qyy-muted);
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 640px) {
+      .qyy_card {
+        flex-basis: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="qyy_page" id="qyy_page">
+    <header>
+      <span class="qyy_tag">11-2 · CSS3 Animation</span>
+      <h1>CSS3 动画展示</h1>
+      <p>齐英伊 · 学号 829 · @keyframes / animation / transition 综合演示</p>
+    </header>
+
+    <h2 class="qyy_section-title">一、animation 属性速查表</h2>
+    <div class="qyy_table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>属性</th>
+            <th>取值示例</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>@keyframes</code></td><td><code>name { 0%{} 100%{} }</code></td><td>定义关键帧，可用 from/to 或百分比</td></tr>
+          <tr><td><code>animation-name</code></td><td><code>qyy_move</code></td><td>绑定的 @keyframes 名称</td></tr>
+          <tr><td><code>animation-duration</code></td><td><code>2s</code></td><td>一次动画的总时长</td></tr>
+          <tr><td><code>animation-timing-function</code></td><td><code>ease / linear / cubic-bezier()</code></td><td>速度曲线</td></tr>
+          <tr><td><code>animation-delay</code></td><td><code>0.5s</code></td><td>播放前的延迟</td></tr>
+          <tr><td><code>animation-iteration-count</code></td><td><code>infinite / 3</code></td><td>重复次数</td></tr>
+          <tr><td><code>animation-direction</code></td><td><code>alternate / reverse</code></td><td>是否反向播放（alternate 往返）</td></tr>
+          <tr><td><code>animation-fill-mode</code></td><td><code>forwards</code></td><td>结束后保留样式（默认回到起始）</td></tr>
+          <tr><td><code>animation-play-state</code></td><td><code>paused / running</code></td><td>暂停 / 继续（下方按钮演示）</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="qyy_controls">
+      <button class="qyy_btn" id="qyy_toggle" type="button">暂停全部动画</button>
+    </div>
+
+    <h2 class="qyy_section-title">二、@keyframes 关键帧动画</h2>
+    <div class="qyy_grid">
+      <div class="qyy_card">
+        <h3>位移 + 变色 + 变圆角</h3>
+        <p><code>left</code> 与 <code>background</code> 多属性插值，<code>alternate</code> 往返播放。</p>
+        <div class="qyy_stage">
+          <div class="qyy_ball"></div>
+        </div>
+      </div>
+      <div class="qyy_card">
+        <h3><code>scale</code> 缩放脉冲</h3>
+        <p><code>transform: scale()</code> 在 1 ~ 1.35 之间循环。</p>
+        <div class="qyy_stage">
+          <div class="qyy_pulse-dot"></div>
+        </div>
+      </div>
+      <div class="qyy_card">
+        <h3><code>rotate</code> 旋转加载</h3>
+        <p>到 <code>360deg</code> 的无限旋转，模拟加载指示器。</p>
+        <div class="qyy_stage">
+          <div class="qyy_spinner"></div>
+        </div>
+      </div>
+      <div class="qyy_card">
+        <h3><code>rotateY</code> 3D 翻转</h3>
+        <p><code>perspective() + rotateY()</code> 实现立体翻牌。</p>
+        <div class="qyy_stage">
+          <div class="qyy_flip-card">3D Flip</div>
+        </div>
+      </div>
+      <div class="qyy_card">
+        <h3><code>animation-delay</code> 级联</h3>
+        <p>每根柱子延迟 0.2s，形成波浪呼吸效果。</p>
+        <div class="qyy_stage">
+          <div class="qyy_breathe-box">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+      <div class="qyy_card">
+        <h3><code>cubic-bezier()</code> 弹跳</h3>
+        <p>自定义贝塞尔曲线带回弹效果的 <code>translateY</code>。</p>
+        <div class="qyy_stage">
+          <div class="qyy_bounce-ball"></div>
+        </div>
+      </div>
+      <div class="qyy_card">
+        <h3>进度条动画</h3>
+        <p><code>width</code> 从 0 到 100% 循环，业务中最常见的动画之一。</p>
+        <div class="qyy_stage">
+          <div class="qyy_progress-track">
+            <div class="qyy_progress-bar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="qyy_section-title">三、transition 过渡（鼠标悬停触发）</h2>
+    <div class="qyy_card">
+      <h3>transition vs animation</h3>
+      <p><code>transition</code> 只在状态变化（hover / 类切换）时过渡两个状态，无需关键帧；<code>animation</code> 可多关键帧、可自动循环。将鼠标移到按钮上观察。</p>
+      <div class="qyy_hover-row">
+        <button class="qyy_btn" type="button">实心按钮 hover</button>
+        <button class="qyy_btn qyy_btn-outline" type="button">描边按钮 hover</button>
+      </div>
+    </div>
+
+    <div class="qyy_note">
+      提示：动画优先使用 <strong>transform</strong> 和 <strong>opacity</strong>（合成层动画，不触发重排，性能最好）；
+      <strong>width / left / margin</strong> 等布局属性动画会触发重排，尽量少用。
+      点击上方「暂停全部动画」按钮可看到 <code>animation-play-state: paused</code> 的效果。
+    </div>
+
+    <footer>《高级网页设计》课堂实践 · 11-2 CSS3动画 · 齐英伊</footer>
+  </div>
+
+  <script>
+    var qyy_toggleBtn = document.getElementById('qyy_toggle');
+    var qyy_page = document.getElementById('qyy_page');
+    qyy_toggleBtn.addEventListener('click', function () {
+      var qyy_paused = qyy_page.classList.toggle('qyy_paused');
+      qyy_toggleBtn.textContent = qyy_paused ? '继续全部动画' : '暂停全部动画';
+    });
+  </script>
+</body>
+</html>

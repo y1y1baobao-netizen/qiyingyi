@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>10-4 响应式布局</title>
+  <style>
+    :root {
+      font-size: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f3f4f6;
+      font-family: "Microsoft YaHei", Arial, sans-serif;
+      padding: 1.5rem;
+    }
+
+    .wrap {
+      width: min(80rem, 100%);
+    }
+
+    .title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.2rem;
+      color: #111827;
+      margin-bottom: 1.5rem;
+    }
+
+    .box-list {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .box {
+      min-height: 8rem;
+      border-radius: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1);
+      box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.12);
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 900px) {
+      .box-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .title {
+        font-size: 1.6rem;
+        letter-spacing: 0.12rem;
+      }
+
+      .box-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .box {
+        min-height: 6.5rem;
+        font-size: 1.1rem;
+      }
+    }
+
+    @media (max-width: 360px) {
+      :root {
+        font-size: 14px;
+      }
+
+      .box-list {
+        grid-template-columns: 1fr;
+      }
+
+      .box {
+        min-height: 5.5rem;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">齐英伊</div>
+    <div class="box-list">
+      <div class="box">1</div>
+      <div class="box">2</div>
+      <div class="box">3</div>
+      <div class="box">4</div>
+      <div class="box">5</div>
+      <div class="box">6</div>
+      <div class="box">7</div>
+      <div class="box">8</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,699 @@
+/* ============================================================
+   《高级网页设计 I》网页元素设计实验
+   项目选题：马蜂窝旅游网（mafengwo.cn）首页三个典型元素复刻
+   学号：24001010829  姓名：齐英伊（类名前缀 qyy-）
+   布局技术：Flexbox（未使用 float / 表格布局 / id 选择器）
+   三个典型元素：1.导航栏  2.Tab标签页  3.左图右文游记列表
+   ============================================================ */
+
+/* ---------- 全局 CSS ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, "Microsoft Yahei", "Hiragino Sans GB", "PingFang SC", SimSun, sans-serif;
+  font-size: 12px;
+  color: #333;
+  background: #f5f5f5;
+  min-width: 1000px;
+}
+
+ul, ol { list-style: none; }
+a { text-decoration: none; color: inherit; }
+img { display: inline-block; border: 0; }
+input, button { outline: none; border: 0; font-family: inherit; }
+
+/* 版心容器 */
+.qyy-container {
+  width: 1000px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   典型元素 1：顶部导航栏
+   原站 float 布局 → 复刻改为 flex（指导书要求 flex/grid）
+   高 58px，白字，透明背景叠加在深色 banner 上
+   ============================================================ */
+.qyy-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.35);   /* 半透明深色蒙层模拟原站 banner 叠加效果 */
+}
+
+.qyy-header-inner {
+  display: flex;                       /* Flexbox 布局 */
+  align-items: center;
+  height: 58px;
+  padding: 0 25px;
+  width: 1000px;
+  margin: 0 auto;
+}
+
+/* Logo */
+.qyy-logo {
+  display: flex;
+  align-items: center;
+  height: 58px;
+  line-height: 58px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: 2px;
+  margin-right: 40px;
+  white-space: nowrap;
+}
+
+/* 导航列表 */
+.qyy-nav-list {
+  display: flex;                       /* Flexbox 布局（原站 float 布局，改为 flex） */
+  height: 58px;
+}
+
+.qyy-nav-item {
+  display: flex;
+  align-items: center;
+  height: 58px;
+  line-height: 58px;
+  position: relative;
+}
+
+.qyy-nav-item a {
+  display: inline-block;
+  padding: 0 16px;
+  font-size: 14px;
+  color: #fff;
+  line-height: 58px;
+  transition: color 0.2s;
+}
+
+.qyy-nav-item a:hover {
+  color: #ffc900;                     /* 马蜂窝黄 */
+}
+
+.qyy-nav-cur a {
+  color: #ffc900;
+}
+
+/* 下拉箭头 */
+.qyy-caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 4px;
+  border: 4px solid transparent;
+  border-top-color: #fff;
+}
+
+.qyy-nav-dropdown:hover .qyy-caret {
+  border-top-color: #ffc900;
+}
+
+/* ============================================================
+   典型元素 2：Tab 标签页 + 搜索框
+   原站：searchtab 区域，4 个标签（全部/酒店/目的地/去旅行）
+   Tab 激活项 .tab-selected，白字 14px
+   ============================================================ */
+.qyy-banner {
+  position: relative;
+  height: 340px;
+  background: linear-gradient(135deg, #1a1a3e 0%, #2d1b4e 40%, #1a2a4e 100%);
+}
+
+.qyy-banner-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 100px;
+}
+
+/* 标语 */
+.qyy-banner-slogan {
+  font-size: 36px;
+  color: #fff;
+  letter-spacing: 4px;
+  margin-bottom: 30px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* 搜索容器（Tab + 搜索框） */
+.qyy-search-container {
+  width: 538px;
+  position: relative;
+}
+
+/* Tab 标签页 */
+.qyy-searchtab {
+  height: 26px;
+  margin-bottom: 0;
+}
+
+.qyy-searchtab-list {
+  display: flex;                       /* Flexbox 布局 */
+}
+
+.qyy-searchtab-item {
+  padding: 0 14px;
+  height: 26px;
+  line-height: 26px;
+  font-size: 14px;
+  color: #fff;
+  cursor: pointer;
+  position: relative;
+}
+
+.qyy-searchtab-item i {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.qyy-searchtab-item:hover {
+  color: #ffc900;
+}
+
+/* Tab 激活态 */
+.qyy-searchtab-cur {
+  color: #ffc900;
+  font-weight: bold;
+}
+
+.qyy-searchtab-cur::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 3px;
+  background: #ffc900;
+}
+
+/* 搜索框 */
+.qyy-searchbar {
+  display: flex;                       /* Flexbox 布局 */
+  width: 538px;
+  height: 44px;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.qyy-search-input {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.qyy-search-input input {
+  flex: 1;
+  height: 44px;
+  padding: 0 15px;
+  font-size: 14px;
+  color: #333;
+  background: transparent;
+}
+
+.qyy-search-input input::placeholder {
+  color: #999;
+}
+
+.qyy-search-btn {
+  width: 80px;
+  height: 44px;
+  font-size: 16px;
+  color: #fff;
+  background: #ffc900;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.qyy-search-btn:hover {
+  background: #ffb300;
+}
+
+/* ============================================================
+   典型元素 3：左图右文游记列表
+   原站：tn-item，float 布局 → 复刻改为 flex
+   卡片宽 700px，图片 220×150，文字区 455px
+   ============================================================ */
+.qyy-main {
+  padding: 30px 0 60px;
+}
+
+/* 游记区头部 */
+.qyy-notes-header {
+  display: flex;                       /* Flexbox 布局 */
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+  margin-bottom: 10px;
+}
+
+.qyy-notes-title {
+  font-size: 18px;
+  font-weight: normal;
+  color: #333;
+}
+
+.qyy-notes-more {
+  font-size: 12px;
+  color: #666;
+}
+
+.qyy-notes-more:hover {
+  color: #ff9d00;
+}
+
+/* 游记列表 */
+.qyy-tn-list {
+  width: 700px;
+}
+
+/* 单个游记卡片：左图右文 */
+.qyy-tn-item {
+  display: flex;                       /* Flexbox 布局（原站 float，改为 flex） */
+  padding: 25px 0;
+  border-bottom: none;                /* 原站无分割线，纯留白分隔 */
+}
+
+/* 左侧图片 */
+.qyy-tn-image {
+  flex-shrink: 0;
+  width: 220px;
+  height: 150px;
+  overflow: hidden;
+}
+
+.qyy-tn-image img {
+  width: 220px;
+  height: 150px;
+  object-fit: cover;
+}
+
+/* 右侧文字区 */
+.qyy-tn-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 0 25px;               /* 左图右文间距 */
+}
+
+.qyy-tn-wrapper dl {
+  flex: 1;
+}
+
+/* 游记标题 */
+.qyy-tn-wrapper dt {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  line-height: 26px;
+  margin-bottom: 10px;
+}
+
+.qyy-tn-wrapper dt a {
+  color: #333;
+  transition: color 0.2s;
+}
+
+.qyy-tn-wrapper dt a:hover {
+  color: #ff9d00;
+}
+
+/* 游记摘要 */
+.qyy-tn-wrapper dd {
+  font-size: 14px;
+  color: #999;
+  line-height: 20px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.qyy-tn-wrapper dd a {
+  color: #999;
+}
+
+/* 底部统计区 */
+.qyy-tn-extra {
+  display: flex;                       /* Flexbox 布局 */
+  align-items: center;
+  font-size: 12px;
+  color: #999;
+  margin-top: 8px;
+}
+
+/* 顶赞 */
+.qyy-tn-ding {
+  display: flex;
+  align-items: center;
+  margin-left: auto;              /* 顶赞靠右 */
+}
+
+.qyy-tn-ding em {
+  font-style: normal;
+  font-weight: bold;
+  color: #ff9d00;
+  font-size: 14px;
+  margin-right: 6px;              /* 数字在"顶"左边 */
+}
+
+.qyy-btn-ding {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 24px;
+  background: #ff9d00;
+  border-radius: 4px;             /* 圆角矩形 */
+  clip-path: polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%); /* 六边形 */
+  font-size: 13px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.qyy-btn-ding:hover {
+  background: #ff8800;
+}
+
+.qyy-btn-ding::after {
+  content: "顶";
+}
+
+/* 目的地 */
+.qyy-tn-place {
+  display: flex;
+  align-items: center;
+  margin-right: 2px;
+}
+
+.qyy-tn-place i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  background: #ccc;
+  border-radius: 2px;
+}
+
+.qyy-tn-place a {
+  color: #666;
+  margin-right: 2px;
+}
+
+.qyy-tn-place a:hover {
+  color: #ff9d00;
+}
+
+/* 作者 */
+.qyy-tn-user {
+  display: flex;
+  align-items: center;
+  margin: 0 4px 0 2px;
+}
+
+.qyy-tn-user a {
+  display: flex;
+  align-items: center;
+  color: #ff9d00;             /* 官方运营账号橙色 */
+}
+
+.qyy-tn-user.qyy-tn-user-normal a {
+  color: #ff9d00;             /* 普通用户也橙色（图1统一色） */
+}
+
+.qyy-tn-user img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 4px;
+  border: 1px solid #eee;
+}
+
+.qyy-tn-user a:hover {
+  color: #ff9d00;
+}
+
+.qyy-tn-user.qyy-tn-user-normal a:hover {
+  color: #ff9d00;
+}
+
+/* 浏览/评论 */
+.qyy-tn-stat {
+  color: #999;
+  margin-right: 10px;
+}
+
+/* ============================================================
+   典型元素 4：旅游产品卡片网格（2×4）
+   截图1复刻：上图下文卡片，含类型标签、价格、销量
+   ============================================================ */
+.qyy-products {
+  padding: 30px 0;
+  background: #fff;
+}
+
+.qyy-products-header {
+  display: flex;                       /* Flexbox 布局 */
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+  margin-bottom: 15px;
+}
+
+.qyy-products-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.qyy-products-more {
+  font-size: 12px;
+  color: #666;
+}
+
+.qyy-products-more:hover {
+  color: #ff9d00;
+}
+
+/* 卡片网格：flex wrap，4列 */
+.qyy-products-grid {
+  display: flex;                       /* Flexbox 布局 */
+  flex-wrap: wrap;
+  gap: 16px;                           /* 卡片间距 */
+}
+
+.qyy-product-card {
+  width: 232px;                        /* (1000-3*16)/4 = 238，取232留余量 */
+  background: #fff;
+  border: 1px solid #eee;
+  transition: box-shadow 0.2s;
+}
+
+.qyy-product-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* 产品图片区 */
+.qyy-product-img {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 145px;                       /* 图片区域高度 */
+  overflow: hidden;
+}
+
+.qyy-product-img img {
+  width: 100%;
+  height: 145px;
+  object-fit: cover;
+}
+
+/* 类型标签（左上角叠加） */
+.qyy-product-tag {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.6);      /* 半透明深灰 */
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 10px;
+  line-height: 1;
+}
+
+/* 产品信息区 */
+.qyy-product-body {
+  padding: 10px 12px 12px;
+}
+
+.qyy-product-name {
+  font-size: 14px;
+  font-weight: normal;
+  color: #333;
+  line-height: 1.5;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;              /* 标题2行截断 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.qyy-product-name a {
+  color: #333;
+}
+
+.qyy-product-name a:hover {
+  color: #ff9d00;
+}
+
+/* 价格+销量同一行 */
+.qyy-product-bottom {
+  display: flex;                       /* Flexbox 布局 */
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+/* 价格 */
+.qyy-product-price {
+  color: #ff6600;                     /* 马蜂窝橙红价格色 */
+  font-size: 22px;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.qyy-yen {
+  font-size: 16px;
+  font-weight: normal;
+  margin-right: 1px;
+}
+
+.qyy-qi {
+  font-size: 13px;
+  font-weight: normal;
+  margin-left: 2px;
+}
+
+/* 销量与店铺 */
+.qyy-product-meta {
+  font-size: 12px;
+  color: #999;
+  line-height: 1.5;
+}
+
+.qyy-divider {
+  color: #ccc;
+  margin: 0 2px;
+}
+
+/* ============================================================
+   典型元素 5：资讯列表
+   截图2复刻：纯文字列表，日期+标题
+   ============================================================ */
+.qyy-news {
+  padding: 30px 0;
+  background: #f5f5f5;
+}
+
+.qyy-news-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 18px;
+}
+
+.qyy-news-list {
+  list-style: none;
+}
+
+.qyy-news-item {
+  display: flex;                       /* Flexbox 布局 */
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: none;                /* 无分割线 */
+}
+
+/* 日期 */
+.qyy-news-date {
+  flex-shrink: 0;
+  width: 70px;                         /* 固定宽度 */
+  font-size: 13px;
+  color: #999;
+  margin-right: 10px;
+}
+
+/* 新闻标题 */
+.qyy-news-link {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;            /* 超出省略号 */
+  flex: 1;
+}
+
+.qyy-news-link:hover {
+  color: #ff9d00;
+}
+
+
+.qyy-footer {
+  background: #2a2a2a;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.qyy-footer-text {
+  font-size: 12px;
+  color: #888;
+  line-height: 1.8;
+}
+
+.qyy-stu {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.8;
+}
+
+/* ============================================================
+   响应式（多视口测试用）
+   ============================================================ */
+@media (max-width: 1100px) {
+  body { min-width: 0; }
+  .qyy-container { width: auto; margin: 0 15px; }
+  .qyy-header-inner { width: auto; padding: 0 15px; }
+  .qyy-tn-list { width: 100%; max-width: 700px; margin: 0 auto; }
+}
+
+@media (max-width: 768px) {
+  .qyy-header-inner { flex-direction: column; height: auto; padding: 10px 15px; }
+  .qyy-logo { margin-right: 0; height: 40px; line-height: 40px; }
+  .qyy-nav-list { flex-wrap: wrap; height: auto; }
+  .qyy-nav-item { height: 40px; line-height: 40px; }
+  .qyy-nav-item a { padding: 0 10px; }
+
+  .qyy-banner { height: auto; padding-bottom: 30px; }
+  .qyy-banner-inner { padding-top: 60px; }
+  .qyy-banner-slogan { font-size: 22px; text-align: center; padding: 0 15px; }
+  .qyy-search-container, .qyy-searchbar { width: 100%; max-width: 538px; }
+
+  .qyy-tn-list { width: 100%; }
+  .qyy-tn-item { flex-direction: column; }
+  .qyy-tn-image { width: 100%; height: auto; }
+  .qyy-tn-image img { width: 100%; height: auto; }
+  .qyy-tn-wrapper { padding: 15px 0 0 0; }
+}
