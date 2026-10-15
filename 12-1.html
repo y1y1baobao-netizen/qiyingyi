@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>12-1 CSS变量 · 齐英伊829</title>
+  <style>
+    :root {
+      --qyy-primary: #2563eb;
+      --qyy-primary-dark: #1e40af;
+      --qyy-accent: #f59e0b;
+      --qyy-bg1: #eef2ff;
+      --qyy-bg2: #f8fafc;
+      --qyy-text: #1f2937;
+      --qyy-muted: #6b7282;
+      --qyy-card: #ffffff;
+      --qyy-line: #e5e7eb;
+      --qyy-radius: 16px;
+      --qyy-shadow: 0 18px 40px rgba(37, 99, 235, 0.16);
+      --qyy-font-size: 1rem;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      color: var(--qyy-text);
+      background: linear-gradient(135deg, var(--qyy-bg1), var(--qyy-bg2));
+      line-height: 1.7;
+      font-size: var(--qyy-font-size);
+    }
+
+    .qyy_page {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0 60px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    header .qyy_tag {
+      display: inline-block;
+      padding: 6px 18px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--qyy-primary), #7c3aed);
+      color: #fff;
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    header h1 {
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      color: var(--qyy-primary-dark);
+    }
+
+    header p {
+      margin-top: 8px;
+      color: var(--qyy-muted);
+    }
+
+    h2.qyy_section-title {
+      margin: 34px 0 16px;
+      padding-left: 12px;
+      border-left: 5px solid var(--qyy-primary);
+      font-size: 1.35rem;
+      color: var(--qyy-primary-dark);
+    }
+
+    .qyy_card {
+      background: var(--qyy-card);
+      border: 1px solid var(--qyy-line);
+      border-radius: var(--qyy-radius);
+      box-shadow: var(--qyy-shadow);
+      padding: 28px;
+    }
+
+    .qyy_controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .qyy_controls label {
+      font-weight: 600;
+      color: var(--qyy-text);
+      font-size: 0.95rem;
+    }
+
+    .qyy_controls select,
+    .qyy_controls input[type="color"],
+    .qyy_controls input[type="range"] {
+      accent-color: var(--qyy-primary);
+      font-family: inherit;
+      font-size: 0.9rem;
+      padding: 6px 10px;
+      border: 1px solid var(--qyy-line);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--qyy-text);
+    }
+
+    .qyy_controls input[type="range"] {
+      padding: 0;
+      width: 140px;
+    }
+
+    .qyy_controls input[type="color"] {
+      width: 44px;
+      height: 36px;
+      padding: 2px;
+      cursor: pointer;
+    }
+
+    .qyy_demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .qyy_demo-item {
+      border: 1px solid var(--qyy-line);
+      border-radius: var(--qyy-radius);
+      padding: 22px 18px;
+      text-align: center;
+      background: linear-gradient(180deg, #fff, #f9fafb);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .qyy_demo-item:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--qyy-shadow);
+    }
+
+    .qyy_demo-item .qyy_box {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 14px;
+      border-radius: var(--qyy-radius);
+      background: linear-gradient(135deg, var(--qyy-primary), var(--qyy-accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.1rem;
+      box-shadow: var(--qyy-shadow);
+    }
+
+    .qyy_demo-item strong {
+      display: block;
+      color: var(--qyy-primary-dark);
+      margin-bottom: 4px;
+    }
+
+    .qyy_demo-item code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.82rem;
+      color: var(--qyy-muted);
+      background: #f3f4f6;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .qyy_code-block {
+      margin-top: 24px;
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: var(--qyy-radius);
+      padding: 22px 26px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.88rem;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .qyy_code-block .qyy_comment { color: #7dd3fc; }
+    .qyy_code-block .qyy_prop { color: #fbbf24; }
+    .qyy_code-block .qyy_val { color: #a5f3fc; }
+    .qyy_code-block .qyy_sel { color: #f472b6; }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: var(--qyy-muted);
+      font-size: 0.92rem;
+    }
+
+    footer strong {
+      color: var(--qyy-primary-dark);
+    }
+
+    @media (max-width: 640px) {
+      .qyy_page { padding-top: 24px; }
+      .qyy_card { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="qyy_page">
+    <header>
+      <span class="qyy_tag">CSS 变量 · Custom Properties</span>
+      <h1>12-1 CSS 变量演示</h1>
+      <p>使用 <code>:root</code> 定义全局变量，通过 <code>var()</code> 引用，实现一键换肤与动态调整</p>
+    </header>
+
+    <h2 class="qyy_section-title">交互式变量面板</h2>
+    <div class="qyy_card">
+      <div class="qyy_controls">
+        <label for="qyy-theme">主题色：</label>
+        <select id="qyy-theme">
+          <option value="blue">科技蓝</option>
+          <option value="purple">梦幻紫</option>
+          <option value="green">森林绿</option>
+          <option value="red">中国红</option>
+        </select>
+
+        <label for="qyy-custom">自定义主色：</label>
+        <input type="color" id="qyy-custom" value="#2563eb" />
+
+        <label for="qyy-radius">圆角：<span id="qyy-radius-val">16</span>px</label>
+        <input type="range" id="qyy-radius" min="0" max="32" value="16" />
+
+        <label for="qyy-size">字号：<span id="qyy-size-val">16</span>px</label>
+        <input type="range" id="qyy-size" min="12" max="22" value="16" />
+      </div>
+
+      <div class="qyy_demo-grid">
+        <div class="qyy_demo-item">
+          <div class="qyy_box">-var</div>
+          <strong>var(--qyy-primary)</strong>
+          <code>color: var(--qyy-primary)</code>
+        </div>
+        <div class="qyy_demo-item">
+          <div class="qyy_box">var</div>
+          <strong>var(--qyy-radius)</strong>
+          <code>border-radius: var(--qyy-radius)</code>
+        </div>
+        <div class="qyy_demo-item">
+          <div class="qyy_box">var</div>
+          <strong>var(--qyy-shadow)</strong>
+          <code>box-shadow: var(--qyy-shadow)</code>
+        </div>
+        <div class="qyy_demo-item">
+          <div class="qyy_box">var</div>
+          <strong>var(--qyy-font-size)</strong>
+          <code>font-size: var(--qyy-font-size)</code>
+        </div>
+      </div>
+
+      <div class="qyy_code-block">
+        <span class="qyy_comment">/* 在 :root 中定义变量 */</span><br>
+        <span class="qyy_sel">:root</span> {<br>
+        &nbsp;&nbsp;<span class="qyy_prop">--qyy-primary</span>: <span class="qyy-val">#2563eb</span>;<br>
+        &nbsp;&nbsp;<span class="qyy_prop">--qyy-radius</span>: <span class="qyy-val">16px</span>;<br>
+        &nbsp;&nbsp;<span class="qyy_prop">--qyy-font-size</span>: <span class="qyy-val">1rem</span>;<br>
+        }<br>
+        <br>
+        <span class="qyy_comment">/* 在任何选择器中引用变量 */</span><br>
+        <span class="qyy_sel">.qyy_box</span> {<br>
+        &nbsp;&nbsp;<span class="qyy-prop">background</span>: <span class="qyy-val">var(--qyy-primary)</span>;<br>
+        &nbsp;&nbsp;<span class="qyy-prop">border-radius</span>: <span class="qyy-val">var(--qyy-radius)</span>;<br>
+        }
+      </div>
+    </div>
+
+    <footer>
+      <strong>齐英伊829</strong> · 高级网页设计 · CSS 变量练习 · 2026
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+
+      var themes = {
+        blue:   { primary: '#2563eb', accent: '#f59e0b', dark: '#1e40af' },
+        purple: { primary: '#7c3aed', accent: '#ec4899', dark: '#5b21b6' },
+        green:  { primary: '#059669', accent: '#f59e0b', dark: '#065f46' },
+        red:    { primary: '#dc2626', accent: '#f59e0b', dark: '#991b1b' }
+      };
+
+      var themeSelect = document.getElementById('qyy-theme');
+      var customColor = document.getElementById('qyy-custom');
+      var radiusInput = document.getElementById('qyy-radius');
+      var sizeInput = document.getElementById('qyy-size');
+      var radiusVal = document.getElementById('qyy-radius-val');
+      var sizeVal = document.getElementById('qyy-size-val');
+
+      themeSelect.addEventListener('change', function () {
+        var t = themes[this.value];
+        root.style.setProperty('--qyy-primary', t.primary);
+        root.style.setProperty('--qyy-accent', t.accent);
+        root.style.setProperty('--qyy-primary-dark', t.dark);
+        customColor.value = t.primary;
+      });
+
+      customColor.addEventListener('input', function () {
+        root.style.setProperty('--qyy-primary', this.value);
+      });
+
+      radiusInput.addEventListener('input', function () {
+        root.style.setProperty('--qyy-radius', this.value + 'px');
+        radiusVal.textContent = this.value;
+      });
+
+      sizeInput.addEventListener('input', function () {
+        root.style.setProperty('--qyy-font-size', this.value + 'px');
+        sizeVal.textContent = this.value;
+      });
+    })();
+  </script>
+</body>
+</html>
