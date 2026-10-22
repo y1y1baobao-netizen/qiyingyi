@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>13-1 Font Awesome 字体图标 · 齐英伊829</title>
+  <link rel="stylesheet" href="cdn/fa-all.min.css" />
+  <style>
+    :root {
+      --qyy-primary: #2563eb;
+      --qyy-primary-dark: #1e40af;
+      --qyy-accent: #f59e0b;
+      --qyy-bg1: #eef2ff;
+      --qyy-bg2: #f8fafc;
+      --qyy-text: #1f2937;
+      --qyy-muted: #6b7282;
+      --qyy-card: #ffffff;
+      --qyy-line: #e5e7eb;
+      --qyy-radius: 16px;
+      --qyy-shadow: 0 18px 40px rgba(37, 99, 235, 0.16);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      color: var(--qyy-text);
+      background: linear-gradient(135deg, var(--qyy-bg1), var(--qyy-bg2));
+      line-height: 1.7;
+    }
+
+    .qyy_page {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0 60px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    header .qyy_tag {
+      display: inline-block;
+      padding: 6px 18px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--qyy-primary), #7c3aed);
+      color: #fff;
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    header h1 {
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      color: var(--qyy-primary-dark);
+    }
+
+    header p {
+      margin-top: 8px;
+      color: var(--qyy-muted);
+    }
+
+    h2.qyy_section-title {
+      margin: 34px 0 16px;
+      padding-left: 12px;
+      border-left: 5px solid var(--qyy-primary);
+      font-size: 1.35rem;
+      color: var(--qyy-primary-dark);
+    }
+
+    .qyy_card {
+      background: var(--qyy-card);
+      border: 1px solid var(--qyy-line);
+      border-radius: var(--qyy-radius);
+      box-shadow: var(--qyy-shadow);
+      padding: 28px;
+    }
+
+    .qyy_icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 18px;
+    }
+
+    .qyy_icon-item {
+      border: 1px solid var(--qyy-line);
+      border-radius: var(--qyy-radius);
+      padding: 22px 14px;
+      text-align: center;
+      background: linear-gradient(180deg, #fff, #f9fafb);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .qyy_icon-item:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--qyy-shadow);
+    }
+
+    .qyy_icon-item i {
+      font-size: 2.4rem;
+      color: var(--qyy-primary);
+      margin-bottom: 10px;
+    }
+
+    .qyy_icon-item strong {
+      display: block;
+      color: var(--qyy-primary-dark);
+      font-size: 0.92rem;
+      margin-bottom: 4px;
+    }
+
+    .qyy_icon-item code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.75rem;
+      color: var(--qyy-muted);
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 6px;
+      word-break: break-all;
+    }
+
+    .qyy_size-demo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 0;
+    }
+
+    .qyy_size-demo span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--qyy-primary);
+    }
+
+    .qyy_code-block {
+      margin-top: 24px;
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: var(--qyy-radius);
+      padding: 22px 26px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.88rem;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .qyy_code-block .qyy_comment { color: #7dd3fc; }
+    .qyy_code-block .qyy_prop { color: #fbbf24; }
+    .qyy_code-block .qyy_val { color: #a5f3fc; }
+    .qyy_code-block .qyy_sel { color: #f472b6; }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: var(--qyy-muted);
+      font-size: 0.92rem;
+    }
+
+    footer strong {
+      color: var(--qyy-primary-dark);
+    }
+
+    @media (max-width: 640px) {
+      .qyy_page { padding-top: 24px; }
+      .qyy_card { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="qyy_page">
+    <header>
+      <span class="qyy_tag">Font Awesome · 字体图标</span>
+      <h1>13-1 Font Awesome 字体图标演示</h1>
+      <p>通过 @font-face 加载图标字体，使用 CSS 类名调用图标，可像文字一样设置颜色、大小</p>
+    </header>
+
+    <h2 class="qyy_section-title">Solid 实心图标</h2>
+    <div class="qyy_card">
+      <div class="qyy_icon-grid">
+        <div class="qyy_icon-item">
+          <i class="fa-solid fa-house"></i>
+          <strong>fa-house</strong>
+          <code>fa-solid fa-house</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-solid fa-user"></i>
+          <strong>fa-user</strong>
+          <code>fa-solid fa-user</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-solid fa-heart"></i>
+          <strong>fa-heart</strong>
+          <code>fa-solid fa-heart</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-solid fa-star"></i>
+          <strong>fa-star</strong>
+          <code>fa-solid fa-star</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <strong>fa-magnifying-glass</strong>
+          <code>fa-solid fa-magnifying-glass</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-solid fa-gear"></i>
+          <strong>fa-gear</strong>
+          <code>fa-solid fa-gear</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-solid fa-envelope"></i>
+          <strong>fa-envelope</strong>
+          <code>fa-solid fa-envelope</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-solid fa-camera"></i>
+          <strong>fa-camera</strong>
+          <code>fa-solid fa-camera</code>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="qyy_section-title">Regular 线性图标</h2>
+    <div class="qyy_card">
+      <div class="qyy_icon-grid">
+        <div class="qyy_icon-item">
+          <i class="fa-regular fa-user"></i>
+          <strong>fa-user</strong>
+          <code>fa-regular fa-user</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-regular fa-heart"></i>
+          <strong>fa-heart</strong>
+          <code>fa-regular fa-heart</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-regular fa-star"></i>
+          <strong>fa-star</strong>
+          <code>fa-regular fa-star</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-regular fa-envelope"></i>
+          <strong>fa-envelope</strong>
+          <code>fa-regular fa-envelope</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-regular fa-bell"></i>
+          <strong>fa-bell</strong>
+          <code>fa-regular fa-bell</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-regular fa-comment"></i>
+          <strong>fa-comment</strong>
+          <code>fa-regular fa-comment</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-regular fa-calendar"></i>
+          <strong>fa-calendar</strong>
+          <code>fa-regular fa-calendar</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-regular fa-thumbs-up"></i>
+          <strong>fa-thumbs-up</strong>
+          <code>fa-regular fa-thumbs-up</code>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="qyy_section-title">Brands 品牌图标</h2>
+    <div class="qyy_card">
+      <div class="qyy_icon-grid">
+        <div class="qyy_icon-item">
+          <i class="fa-brands fa-github"></i>
+          <strong>fa-github</strong>
+          <code>fa-brands fa-github</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-brands fa-weixin"></i>
+          <strong>fa-weixin</strong>
+          <code>fa-brands fa-weixin</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-brands fa-weibo"></i>
+          <strong>fa-weibo</strong>
+          <code>fa-brands fa-weibo</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-brands fa-qq"></i>
+          <strong>fa-qq</strong>
+          <code>fa-brands fa-qq</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-brands fa-bilibili"></i>
+          <strong>fa-bilibili</strong>
+          <code>fa-brands fa-bilibili</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-brands fa-android"></i>
+          <strong>fa-android</strong>
+          <code>fa-brands fa-android</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-brands fa-apple"></i>
+          <strong>fa-apple</strong>
+          <code>fa-brands fa-apple</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i class="fa-brands fa-chrome"></i>
+          <strong>fa-chrome</strong>
+          <code>fa-brands fa-chrome</code>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="qyy_section-title">尺寸与颜色控制</h2>
+    <div class="qyy_card">
+      <div class="qyy_size-demo">
+        <span style="font-size:1rem"><i class="fa-solid fa-star"></i> 1x</span>
+        <span style="font-size:1.5rem"><i class="fa-solid fa-star"></i> 1.5x</span>
+        <span style="font-size:2rem"><i class="fa-solid fa-star"></i> 2x</span>
+        <span style="font-size:3rem"><i class="fa-solid fa-star"></i> 3x</span>
+        <span style="font-size:4rem"><i class="fa-solid fa-star"></i> 4x</span>
+      </div>
+      <div class="qyy_size-demo">
+        <span style="font-size:2.5rem;color:#dc2626"><i class="fa-solid fa-heart"></i> 红色</span>
+        <span style="font-size:2.5rem;color:#059669"><i class="fa-solid fa-heart"></i> 绿色</span>
+        <span style="font-size:2.5rem;color:#d97706"><i class="fa-solid fa-heart"></i> 橙色</span>
+        <span style="font-size:2.5rem;color:#7c3aed"><i class="fa-solid fa-heart"></i> 紫色</span>
+      </div>
+    </div>
+
+    <h2 class="qyy-section-title">核心代码</h2>
+    <div class="qyy_card">
+      <div class="qyy_code-block">
+        <span class="qyy_comment">&lt;!-- 引入字体图标 CSS（含 @font-face 定义） --&gt;</span><br>
+        &lt;<span class="qyy_sel">link</span> <span class="qyy-prop">rel</span>=<span class="qyy-val">"stylesheet"</span> <span class="qyy-prop">href</span>=<span class="qyy-val">"cdn/fa-all.min.css"</span>&gt;<br>
+        <br>
+        <span class="qyy_comment">&lt;!-- 使用类名调用图标，像文字一样设置样式 --&gt;</span><br>
+        &lt;<span class="qyy_sel">i</span> <span class="qyy-prop">class</span>=<span class="qyy-val">"fa-solid fa-heart"</span>&gt;&lt;/<span class="qyy_sel">i</span>&gt;<br>
+        &lt;<span class="qyy_sel">i</span> <span class="qyy-prop">class</span>=<span class="qyy-val">"fa-brands fa-github"</span>&gt;&lt;/<span class="qyy_sel">i</span>&gt;<br>
+        <br>
+        <span class="qyy_comment">/* 字体图标本质是文字，可用 CSS 控制 */</span><br>
+        <span class="qyy_sel">.qyy_icon-item i</span> {<br>
+        &nbsp;&nbsp;<span class="qyy-prop">font-size</span>: <span class="qyy-val">2.4rem</span>;<br>
+        &nbsp;&nbsp;<span class="qyy-prop">color</span>: <span class="qyy-val">var(--qyy-primary)</span>;<br>
+        }
+      </div>
+    </div>
+
+    <footer>
+      <strong>齐英伊829</strong> · 高级网页设计 · Font Awesome 字体图标练习 · 2026
+    </footer>
+  </div>
+</body>
+</html>

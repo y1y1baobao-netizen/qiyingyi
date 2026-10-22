@@ -1,0 +1,95 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 5245477 */
+  src: url('iconfont.woff2?t=1792546788542') format('woff2'),
+       url('iconfont.woff?t=1792546788542') format('woff'),
+       url('iconfont.ttf?t=1792546788542') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-CRMEB-426-zhifubaojine-xianxing:before {
+  content: "\e9a8";
+}
+
+.icon-a-502160677:before {
+  content: "\e602";
+}
+
+.icon-cart:before {
+  content: "\e6af";
+}
+
+.icon-voice:before {
+  content: "\e6ef";
+}
+
+.icon-share:before {
+  content: "\e6f3";
+}
+
+.icon-xiaoxi:before {
+  content: "\e87c";
+}
+
+.icon-icon_shezhi:before {
+  content: "\eb8d";
+}
+
+.icon-camera:before {
+  content: "\e6e7";
+}
+
+.icon-qian:before {
+  content: "\e634";
+}
+
+.icon-wode:before {
+  content: "\e60e";
+}
+
+.icon-system-QRcode:before {
+  content: "\e667";
+}
+
+.icon-system-phonebook:before {
+  content: "\e668";
+}
+
+.icon-query:before {
+  content: "\e67b";
+}
+
+.icon-scan:before {
+  content: "\e68b";
+}
+
+.icon-card:before {
+  content: "\e68e";
+}
+
+.icon-collection:before {
+  content: "\e6a5";
+}
+
+.icon-location:before {
+  content: "\e6c5";
+}
+
+.icon-search:before {
+  content: "\e6d4";
+}
+
+.icon-type:before {
+  content: "\e6de";
+}
+
+.icon-wallet:before {
+  content: "\e6e0";
+}
+

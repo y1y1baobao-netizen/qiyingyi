@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>13-2 Lucide SVG 图标 · 齐英伊829</title>
+  <script src="cdn/lucide.min.js"></script>
+  <style>
+    :root {
+      --qyy-primary: #2563eb;
+      --qyy-primary-dark: #1e40af;
+      --qyy-accent: #f59e0b;
+      --qyy-bg1: #eef2ff;
+      --qyy-bg2: #f8fafc;
+      --qyy-text: #1f2937;
+      --qyy-muted: #6b7282;
+      --qyy-card: #ffffff;
+      --qyy-line: #e5e7eb;
+      --qyy-radius: 16px;
+      --qyy-shadow: 0 18px 40px rgba(37, 99, 235, 0.16);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      color: var(--qyy-text);
+      background: linear-gradient(135deg, var(--qyy-bg1), var(--qyy-bg2));
+      line-height: 1.7;
+    }
+
+    .qyy_page {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0 60px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    header .qyy_tag {
+      display: inline-block;
+      padding: 6px 18px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--qyy-primary), #7c3aed);
+      color: #fff;
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    header h1 {
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      color: var(--qyy-primary-dark);
+    }
+
+    header p {
+      margin-top: 8px;
+      color: var(--qyy-muted);
+    }
+
+    h2.qyy_section-title {
+      margin: 34px 0 16px;
+      padding-left: 12px;
+      border-left: 5px solid var(--qyy-primary);
+      font-size: 1.35rem;
+      color: var(--qyy-primary-dark);
+    }
+
+    .qyy_card {
+      background: var(--qyy-card);
+      border: 1px solid var(--qyy-line);
+      border-radius: var(--qyy-radius);
+      box-shadow: var(--qyy-shadow);
+      padding: 28px;
+    }
+
+    .qyy_icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 18px;
+    }
+
+    .qyy_icon-item {
+      border: 1px solid var(--qyy-line);
+      border-radius: var(--qyy-radius);
+      padding: 22px 14px;
+      text-align: center;
+      background: linear-gradient(180deg, #fff, #f9fafb);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .qyy_icon-item:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--qyy-shadow);
+    }
+
+    .qyy_icon-item svg {
+      width: 40px;
+      height: 40px;
+      color: var(--qyy-primary);
+      margin-bottom: 10px;
+    }
+
+    .qyy_icon-item strong {
+      display: block;
+      color: var(--qyy-primary-dark);
+      font-size: 0.92rem;
+      margin-bottom: 4px;
+    }
+
+    .qyy_icon-item code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.75rem;
+      color: var(--qyy-muted);
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 6px;
+      word-break: break-all;
+    }
+
+    .qyy_size-demo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 0;
+    }
+
+    .qyy_size-demo .qyy_demo-box {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: var(--qyy-primary);
+    }
+
+    .qyy_size-demo .qyy_demo-box small {
+      color: var(--qyy-muted);
+      font-size: 0.75rem;
+    }
+
+    .qyy_code-block {
+      margin-top: 24px;
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: var(--qyy-radius);
+      padding: 22px 26px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.88rem;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .qyy_code-block .qyy_comment { color: #7dd3fc; }
+    .qyy_code-block .qyy_prop { color: #fbbf24; }
+    .qyy_code-block .qyy_val { color: #a5f3fc; }
+    .qyy_code-block .qyy_sel { color: #f472b6; }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: var(--qyy-muted);
+      font-size: 0.92rem;
+    }
+
+    footer strong {
+      color: var(--qyy-primary-dark);
+    }
+
+    @media (max-width: 640px) {
+      .qyy_page { padding-top: 24px; }
+      .qyy_card { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="qyy_page">
+    <header>
+      <span class="qyy_tag">Lucide · SVG 图标</span>
+      <h1>13-2 Lucide SVG 图标演示</h1>
+      <p>通过 JavaScript 将 <code>&lt;i data-lucide="..."&gt;</code> 替换为内联 SVG，支持 stroke 属性控制</p>
+    </header>
+
+    <h2 class="qyy_section-title">基础图标</h2>
+    <div class="qyy_card">
+      <div class="qyy_icon-grid">
+        <div class="qyy_icon-item">
+          <i data-lucide="home"></i>
+          <strong>home</strong>
+          <code>data-lucide="home"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="user"></i>
+          <strong>user</strong>
+          <code>data-lucide="user"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="heart"></i>
+          <strong>heart</strong>
+          <code>data-lucide="heart"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="star"></i>
+          <strong>star</strong>
+          <code>data-lucide="star"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="search"></i>
+          <strong>search</strong>
+          <code>data-lucide="search"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="settings"></i>
+          <strong>settings</strong>
+          <code>data-lucide="settings"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="mail"></i>
+          <strong>mail</strong>
+          <code>data-lucide="mail"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="camera"></i>
+          <strong>camera</strong>
+          <code>data-lucide="camera"</code>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="qyy_section-title">箭头与方向</h2>
+    <div class="qyy_card">
+      <div class="qyy_icon-grid">
+        <div class="qyy_icon-item">
+          <i data-lucide="arrow-up"></i>
+          <strong>arrow-up</strong>
+          <code>data-lucide="arrow-up"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="arrow-down"></i>
+          <strong>arrow-down</strong>
+          <code>data-lucide="arrow-down"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="arrow-left"></i>
+          <strong>arrow-left</strong>
+          <code>data-lucide="arrow-left"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="arrow-right"></i>
+          <strong>arrow-right</strong>
+          <code>data-lucide="arrow-right"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="chevron-up"></i>
+          <strong>chevron-up</strong>
+          <code>data-lucide="chevron-up"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="chevron-down"></i>
+          <strong>chevron-down</strong>
+          <code>data-lucide="chevron-down"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="external-link"></i>
+          <strong>external-link</strong>
+          <code>data-lucide="external-link"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="maximize-2"></i>
+          <strong>maximize-2</strong>
+          <code>data-lucide="maximize-2"</code>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="qyy_section-title">界面与操作</h2>
+    <div class="qyy_card">
+      <div class="qyy_icon-grid">
+        <div class="qyy_icon-item">
+          <i data-lucide="plus"></i>
+          <strong>plus</strong>
+          <code>data-lucide="plus"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="minus"></i>
+          <strong>minus</strong>
+          <code>data-lucide="minus"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="x"></i>
+          <strong>x</strong>
+          <code>data-lucide="x"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="check"></i>
+          <strong>check</strong>
+          <code>data-lucide="check"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="trash-2"></i>
+          <strong>trash-2</strong>
+          <code>data-lucide="trash-2"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="edit"></i>
+          <strong>edit</strong>
+          <code>data-lucide="edit"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="share-2"></i>
+          <strong>share-2</strong>
+          <code>data-lucide="share-2"</code>
+        </div>
+        <div class="qyy_icon-item">
+          <i data-lucide="download"></i>
+          <strong>download</strong>
+          <code>data-lucide="download"</code>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="qyy_section-title">尺寸与颜色控制</h2>
+    <div class="qyy_card">
+      <div class="qyy_size-demo">
+        <span class="qyy_demo-box">
+          <i data-lucide="star" width="16" height="16"></i>
+          <small>16px</small>
+        </span>
+        <span class="qyy_demo-box">
+          <i data-lucide="star" width="24" height="24"></i>
+          <small>24px</small>
+        </span>
+        <span class="qyy_demo-box">
+          <i data-lucide="star" width="32" height="32"></i>
+          <small>32px</small>
+        </span>
+        <span class="qyy_demo-box">
+          <i data-lucide="star" width="48" height="48"></i>
+          <small>48px</small>
+        </span>
+        <span class="qyy_demo-box">
+          <i data-lucide="star" width="64" height="64"></i>
+          <small>64px</small>
+        </span>
+      </div>
+      <div class="qyy_size-demo">
+        <span class="qyy_demo-box" style="color:#dc2626">
+          <i data-lucide="heart" width="40" height="40"></i>
+          <small>红色</small>
+        </span>
+        <span class="qyy_demo-box" style="color:#059669">
+          <i data-lucide="heart" width="40" height="40"></i>
+          <small>绿色</small>
+        </span>
+        <span class="qyy_demo-box" style="color:#d97706">
+          <i data-lucide="heart" width="40" height="40"></i>
+          <small>橙色</small>
+        </span>
+        <span class="qyy_demo-box" style="color:#7c3aed">
+          <i data-lucide="heart" width="40" height="40"></i>
+          <small>紫色</small>
+        </span>
+      </div>
+    </div>
+
+    <h2 class="qyy_section-title">核心代码</h2>
+    <div class="qyy_card">
+      <div class="qyy_code-block">
+        <span class="qyy_comment">&lt;!-- 引入 Lucide JS --&gt;</span><br>
+        &lt;<span class="qyy_sel">script</span> <span class="qyy-prop">src</span>=<span class="qyy-val">"cdn/lucide.min.js"</span>&gt;&lt;/<span class="qyy_sel">script</span>&gt;<br>
+        <br>
+        <span class="qyy_comment">&lt;!-- 使用 data-lucide 属性声明图标 --&gt;</span><br>
+        &lt;<span class="qyy_sel">i</span> <span class="qyy-prop">data-lucide</span>=<span class="qyy-val">"heart"</span>&gt;&lt;/<span class="qyy_sel">i</span>&gt;<br>
+        &lt;<span class="qyy_sel">i</span> <span class="qyy-prop">data-lucide</span>=<span class="qyy-val">"star"</span> <span class="qyy-prop">width</span>=<span class="qyy-val">"48"</span> <span class="qyy-prop">height</span>=<span class="qyy-val">"48"</span>&gt;&lt;/<span class="qyy_sel">i</span>&gt;<br>
+        <br>
+        <span class="qyy_comment">// JS 将 &lt;i&gt; 替换为内联 SVG</span><br>
+        <span class="qyy_sel">lucide.createIcons()</span>();<br>
+        <br>
+        <span class="qyy-comment">/* 生成的 SVG 结构 */</span><br>
+        &lt;<span class="qyy_sel">svg</span> <span class="qyy-prop">xmlns</span>=<span class="qyy-val">"http://www.w3.org/2000/svg"</span> <span class="qyy-prop">width</span>=<span class="qyy-val">"24"</span> <span class="qyy-prop">height</span>=<span class="qyy-val">"24"</span><br>
+        &nbsp;&nbsp;<span class="qyy-prop">viewBox</span>=<span class="qyy-val">"0 0 24 24"</span> <span class="qyy-prop">fill</span>=<span class="qyy-val">"none"</span> <span class="qyy-prop">stroke</span>=<span class="qyy-val">"currentColor"</span><br>
+        &nbsp;&nbsp;<span class="qyy-prop">stroke-width</span>=<span class="qyy-val">"2"</span> <span class="qyy-prop">stroke-linecap</span>=<span class="qyy-val">"round"</span> <span class="qyy-prop">stroke-linejoin</span>=<span class="qyy-val">"round"</span>&gt;<br>
+        &nbsp;&nbsp;&lt;<span class="qyy_sel">path</span> <span class="qyy-prop">d</span>=<span class="qyy-val">"..."</span>/&gt;<br>
+        &lt;/<span class="qyy_sel">svg</span>&gt;
+      </div>
+    </div>
+
+    <footer>
+      <strong>齐英伊829</strong> · 高级网页设计 · Lucide SVG 图标练习 · 2026
+    </footer>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

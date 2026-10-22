@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>13-3 iconfont 字体图标下导航 · 齐英伊829</title>
+  <link rel="stylesheet" href="font/iconfont.css" />
+  <style>
+    :root {
+      --qyy-primary: #2563eb;
+      --qyy-primary-dark: #1e40af;
+      --qyy-soft: rgba(37, 99, 235, 0.1);
+      --qyy-text: #1f2937;
+      --qyy-muted: #8a94a6;
+      --qyy-bg: #f4f6fb;
+      --qyy-card: #ffffff;
+      --qyy-line: #eef0f4;
+      --qyy-danger: #ff4d4f;
+      --qyy-radius: 16px;
+      --qyy-tabbar-h: 60px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      color: var(--qyy-text);
+      background: var(--qyy-bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .qyy_app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: calc(var(--qyy-tabbar-h) + env(safe-area-inset-bottom, 0px));
+    }
+
+    .qyy_header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, var(--qyy-primary), #7c3aed);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
+    }
+
+    .qyy_header h1 {
+      font-size: 1.02rem;
+      line-height: 1.35;
+    }
+
+    .qyy_header span {
+      flex: none;
+      font-size: 0.72rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.2);
+      letter-spacing: 1px;
+    }
+
+    .qyy_content {
+      flex: 1;
+      width: 100%;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .qyy_card {
+      background: var(--qyy-card);
+      border: 1px solid var(--qyy-line);
+      border-radius: var(--qyy-radius);
+      padding: 18px;
+      box-shadow: 0 8px 20px rgba(31, 42, 68, 0.05);
+    }
+
+    .qyy_card h2 {
+      font-size: 0.98rem;
+      color: var(--qyy-primary-dark);
+      margin-bottom: 10px;
+      padding-left: 10px;
+      border-left: 4px solid var(--qyy-primary);
+    }
+
+    .qyy_card p {
+      font-size: 0.85rem;
+      color: var(--qyy-muted);
+      line-height: 1.8;
+    }
+
+    .qyy_icon-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .qyy_icon-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: var(--qyy-soft);
+      color: var(--qyy-primary-dark);
+      font-size: 0.8rem;
+    }
+
+    .qyy_icon-chip .iconfont {
+      font-size: 18px;
+    }
+
+    .qyy_placeholder {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .qyy_placeholder li {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f9fafb;
+      border: 1px solid var(--qyy-line);
+      font-size: 0.85rem;
+      color: var(--qyy-muted);
+    }
+
+    .qyy_placeholder li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--qyy-primary);
+      opacity: 0.6;
+    }
+
+    .qyy_demo-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .qyy_demo-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: calc((100% - 24px) / 4);
+      padding: 12px 6px;
+      border-radius: 12px;
+      background: #f9fafb;
+      border: 1px solid var(--qyy-line);
+      font-size: 0.72rem;
+      color: var(--qyy-muted);
+    }
+
+    .qyy_demo-item .iconfont {
+      font-size: 22px;
+      color: var(--qyy-primary);
+    }
+
+    .qyy_size-row {
+      display: flex;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 12px;
+      background: #f9fafb;
+      border: 1px solid var(--qyy-line);
+    }
+
+    .qyy_size-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      color: var(--qyy-muted);
+    }
+
+    .qyy_size-item .iconfont {
+      color: var(--qyy-primary);
+    }
+
+    .qyy_state-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .qyy_state-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      border: 1px solid var(--qyy-line);
+      background: #fff;
+      color: var(--qyy-muted);
+    }
+
+    .qyy_state-item .iconfont {
+      font-size: 16px;
+    }
+
+    .qyy_state-item.qyy_state-item--active {
+      background: var(--qyy-soft);
+      border-color: var(--qyy-primary);
+      color: var(--qyy-primary-dark);
+    }
+
+    .qyy_state-item.qyy_state-item--primary {
+      background: var(--qyy-primary);
+      border-color: var(--qyy-primary);
+      color: #fff;
+    }
+
+    .qyy_state-item.qyy_state-item--ghost {
+      background: transparent;
+      border-color: var(--qyy-line);
+      color: var(--qyy-primary);
+    }
+
+    .qyy_state-item.qyy_state-item--disabled {
+      background: #f1f2f4;
+      color: #c3c8d0;
+      cursor: not-allowed;
+    }
+
+    .qyy_points {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .qyy_point {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: var(--qyy-muted);
+      line-height: 1.7;
+    }
+
+    .qyy_point code {
+      flex: none;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--qyy-soft);
+      color: var(--qyy-primary-dark);
+      font-size: 0.74rem;
+    }
+
+    /* ===== 固定下导航 ===== */
+    .qyy_tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      background: #fff;
+      border-top: 1px solid var(--qyy-line);
+      box-shadow: 0 -6px 18px rgba(31, 42, 68, 0.08);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      z-index: 100;
+    }
+
+    .qyy_tab-item {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 8px 0 6px;
+      text-decoration: none;
+      color: var(--qyy-muted);
+      font-size: 11px;
+      line-height: 1.2;
+      transition: color 0.2s ease, transform 0.12s ease;
+    }
+
+    .qyy_tab-item:active {
+      transform: scale(0.94);
+    }
+
+    .qyy_tab-item.qyy_is-active {
+      color: var(--qyy-primary);
+    }
+
+    .qyy_tab-icon {
+      position: relative;
+      display: inline-flex;
+      line-height: 1;
+    }
+
+    .qyy_tab-icon .iconfont {
+      font-size: 22px;
+    }
+
+    .qyy_tab-label {
+      white-space: nowrap;
+    }
+
+    /* 数字徽章：消息 */
+    .qyy_tab-badge {
+      position: absolute;
+      top: -6px;
+      right: -12px;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: 999px;
+      background: var(--qyy-danger);
+      color: #fff;
+      font-size: 10px;
+      line-height: 16px;
+      text-align: center;
+      border: 2px solid #fff;
+    }
+
+    /* 右上角红点：我的 */
+    .qyy_tab-dot {
+      position: absolute;
+      top: -2px;
+      right: -4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--qyy-danger);
+      border: 2px solid #fff;
+    }
+
+    @media (max-width: 360px) {
+      .qyy_tab-item {
+        font-size: 10px;
+      }
+
+      .qyy_tab-icon .iconfont {
+        font-size: 20px;
+      }
+
+      .qyy_demo-item {
+        width: calc((100% - 16px) / 3);
+      }
+
+      .qyy_header h1 {
+        font-size: 0.92rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="qyy_app">
+    <header class="qyy_header">
+      <h1>移动端固定下导航 · 字体图标</h1>
+      <span>13-3</span>
+    </header>
+
+    <main class="qyy_content">
+      <section class="qyy_card">
+        <h2>本页说明</h2>
+        <p>
+          使用 <code>font/iconfont.css</code> 提供的字体图标，通过
+          <code>.iconfont .icon-xxx</code> 类名调用图标，配合 Flexbox 实现自适应宽度的固定下导航。
+          底部导航固定于视口底部并占满全屏宽度，随屏幕宽度自动分配每一项的宽度。
+          字体图标以 <code>&lt;i&gt;</code> 标签承载，用 <code>font-size</code> 控制尺寸、
+          <code>color</code> 控制颜色，天然支持 CSS 着色与缩放。
+        </p>
+        <div class="qyy_icon-row">
+          <span class="qyy_icon-chip"><i class="iconfont icon-CRMEB-426-zhifubaojine-xianxing"></i>首页</span>
+          <span class="qyy_icon-chip"><i class="iconfont icon-qian"></i>理财</span>
+          <span class="qyy_icon-chip"><i class="iconfont icon-a-502160677"></i>视频</span>
+          <span class="qyy_icon-chip"><i class="iconfont icon-xiaoxi"></i>消息</span>
+          <span class="qyy_icon-chip"><i class="iconfont icon-wode"></i>我的</span>
+        </div>
+      </section>
+
+      <section class="qyy_card">
+        <h2>图标清单</h2>
+        <p>本图集共 20 枚字体图标，均定义在 <code>font/iconfont.css</code> 中，类名以 <code>icon-</code> 为前缀。</p>
+        <div class="qyy_demo-grid">
+          <span class="qyy_demo-item"><i class="iconfont icon-CRMEB-426-zhifubaojine-xianxing"></i>首页</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-qian"></i>理财</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-a-502160677"></i>视频</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-xiaoxi"></i>消息</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-wode"></i>我的</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-cart"></i>购物车</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-wallet"></i>钱包</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-card"></i>卡券</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-collection"></i>收藏</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-scan"></i>扫一扫</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-search"></i>搜索</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-share"></i>分享</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-voice"></i>语音</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-camera"></i>相机</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-location"></i>定位</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-query"></i>查询</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-type"></i>分类</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-system-QRcode"></i>二维码</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-system-phonebook"></i>通讯录</span>
+          <span class="qyy_demo-item"><i class="iconfont icon-icon_shezhi"></i>设置</span>
+        </div>
+      </section>
+
+      <section class="qyy_card">
+        <h2>尺寸规范</h2>
+        <p>字体图标本质是文字，尺寸随 <code>font-size</code> 线性缩放，以下为同一图标在不同字号下的呈现。</p>
+        <div class="qyy_size-row">
+          <span class="qyy_size-item"><i class="iconfont icon-CRMEB-426-zhifubaojine-xianxing" style="font-size:16px"></i>16px</span>
+          <span class="qyy_size-item"><i class="iconfont icon-CRMEB-426-zhifubaojine-xianxing" style="font-size:20px"></i>20px</span>
+          <span class="qyy_size-item"><i class="iconfont icon-CRMEB-426-zhifubaojine-xianxing" style="font-size:24px"></i>24px</span>
+          <span class="qyy_size-item"><i class="iconfont icon-CRMEB-426-zhifubaojine-xianxing" style="font-size:32px"></i>32px</span>
+          <span class="qyy_size-item"><i class="iconfont icon-CRMEB-426-zhifubaojine-xianxing" style="font-size:48px"></i>48px</span>
+        </div>
+      </section>
+
+      <section class="qyy_card">
+        <h2>颜色与状态</h2>
+        <p>字体图标通过 <code>color</code> 继承当前文字颜色，可与导航项的选中态、禁用态等样式无缝联动。</p>
+        <div class="qyy_state-row">
+          <span class="qyy_state-item"><i class="iconfont icon-qian"></i>默认</span>
+          <span class="qyy_state-item qyy_state-item--active"><i class="iconfont icon-qian"></i>选中</span>
+          <span class="qyy_state-item qyy_state-item--primary"><i class="iconfont icon-qian"></i>主题</span>
+          <span class="qyy_state-item qyy_state-item--ghost"><i class="iconfont icon-qian"></i>描边</span>
+          <span class="qyy_state-item qyy_state-item--disabled"><i class="iconfont icon-qian"></i>禁用</span>
+        </div>
+      </section>
+
+      <section class="qyy_card">
+        <h2>布局要点</h2>
+        <p>固定下导航的关键样式如下，均使用 Flexbox 完成。</p>
+        <div class="qyy_points">
+          <p class="qyy_point"><code>position: fixed</code>将导航吸附到视口底部，不随内容滚动。</p>
+          <p class="qyy_point"><code>display: flex</code>让每一项在主轴上均匀分布。</p>
+          <p class="qyy_point"><code>flex: 1 1 0</code>使各导航项等分剩余宽度，实现自适应。</p>
+          <p class="qyy_point"><code>flex-direction: column</code>让图标与文字纵向居中排列。</p>
+          <p class="qyy_point"><code>padding-bottom</code>配合安全区变量，避免内容被导航遮挡。</p>
+        </div>
+      </section>
+
+      <section class="qyy_card">
+        <h2>内容区域</h2>
+        <p>向下滚动可查看固定下导航始终吸附在屏幕底部，不会随内容滚动而移出视口。</p>
+        <ul class="qyy_placeholder">
+          <li>示例内容条目 · 一</li>
+          <li>示例内容条目 · 二</li>
+          <li>示例内容条目 · 三</li>
+          <li>示例内容条目 · 四</li>
+          <li>示例内容条目 · 五</li>
+          <li>示例内容条目 · 六</li>
+          <li>示例内容条目 · 七</li>
+          <li>示例内容条目 · 八</li>
+          <li>示例内容条目 · 九</li>
+          <li>示例内容条目 · 十</li>
+        </ul>
+      </section>
+    </main>
+
+    <nav class="qyy_tabbar">
+      <a class="qyy_tab-item qyy_is-active" href="#">
+        <span class="qyy_tab-icon"><i class="iconfont icon-CRMEB-426-zhifubaojine-xianxing"></i></span>
+        <span class="qyy_tab-label">首页</span>
+      </a>
+      <a class="qyy_tab-item" href="#">
+        <span class="qyy_tab-icon"><i class="iconfont icon-qian"></i></span>
+        <span class="qyy_tab-label">理财</span>
+      </a>
+      <a class="qyy_tab-item" href="#">
+        <span class="qyy_tab-icon"><i class="iconfont icon-a-502160677"></i></span>
+        <span class="qyy_tab-label">视频</span>
+      </a>
+      <a class="qyy_tab-item" href="#">
+        <span class="qyy_tab-icon">
+          <i class="iconfont icon-xiaoxi"></i>
+          <span class="qyy_tab-badge">8</span>
+        </span>
+        <span class="qyy_tab-label">消息</span>
+      </a>
+      <a class="qyy_tab-item" href="#">
+        <span class="qyy_tab-icon">
+          <i class="iconfont icon-wode"></i>
+          <span class="qyy_tab-dot"></span>
+        </span>
+        <span class="qyy_tab-label">我的</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>
