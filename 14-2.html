@@ -1,0 +1,258 @@
+<!-- 姓名: 齐英伊 日期: 2026-10-22 功能名称: JavaScript 六种基础数据类型演示 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>14-2 JavaScript 六种基础数据类型 · 齐英伊829</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: #f4f6fb;
+            color: #1f2937;
+            min-height: 100vh;
+            padding: 24px 20px;
+        }
+        .qyy_wrap {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        .qyy_head {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .qyy_head h1 {
+            font-size: 1.35rem;
+            color: #2563eb;
+            margin-bottom: 6px;
+        }
+        .qyy_head p {
+            font-size: 0.85rem;
+            color: #8a94a6;
+        }
+        .qyy_type-card {
+            background: #fff;
+            border: 1px solid #eef0f4;
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            box-shadow: 0 6px 18px rgba(31, 42, 68, 0.04);
+        }
+        .qyy_type-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .qyy_type-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            color: #fff;
+            background: #2563eb;
+            letter-spacing: 1px;
+        }
+        .qyy_type-title h2 {
+            font-size: 1.05rem;
+            color: #1e40af;
+        }
+        .qyy_code-block {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-family: "Consolas", "Courier New", monospace;
+            font-size: 0.82rem;
+            line-height: 1.75;
+            overflow-x: auto;
+        }
+        .qyy_code-block .qyy_key { color: #c084fc; }
+        .qyy_code-block .qyy_str { color: #4ade80; }
+        .qyy_code-block .qyy_num { color: #fbbf24; }
+        .qyy_code-block .qyy_bool { color: #f87171; }
+        .qyy_code-block .qyy_cmt { color: #64748b; }
+        .qyy_result {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-left: 3px solid #2563eb;
+            background: #f0f7ff;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            line-height: 1.7;
+            color: #334155;
+            font-family: "Consolas", "Courier New", monospace;
+            white-space: pre-wrap;
+        }
+        .qyy_footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.78rem;
+            color: #8a94a6;
+        }
+    </style>
+</head>
+<body>
+    <div class="qyy_wrap">
+        <div class="qyy_head">
+            <h1>JavaScript 六种基础数据类型</h1>
+            <p>姓名: 齐英伊 &nbsp;·&nbsp; 日期: 2026-10-22</p>
+        </div>
+
+        <!-- 1. Number -->
+        <div class="qyy_type-card">
+            <div class="qyy_type-title">
+                <span class="qyy_type-tag">1</span>
+                <h2>Number（数值）</h2>
+            </div>
+            <pre class="qyy_code-block"><code><span class="qyy_key">let</span> qyy_age = <span class="qyy_num">19</span>;            <span class="qyy_cmt">// 整数</span>
+<span class="qyy_key">let</span> qyy_price = <span class="qyy_num">198.50</span>;        <span class="qyy_cmt">// 浮点数</span>
+<span class="qyy_key">let</span> qyy_big = <span class="qyy_num">2e8</span>;            <span class="qyy_cmt">// 科学计数法</span>
+<span class="qyy_key">let</span> qyy_inf = <span class="qyy_num">Infinity</span>;     <span class="qyy_cmt">// 无穷大</span>
+<span class="qyy_key">let</span> qyy_nan = <span class="qyy_num">NaN</span>;          <span class="qyy_cmt">// 非数字</span></code></pre>
+            <div class="qyy_result" id="qyy_res_num">结果：</div>
+        </div>
+
+        <!-- 2. String -->
+        <div class="qyy_type-card">
+            <div class="qyy_type-title">
+                <span class="qyy_type-tag">2</span>
+                <h2>String（字符串）</h2>
+            </div>
+            <pre class="qyy_code-block"><code><span class="qyy_key">let</span> qyy_name = <span class="qyy_str">"齐英伊"</span>;     <span class="qyy_cmt">// 双引号</span>
+<span class="qyy_key">let</span> qyy_id = <span class="qyy_str">'24001010829'</span>;   <span class="qyy_cmt">// 单引号</span>
+<span class="qyy_key">let</span> qyy_greet = <span class="qyy_str">`你好, ${qyy_name}`</span>; <span class="qyy_cmt">// 模板字符串</span></code></pre>
+            <div class="qyy_result" id="qyy_res_str">结果：</div>
+        </div>
+
+        <!-- 3. Boolean -->
+        <div class="qyy_type-card">
+            <div class="qyy_type-title">
+                <span class="qyy_type-tag">3</span>
+                <h2>Boolean（布尔）</h2>
+            </div>
+            <pre class="qyy_code-block"><code><span class="qyy_key">let</span> qyy_isStudent = <span class="qyy_bool">true</span>;
+<span class="qyy_key">let</span> qyy_pass = <span class="qyy_num">59</span> >= <span class="qyy_num">60</span>;   <span class="qyy_cmt">// 表达式返回 false</span></code></pre>
+            <div class="qyy_result" id="qyy_res_bool">结果：</div>
+        </div>
+
+        <!-- 4. Null -->
+        <div class="qyy_type-card">
+            <div class="qyy_type-title">
+                <span class="qyy_type-tag">4</span>
+                <h2>Null（空）</h2>
+            </div>
+            <pre class="qyy_code-block"><code><span class="qyy_key">let</span> qyy_empt = <span class="qyy_key">null</span>;  <span class="qyy_cmt">// 明确表示"没有值"</span>
+<span class="qyy_cmt">// typeof null 返回 "object" 是历史遗留 bug</span></code></pre>
+            <div class="qyy_result" id="qyy_res_null">结果：</div>
+        </div>
+
+        <!-- 5. Undefined -->
+        <div class="qyy_type-card">
+            <div class="qyy_type-title">
+                <span class="qyy_type-tag">5</span>
+                <h2>Undefined（未定义）</h2>
+            </div>
+            <pre class="qyy_code-block"><code><span class="qyy_key">let</span> qyy_x;                <span class="qyy_cmt">// 声明但未赋值</span>
+<span class="qyy_key">let</span> qyy_y = <span class="qyy_key">undefined</span>;  <span class="qyy_cmt">// 显式赋值</span></code></pre>
+            <div class="qyy_result" id="qyy_res_undef">结果：</div>
+        </div>
+
+        <!-- 6. Symbol -->
+        <div class="qyy_type-card">
+            <div class="qyy_type-title">
+                <span class="qyy_type-tag">6</span>
+                <h2>Symbol（符号，ES6 新增）</h2>
+            </div>
+            <pre class="qyy_code-block"><code><span class="qyy_key">let</span> qyy_key1 = <span class="qyy_key">Symbol</span>(<span class="qyy_str">"id"</span>);
+<span class="qyy_key">let</span> qyy_key2 = <span class="qyy_key">Symbol</span>(<span class="qyy_str">"id"</span>);
+<span class="qyy_cmt">// 每个 Symbol 唯一, 即使描述相同也不相等</span></code></pre>
+            <div class="qyy_result" id="qyy_res_sym">结果：</div>
+        </div>
+
+        <!-- 补充: Object 引用类型 -->
+        <div class="qyy_type-card" style="background:#fffbeb;border-color:#fde68a;">
+            <div class="qyy_type-title">
+                <span class="qyy_type-tag" style="background:#d97706;">补</span>
+                <h2 style="color:#b45309;">补充：Object（引用类型）</h2>
+            </div>
+            <pre class="qyy_code-block"><code><span class="qyy_key">let</span> qyy_obj = { <span class="qyy_str">"姓名"</span>: qyy_name, <span class="qyy_str">"学号"</span>: qyy_id };
+<span class="qyy_key">let</span> qyy_arr = [<span class="qyy_num">1</span>, <span class="qyy_num">2</span>, <span class="qyy_num">3</span>];</code></pre>
+            <div class="qyy_result" id="qyy_res_obj" style="border-color:#d97706;background:#fef3c7;">结果：</div>
+        </div>
+
+        <div class="qyy_footer">
+            typeof 用来检测数据类型，打开浏览器控制台可查看完整输出
+        </div>
+    </div>
+
+    <script>
+        // ===== 1. Number =====
+        let qyy_age = 19;
+        let qyy_price = 198.50;
+        let qyy_big = 2e8;
+        let qyy_inf = Infinity;
+        let qyy_nan = NaN;
+        document.getElementById('qyy_res_num').textContent =
+            'qyy_age = ' + qyy_age + '   typeof: ' + typeof qyy_age + '\n' +
+            'qyy_price = ' + qyy_price + '   typeof: ' + typeof qyy_price + '\n' +
+            'qyy_big = ' + qyy_big + '   typeof: ' + typeof qyy_big + '\n' +
+            'qyy_inf = ' + qyy_inf + '   typeof: ' + typeof qyy_inf + '\n' +
+            'qyy_nan = ' + qyy_nan + '   typeof: ' + typeof qyy_nan;
+
+        // ===== 2. String =====
+        let qyy_name = "齐英伊";
+        let qyy_id = '24001010829';
+        let qyy_greet = `你好, ${qyy_name}`;
+        document.getElementById('qyy_res_str').textContent =
+            'qyy_name = ' + qyy_name + '   typeof: ' + typeof qyy_name + '\n' +
+            'qyy_id = ' + qyy_id + '   typeof: ' + typeof qyy_id + '\n' +
+            'qyy_greet = ' + qyy_greet + '   typeof: ' + typeof qyy_greet;
+
+        // ===== 3. Boolean =====
+        let qyy_isStudent = true;
+        let qyy_pass = 59 >= 60;
+        document.getElementById('qyy_res_bool').textContent =
+            'qyy_isStudent = ' + qyy_isStudent + '   typeof: ' + typeof qyy_isStudent + '\n' +
+            'qyy_pass(59>=60) = ' + qyy_pass + '   typeof: ' + typeof qyy_pass;
+
+        // ===== 4. Null =====
+        let qyy_empt = null;
+        document.getElementById('qyy_res_null').textContent =
+            'qyy_empt = ' + qyy_empt + '   typeof: ' + typeof qyy_empt + '  (历史遗留 bug: typeof null === "object")';
+
+        // ===== 5. Undefined =====
+        let qyy_x;
+        let qyy_y = undefined;
+        document.getElementById('qyy_res_undef').textContent =
+            'qyy_x (未赋值) = ' + qyy_x + '   typeof: ' + typeof qyy_x + '\n' +
+            'qyy_y (显式赋值) = ' + qyy_y + '   typeof: ' + typeof qyy_y;
+
+        // ===== 6. Symbol =====
+        let qyy_key1 = Symbol("id");
+        let qyy_key2 = Symbol("id");
+        document.getElementById('qyy_res_sym').textContent =
+            'qyy_key1 = ' + qyy_key1.toString() + '   typeof: ' + typeof qyy_key1 + '\n' +
+            'qyy_key2 = ' + qyy_key2.toString() + '   typeof: ' + typeof qyy_key2 + '\n' +
+            'qyy_key1 === qyy_key2 : ' + (qyy_key1 === qyy_key2) + '  // 每个 Symbol 唯一';
+
+        // ===== 补充: Object =====
+        let qyy_obj = { "姓名": qyy_name, "学号": qyy_id };
+        let qyy_arr = [1, 2, 3];
+        document.getElementById('qyy_res_obj').textContent =
+            'qyy_obj = ' + JSON.stringify(qyy_obj) + '   typeof: ' + typeof qyy_obj + '\n' +
+            'qyy_arr = ' + qyy_arr + '   typeof: ' + typeof qyy_arr;
+
+        // 控制台同步输出
+        console.log('===== JavaScript 六种基础数据类型 =====');
+        console.log('[Number]', qyy_age, typeof qyy_age, qyy_price, typeof qyy_price, qyy_big, typeof qyy_big);
+        console.log('[String]', qyy_name, typeof qyy_name, qyy_greet, typeof qyy_greet);
+        console.log('[Boolean]', qyy_isStudent, typeof qyy_isStudent, qyy_pass, typeof qyy_pass);
+        console.log('[Null]', qyy_empt, typeof qyy_empt);
+        console.log('[Undefined]', qyy_x, typeof qyy_x);
+        console.log('[Symbol]', qyy_key1.toString(), qyy_key2.toString(), '=== ?', qyy_key1 === qyy_key2);
+        console.log('[Object-补]', qyy_obj, typeof qyy_obj, qyy_arr, typeof qyy_arr);
+    </script>
+</body>
+</html>

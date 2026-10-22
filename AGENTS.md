@@ -16,7 +16,12 @@ Preview with VS Code Live Server (configured on port 5501 in `.vscode/settings.j
 
 ## Standing rules from the user (always apply)
 
-- **Naming**: every new CSS class name, id, and JS variable must start with `qyy_` (e.g. `.qyy_card`, `#qyy_box`). Existing pages keep their old names — do not mass-rename historical files; only new/edited selectors follow this rule. Sub-project prefixes (`qyy-`, `stu-pottery-`) still apply on top.
+- **命名**: 所有 CSS 类、id、JS 变量必须以 `qyy_` 开头 (e.g. `.qyy_card`, `#qyy_box`, `let qyy_count`). 旧文件不改，只对新写/改的代码生效.
+- **HTML 注释头**: 所有新写的 `.html` 文件顶部必须包含如下格式的注释块 (功能名按页面实际用途填，日期写创建/修改当天).
+  ```html
+  <!-- 姓名: 齐英伊 日期: yyyy-mm-dd 功能名称: XXX -->
+  ```
+- **技术栈约束**: 仅使用原生 HTML/CSS/JavaScript 实现. **严禁** 引入任何第三方库、CDN、框架或打包器. 图标统一使用项目根目录下 `font/iconfont.*` 提供的字体图标, 通过 `<link rel="stylesheet" href="font/iconfont.css">` 引入 (JS 版用 `font/iconfont.js`). 获取服务器端数据必须使用原生 `fetch` API, 不要用 `axios` / `XMLHttpRequest` / jQuery.
 - **Prompt log**: before executing any user prompt, append to `qyy_prompt.md` (create if missing, **append only — never overwrite**), in this format:
   ```
   ## yyyy-mm-dd-hh:mm:ss
