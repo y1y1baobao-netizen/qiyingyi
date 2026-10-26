@@ -1,0 +1,475 @@
+<!-- 姓名: 齐英伊 日期: 2026-10-26 功能名称: JavaScript 程序结构与循环 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>15-2 JS程序结构与循环 · 齐英伊829</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .qyy_wrap {
+            max-width: 960px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            padding: 36px 32px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+        .qyy_head {
+            text-align: center;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #e2e8f0;
+        }
+        .qyy_head h1 { font-size: 1.8rem; color: #1e293b; margin-bottom: 8px; }
+        .qyy_head .qyy_sub { font-size: 0.88rem; color: #64748b; }
+        .qyy_head .qyy_sub .qyy_name { color: #764ba2; font-weight: bold; }
+
+        /* ===== 章节卡片 ===== */
+        .qyy_chapter {
+            margin-bottom: 28px;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        .qyy_chapter > .qyy_title {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: #fff;
+            padding: 12px 20px;
+            font-size: 1.05rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .qyy_chapter > .qyy_title .qyy_icon {
+            background: rgba(255,255,255,0.25);
+            border-radius: 50%;
+            width: 26px; height: 26px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem;
+        }
+        .qyy_body { padding: 20px; }
+
+        /* ===== 程序结构 ===== */
+        .qyy_struct {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .qyy_struct .qyy_tag {
+            background: #ede9fe;
+            color: #6d28d9;
+            border: 1px solid #c4b5fd;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+        }
+        .qyy_struct-desc {
+            font-size: 0.88rem;
+            color: #475569;
+            line-height: 1.8;
+            background: #f8fafc;
+            border-left: 4px solid #a78bfa;
+            padding: 12px 16px;
+            border-radius: 6px;
+        }
+
+        /* ===== 代码 + 结果 两栏 ===== */
+        .qyy_row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .qyy_row > div { flex: 1 1 300px; }
+        .qyy_code {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 0.82rem;
+            line-height: 1.7;
+            overflow-x: auto;
+            margin-bottom: 10px;
+        }
+        .qyy_code .qyy_key { color: #c084fc; }
+        .qyy_code .qyy_str { color: #86efac; }
+        .qyy_code .qyy_num { color: #fbbf24; }
+        .qyy_code .qyy_cmt { color: #64748b; font-style: italic; }
+        .qyy_code .qyy_var { color: #60a5fa; }
+
+        .qyy_result {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 10px;
+            padding: 14px 16px;
+            min-height: 80px;
+            font-size: 0.88rem;
+        }
+        .qyy_result .qyy_result-label {
+            font-size: 0.78rem;
+            color: #16a34a;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        .qyy_result .qyy_result-body {
+            color: #15803d;
+            font-family: Consolas, Monaco, monospace;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        /* ===== for 循环 星号塔 ===== */
+        .qyy_stars {
+            font-family: Consolas, Monaco, monospace;
+            font-size: 1rem;
+            line-height: 1.3;
+            color: #1e293b;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        /* ===== while 猜数字提示卡 ===== */
+        .qyy_guess {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .qyy_guess .qyy_ball {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border-radius: 50%;
+            width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 0.9rem;
+        }
+
+        /* ===== for...in 键值表 ===== */
+        .qyy_table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        .qyy_table th, .qyy_table td {
+            border: 1px solid #e2e8f0;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        .qyy_table th {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+        .qyy_table tr:nth-child(even) { background: #f8fafc; }
+
+        /* ===== for...of 数组遍历 ===== */
+        .qyy_items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .qyy_items .qyy_item {
+            background: #dbeafe;
+            color: #1d4ed8;
+            border: 1px solid #93c5fd;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        /* ===== break/continue 高亮 ===== */
+        .qyy_hl-skip { background: #fecaca; color: #b91c1c; padding: 0 4px; border-radius: 3px; }
+        .qyy_hl-stop { background: #fde68a; color: #92400e; padding: 0 4px; border-radius: 3px; font-weight: bold; }
+
+        .qyy_foot {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.82rem;
+            color: #94a3b8;
+        }
+        .qyy_foot span { color: #6d28d9; font-weight: bold; }
+
+        @media (max-width: 600px) {
+            .qyy_wrap { padding: 24px 16px; }
+            .qyy_row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="qyy_wrap">
+        <div class="qyy_head">
+            <h1>⚙️ JavaScript 程序结构与循环</h1>
+            <p class="qyy_sub">班级: 计算机24008 &nbsp;|&nbsp; 姓名: <span class="qyy_name">齐英伊</span> &nbsp;|&nbsp; 学号: 24001010829</p>
+        </div>
+
+        <!-- ========== 一、JS 程序结构 ========== -->
+        <div class="qyy_chapter">
+            <div class="qyy_title"><span class="qyy_icon">1</span> JavaScript 程序结构</div>
+            <div class="qyy_body">
+                <div class="qyy_struct">
+                    <span class="qyy_tag">① script 标签放置</span>
+                    <span class="qyy_tag">② 语句 & 分号</span>
+                    <span class="qyy_tag">③ 注释</span>
+                    <span class="qyy_tag">④ 顺序执行</span>
+                    <span class="qyy_tag">⑤ 事件驱动</span>
+                </div>
+                <div class="qyy_struct-desc">
+                    JS 程序由 <strong>语句（statement）</strong> 组成，按书写顺序从上到下依次执行；分号 `;` 表示语句结束（可省略但建议写）。<br>
+                    `//` 单行注释、`/* ... */` 多行注释；变量、函数声明是"先声明后使用"的 hoisting 机制。
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 二、for 循环 - 星号塔 ========== -->
+        <div class="qyy_chapter">
+            <div class="qyy_title"><span class="qyy_icon">2</span> for 循环 · 打印星号塔（嵌套循环）</div>
+            <div class="qyy_body">
+                <div class="qyy_row">
+                    <div>
+                        <div class="qyy_code"><span class="qyy_cmt">// 外层循环: 控制行数</span>
+<span class="qyy_key">for</span> (<span class="qyy_var">qyy_r</span> = <span class="qyy_num">1</span>; qyy_r &lt;= <span class="qyy_num">5</span>; qyy_r++) {
+    <span class="qyy_var">qyy_line</span> = <span class="qyy_str">""</span>;
+    <span class="qyy_cmt">// 内层循环: 每行打印 qyy_r 个星号</span>
+    <span class="qyy_key">for</span> (<span class="qyy_var">qyy_c</span> = <span class="qyy_num">1</span>; qyy_c &lt;= qyy_r; qyy_c++) {
+        qyy_line += <span class="qyy_str">"* "</span>;
+    }
+    console.log(qyy_line);
+}</div>
+                    </div>
+                    <div>
+                        <div class="qyy_stars" id="qyy_stars"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 三、while 循环 ========== -->
+        <div class="qyy_chapter">
+            <div class="qyy_title"><span class="qyy_icon">3</span> while 循环 · 求 1~10 的累加和</div>
+            <div class="qyy_body">
+                <div class="qyy_row">
+                    <div>
+                        <div class="qyy_code"><span class="qyy_key">let</span> <span class="qyy_var">qyy_sum</span> = <span class="qyy_num">0</span>;
+<span class="qyy_key">let</span> <span class="qyy_var">qyy_i</span> = <span class="qyy_num">1</span>;
+<span class="qyy_key">while</span> (qyy_i &lt;= <span class="qyy_num">10</span>) {
+    qyy_sum += qyy_i;
+    qyy_i++;
+}
+<span class="qyy_cmt">// 结果: 1+2+...+10 = 55</span></div>
+                    </div>
+                    <div>
+                        <div class="qyy_result">
+                            <div class="qyy_result-label">运行结果</div>
+                            <div class="qyy_result-body" id="qyy_while_result"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 四、do-while 循环 ========== -->
+        <div class="qyy_chapter">
+            <div class="qyy_title"><span class="qyy_icon">4</span> do-while 循环 · 至少执行一次</div>
+            <div class="qyy_body">
+                <div class="qyy_row">
+                    <div>
+                        <div class="qyy_code"><span class="qyy_key">let</span> <span class="qyy_var">qyy_n</span> = <span class="qyy_num">0</span>;
+<span class="qyy_key">let</span> <span class="qyy_var">qyy_times</span> = <span class="qyy_str">""</span>;
+<span class="qyy_key">do</span> {
+    qyy_n += <span class="qyy_num">3</span>;
+    qyy_times += qyy_n + <span class="qyy_str">" "</span>;
+} <span class="qyy_key">while</span> (qyy_n &lt; <span class="qyy_num">15</span>);
+<span class="qyy_cmt">// 先执行再判断, 输出 3 的倍数</span></div>
+                    </div>
+                    <div>
+                        <div class="qyy_result">
+                            <div class="qyy_result-label">运行结果</div>
+                            <div class="qyy_result-body" id="qyy_dowhile_result"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 五、for...in 遍历对象 ========== -->
+        <div class="qyy_chapter">
+            <div class="qyy_title"><span class="qyy_icon">5</span> for...in 遍历对象属性</div>
+            <div class="qyy_body">
+                <div class="qyy_row">
+                    <div>
+                        <div class="qyy_code"><span class="qyy_key">const</span> <span class="qyy_var">qyy_stu</span> = {
+    <span class="qyy_str">"姓名"</span>: <span class="qyy_str">"齐英伊"</span>,
+    <span class="qyy_str">"学号"</span>: <span class="qyy_str">"24001010829"</span>,
+    <span class="qyy_str">"班级"</span>: <span class="qyy_str">"计算机24008"</span>,
+    <span class="qyy_str">"年龄"</span>: <span class="qyy_num">20</span>
+};
+<span class="qyy_key">for</span> (<span class="qyy_key">const</span> <span class="qyy_var">k</span> <span class="qyy_key">in</span> qyy_stu) {
+    console.log(k, <span class="qyy_str">"→"</span>, qyy_stu[k]);
+}</div>
+                    </div>
+                    <div>
+                        <table class="qyy_table" id="qyy_obj_table">
+                            <thead><tr><th>属性名 (key)</th><th>值 (value)</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 六、for...of 遍历数组 ========== -->
+        <div class="qyy_chapter">
+            <div class="qyy_title"><span class="qyy_icon">6</span> for...of 遍历数组</div>
+            <div class="qyy_body">
+                <div class="qyy_row">
+                    <div>
+                        <div class="qyy_code"><span class="qyy_key">const</span> <span class="qyy_var">qyy_fruits</span> = [<span class="qyy_str">"🍎苹果"</span>,
+    <span class="qyy_str">"🍊橙子"</span>, <span class="qyy_str">"🍌香蕉"</span>,
+    <span class="qyy_str">"🍇葡萄"</span>, <span class="qyy_str">"🍓草莓"</span>];
+<span class="qyy_key">let</span> <span class="qyy_var">qyy_index</span> = <span class="qyy_num">0</span>;
+<span class="qyy_key">for</span> (<span class="qyy_key">const</span> <span class="qyy_var">f</span> <span class="qyy_key">of</span> qyy_fruits) {
+    qyy_index++;
+    console.log(qyy_index + <span class="qyy_str">". "</span> + f);
+}</div>
+                    </div>
+                    <div>
+                        <div class="qyy_items" id="qyy_fruits"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 七、break 与 continue ========== -->
+        <div class="qyy_chapter">
+            <div class="qyy_title"><span class="qyy_icon">7</span> break 与 continue 跳出循环</div>
+            <div class="qyy_body">
+                <div class="qyy_row">
+                    <div>
+                        <div class="qyy_code"><span class="qyy_cmt">// continue: 跳过偶数</span>
+<span class="qyy_key">for</span> (<span class="qyy_var">qyy_a</span> = <span class="qyy_num">1</span>; qyy_a &lt;= <span class="qyy_num">10</span>; qyy_a++) {
+    <span class="qyy_key">if</span> (qyy_a % <span class="qyy_num">2</span> === <span class="qyy_num">0</span>) <span class="qyy_key">continue</span>;
+    console.log(<span class="qyy_str">"奇数: "</span> + qyy_a);
+}
+
+<span class="qyy_cmt">// break: 遇到 7 就停止</span>
+<span class="qyy_key">for</span> (<span class="qyy_var">qyy_b</span> = <span class="qyy_num">1</span>; qyy_b &lt;= <span class="qyy_num">10</span>; qyy_b++) {
+    <span class="qyy_key">if</span> (qyy_b === <span class="qyy_num">7</span>) <span class="qyy_key">break</span>;
+    console.log(<span class="qyy_str">"到: "</span> + qyy_b);
+}</div>
+                    </div>
+                    <div>
+                        <div class="qyy_result">
+                            <div class="qyy_result-label">continue vs break 对比</div>
+                            <div class="qyy_result-body" id="qyy_break_result"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="qyy_foot">
+            由 <span>齐英伊</span> 用 JavaScript 循环生成 · 原生代码无第三方库
+        </div>
+    </div>
+
+    <script>
+        // ===== 2. for 嵌套循环: 星号塔 =====
+        const qyy_starsEl = document.getElementById('qyy_stars');
+        for (let qyy_r = 1; qyy_r <= 5; qyy_r++) {
+            let qyy_line = '';
+            for (let qyy_c = 1; qyy_c <= qyy_r; qyy_c++) {
+                qyy_line += '* ';
+            }
+            const qyy_p = document.createElement('div');
+            qyy_p.textContent = qyy_line;
+            qyy_starsEl.appendChild(qyy_p);
+        }
+
+        // ===== 3. while 循环: 累加和 =====
+        let qyy_sum = 0;
+        let qyy_i = 1;
+        while (qyy_i <= 10) {
+            qyy_sum += qyy_i;
+            qyy_i++;
+        }
+        document.getElementById('qyy_while_result').textContent =
+            '1 + 2 + 3 + ... + 10 = ' + qyy_sum;
+
+        // ===== 4. do-while 循环 =====
+        let qyy_n = 0;
+        let qyy_times = '';
+        do {
+            qyy_n += 3;
+            qyy_times += qyy_n + '  ';
+        } while (qyy_n < 15);
+        document.getElementById('qyy_dowhile_result').textContent =
+            '3 的倍数 (do-while 先执行后判断):\n' + qyy_times;
+
+        // ===== 5. for...in 遍历对象 =====
+        const qyy_stu = {
+            '姓名': '齐英伊',
+            '学号': '24001010829',
+            '班级': '计算机24008',
+            '年龄': 20
+        };
+        const qyy_tbody = document.querySelector('#qyy_obj_table tbody');
+        for (const k in qyy_stu) {
+            const qyy_tr = document.createElement('tr');
+            qyy_tr.innerHTML = '<td>' + k + '</td><td>' + qyy_stu[k] + '</td>';
+            qyy_tbody.appendChild(qyy_tr);
+        }
+
+        // ===== 6. for...of 遍历数组 =====
+        const qyy_fruits = ['🍎苹果', '🍊橙子', '🍌香蕉', '🍇葡萄', '🍓草莓'];
+        let qyy_fIndex = 0;
+        const qyy_fEl = document.getElementById('qyy_fruits');
+        for (const f of qyy_fruits) {
+            qyy_fIndex++;
+            const qyy_span = document.createElement('span');
+            qyy_span.className = 'qyy_item';
+            qyy_span.textContent = qyy_fIndex + '. ' + f;
+            qyy_fEl.appendChild(qyy_span);
+        }
+
+        // ===== 7. break 与 continue =====
+        let qyy_continueOut = '【continue 跳过偶数】\n';
+        for (let qyy_a = 1; qyy_a <= 10; qyy_a++) {
+            if (qyy_a % 2 === 0) {
+                qyy_continueOut += '  ↷ 跳过 ' + qyy_a + ' (偶数)\n';
+                continue;
+            }
+            qyy_continueOut += '  ✓ 输出奇数: ' + qyy_a + '\n';
+        }
+
+        let qyy_breakOut = '\n【break 遇到 7 停止】\n';
+        for (let qyy_b = 1; qyy_b <= 10; qyy_b++) {
+            if (qyy_b === 7) {
+                qyy_breakOut += '  ⚡ 遇到 7, break!\n';
+                break;
+            }
+            qyy_breakOut += '  → 正常输出: ' + qyy_b + '\n';
+        }
+
+        document.getElementById('qyy_break_result').textContent =
+            qyy_continueOut + qyy_breakOut;
+
+        // ===== 控制台统一输出 (齐英伊调试) =====
+        console.log('===== 15-2 JS程序结构与循环 =====');
+        console.log('while 累加和:', qyy_sum);
+        console.log('do-while 3倍数:', qyy_times.trim());
+        console.log('for...in 对象 keys:', Object.keys(qyy_stu));
+        console.log('for...of 数组:', qyy_fruits);
+    </script>
+</body>
+</html>
