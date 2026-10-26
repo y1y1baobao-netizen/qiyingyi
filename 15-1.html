@@ -1,0 +1,175 @@
+<!-- 姓名: 齐英伊 日期: 2026-10-26 功能名称: JavaScript 循环与条件判断 - 数7游戏 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>15-1 数7游戏 · 齐英伊829</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .qyy_wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            padding: 36px 32px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+        .qyy_head {
+            text-align: center;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #e2e8f0;
+        }
+        .qyy_head h1 {
+            font-size: 1.8rem;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        .qyy_head .qyy_sub {
+            font-size: 0.88rem;
+            color: #64748b;
+        }
+        .qyy_head .qyy_sub .qyy_name {
+            color: #764ba2;
+            font-weight: bold;
+        }
+        .qyy_rule {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            font-size: 0.88rem;
+            color: #78350f;
+            line-height: 1.8;
+        }
+        .qyy_rule strong {
+            color: #b45309;
+        }
+        .qyy_grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 10px;
+        }
+        .qyy_box {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: bold;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            cursor: default;
+            user-select: none;
+        }
+        .qyy_box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        /* 正常盒子: 白底 + 深紫边框 + 紫色数字 */
+        .qyy_box.qyy_box--num {
+            background: #fff;
+            border: 2px solid #a78bfa;
+            color: #6d28d9;
+        }
+        /* 命中规则的空盒子: 浅紫底 + 虚边框 */
+        .qyy_box.qyy_box--skip {
+            background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+            border: 2px dashed #a78bfa;
+            color: transparent;
+        }
+        .qyy_foot {
+            text-align: center;
+            margin-top: 28px;
+            font-size: 0.82rem;
+            color: #94a3b8;
+        }
+        .qyy_foot span {
+            color: #6d28d9;
+            font-weight: bold;
+        }
+        @media (max-width: 600px) {
+            .qyy_grid { grid-template-columns: repeat(7, 1fr); gap: 6px; }
+            .qyy_box { font-size: 0.85rem; border-radius: 8px; }
+            .qyy_wrap { padding: 24px 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="qyy_wrap">
+        <div class="qyy_head">
+            <h1>🎯 数7游戏（1 - 100）</h1>
+            <p class="qyy_sub">班级: 计算机24008 &nbsp;|&nbsp; 姓名: <span class="qyy_name">齐英伊</span> &nbsp;|&nbsp; 学号: 24001010829</p>
+        </div>
+
+        <div class="qyy_rule">
+            <strong>游戏规则：</strong>从 1 数到 100，凡满足以下任一条件的数字"跳过"（显示为空盒子）：<br>
+            ① 是 7 的倍数（7, 14, 21, 28…）&nbsp;&nbsp; ② 个位数字是 7（7, 17, 27, 37…）<br>
+            两个条件都命中的是 <strong>7, 70, 77</strong> 等，也算跳过。
+        </div>
+
+        <div class="qyy_grid" id="qyy_grid"></div>
+
+        <div class="qyy_foot">
+            共 100 格 · 跳过 <span id="qyy_skip_count">0</span> 格 · 由 <span>齐英伊</span> 用 JavaScript 循环生成
+        </div>
+    </div>
+
+    <script>
+        // ===== 数7规则判断函数 =====
+        // 返回 true 表示"要跳过"（空盒子），false 表示显示数字
+        function qyy_isSkip(n) {
+            // 条件1: 7 的倍数
+            if (n % 7 === 0) return true;
+            // 条件2: 个位是 7
+            if (n % 10 === 7) return true;
+            return false;
+        }
+
+        // ===== 循环 1 ~ 100 生成盒子 =====
+        const qyy_grid = document.getElementById('qyy_grid');
+        let qyy_skipCount = 0;
+
+        for (let qyy_i = 1; qyy_i <= 100; qyy_i++) {
+            const qyy_box = document.createElement('div');
+            qyy_box.className = 'qyy_box';
+
+            if (qyy_isSkip(qyy_i)) {
+                // 满足数7规则 → 空盒子
+                qyy_box.classList.add('qyy_box--skip');
+                qyy_box.textContent = '';
+                qyy_skipCount++;
+            } else {
+                // 不满足规则 → 显示数字
+                qyy_box.classList.add('qyy_box--num');
+                qyy_box.textContent = qyy_i;
+            }
+
+            qyy_box.title = '齐英伊 · 数字 ' + qyy_i;
+            qyy_grid.appendChild(qyy_box);
+        }
+
+        // 更新底部统计
+        document.getElementById('qyy_skip_count').textContent = qyy_skipCount;
+
+        // 控制台输出详细结果 (齐英伊调试)
+        console.log('===== 数7游戏 1~100 =====');
+        console.log('总盒数: 100');
+        console.log('跳过数: ' + qyy_skipCount);
+        console.log('显示数: ' + (100 - qyy_skipCount));
+        const qyy_skipped = [];
+        for (let qyy_j = 1; qyy_j <= 100; qyy_j++) {
+            if (qyy_isSkip(qyy_j)) qyy_skipped.push(qyy_j);
+        }
+        console.log('跳过的数字: ' + qyy_skipped.join(', '));
+    </script>
+</body>
+</html>
