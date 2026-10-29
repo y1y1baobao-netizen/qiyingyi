@@ -1,0 +1,537 @@
+<!-- 姓名: 齐英伊 日期: 2026-10-29 功能名称: JavaScript 对象与字符串形象演示 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>16-2 对象与字符串 · 齐英伊829</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .qyy_wrap {
+            max-width: 980px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            padding: 36px 32px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+        .qyy_head {
+            text-align: center;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #e2e8f0;
+        }
+        .qyy_head h1 { font-size: 1.8rem; color: #1e293b; margin-bottom: 8px; }
+        .qyy_head .qyy_sub { font-size: 0.88rem; color: #64748b; }
+        .qyy_head .qyy_sub .qyy_name { color: #764ba2; font-weight: bold; }
+
+        .qyy_tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 24px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .qyy_tab {
+            flex: 1;
+            padding: 14px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: #64748b;
+            background: #f8fafc;
+            transition: all 0.2s;
+            border: none;
+        }
+        .qyy_tab.qyy_tab--active {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: #fff;
+        }
+        .qyy_tab:first-child { border-right: 1px solid #e2e8f0; }
+
+        /* ===== 对象 - 快递卡片形象化 ===== */
+        .qyy_obj-card {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px dashed #d97706;
+            border-radius: 14px;
+            padding: 22px;
+            position: relative;
+            margin-bottom: 18px;
+        }
+        .qyy_obj-card::before {
+            content: "📦 快递地址";
+            position: absolute;
+            top: -12px;
+            left: 18px;
+            background: #d97706;
+            color: #fff;
+            padding: 2px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+        }
+        .qyy_field {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: flex-start;
+        }
+        .qyy_field .qyy_key {
+            min-width: 70px;
+            font-weight: bold;
+            color: #b45309;
+            font-family: Consolas, monospace;
+            font-size: 0.85rem;
+        }
+        .qyy_field .qyy_val {
+            flex: 1;
+            background: #fff;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.88rem;
+            color: #78350f;
+            border: 1px solid #fbbf24;
+        }
+        .qyy_field.qyy_nested { margin-left: 80px; }
+        .qyy_field.qyy_nested .qyy_key::before { content: "└ "; color: #d97706; }
+
+        .qyy_actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .qyy_btn {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: transform 0.15s;
+        }
+        .qyy_btn:hover { transform: translateY(-2px); }
+        .qyy_btn.qyy_btn--ghost {
+            background: #fff;
+            color: #764ba2;
+            border: 1px solid #a78bfa;
+        }
+
+        .qyy_kv-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+        .qyy_kv-table th, .qyy_kv-table td {
+            border: 1px solid #e2e8f0;
+            padding: 8px 12px;
+        }
+        .qyy_kv-table th {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+        .qyy_kv-table tr:hover td { background: #f8fafc; }
+
+        /* ===== 字符串 - 文本处理台 ===== */
+        .qyy_str-stage {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 18px;
+        }
+        .qyy_str-input {
+            background: #1e293b;
+            color: #fbbf24;
+            font-family: Consolas, Monaco, monospace;
+            padding: 14px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 14px;
+            position: relative;
+        }
+        .qyy_str-input .qyy_tag {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            background: #334155;
+            color: #94a3b8;
+            font-size: 0.72rem;
+            padding: 1px 8px;
+            border-radius: 10px;
+        }
+        .qyy_str-btns {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .qyy_str-btns .qyy_btn {
+            font-size: 0.82rem;
+            padding: 7px 10px;
+        }
+        .qyy_str-output {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            border-radius: 8px;
+            padding: 14px 16px;
+            min-height: 50px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 0.9rem;
+            color: #15803d;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .qyy_str-output .qyy_hl {
+            background: #fde047;
+            color: #1e293b;
+            padding: 0 3px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .qyy_metrics {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .qyy_metric {
+            flex: 1;
+            min-width: 100px;
+            background: #ede9fe;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+        .qyy_metric .qyy_m-num {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #6d28d9;
+        }
+        .qyy_metric .qyy_m-lbl {
+            font-size: 0.78rem;
+            color: #7c3aed;
+            margin-top: 2px;
+        }
+
+        /* ===== 代码示例 ===== */
+        .qyy_code {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 0.82rem;
+            line-height: 1.7;
+            overflow-x: auto;
+            margin-top: 14px;
+        }
+        .qyy_code .qyy_k { color: #c084fc; }
+        .qyy_code .qyy_s { color: #86efac; }
+        .qyy_code .qyy_n { color: #fbbf24; }
+        .qyy_code .qyy_c { color: #64748b; font-style: italic; }
+        .qyy_code .qyy_v { color: #60a5fa; }
+
+        .qyy_foot {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.82rem;
+            color: #94a3b8;
+        }
+        .qyy_foot span { color: #6d28d9; font-weight: bold; }
+
+        @media (max-width: 600px) {
+            .qyy_wrap { padding: 24px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="qyy_wrap">
+        <div class="qyy_head">
+            <h1>🎁 JavaScript 对象 & 字符串</h1>
+            <p class="qyy_sub">班级: 计算机24008 &nbsp;|&nbsp; 姓名: <span class="qyy_name">齐英伊</span> &nbsp;|&nbsp; 学号: 24001010829</p>
+        </div>
+
+        <!-- ========== Tab 切换 ========== -->
+        <div class="qyy_tabs">
+            <button class="qyy_tab qyy_tab--active" onclick="qyy_switch('obj')">📦 对象 Object</button>
+            <button class="qyy_tab" onclick="qyy_switch('str')">🔤 字符串 String</button>
+        </div>
+
+        <!-- ========== 对象：快递地址卡片 ========== -->
+        <div id="qyy_obj" class="qyy_pane">
+            <!-- 形象化卡片 -->
+            <div class="qyy_obj-card" id="qyy_delivery_card"></div>
+
+            <div class="qyy_actions">
+                <button class="qyy_btn" onclick="qyy_addPhone()">📱 加手机号</button>
+                <button class="qyy_btn" onclick="qyy_delPhone()">🗑 删手机号</button>
+                <button class="qyy_btn" onclick="qyy_changeName()">✏ 改姓名</button>
+                <button class="qyy_btn qyy_btn--ghost" onclick="qyy_resetObj()">🔄 重置</button>
+            </div>
+
+            <table class="qyy_kv-table">
+                <thead>
+                    <tr><th style="width:30%">属性名 key</th><th style="width:20%">类型</th><th>值 value</th></tr>
+                </thead>
+                <tbody id="qyy_obj_tbody"></tbody>
+            </table>
+
+            <div class="qyy_code"><span class="qyy_c">// 齐英伊 - 对象定义示例</span>
+<span class="qyy_k">let</span> <span class="qyy_v">qyy_address</span> = {
+    <span class="qyy_s">"收件人"</span>: <span class="qyy_s">"齐英伊"</span>,
+    <span class="qyy_s">"省份"</span>: <span class="qyy_s">"山东省"</span>,
+    <span class="qyy_s">"嵌套-城市"</span>: { <span class="qyy_s">"市区"</span>: <span class="qyy_s">"青岛市黄岛区"</span> },
+    <span class="qyy_s">"邮编"</span>: <span class="qyy_n">266400</span>
+};
+
+<span class="qyy_c">// 访问: qyy_address["收件人"] 或 qyy_address.收件人</span>
+<span class="qyy_c">// 遍历: for (const k in qyy_address) { ... }</span></div>
+        </div>
+
+        <!-- ========== 字符串：文本处理台 ========== -->
+        <div id="qyy_str" class="qyy_pane" style="display:none">
+            <div class="qyy_str-stage">
+                <div class="qyy_str-input">
+                    <span class="qyy_tag">原字符串 qyy_quote</span>
+                    <span id="qyy_quote">Hello, 我是齐英伊, Nice to meet you!</span>
+                </div>
+
+                <!-- 指标 -->
+                <div class="qyy_metrics">
+                    <div class="qyy_metric"><div class="qyy_m-num" id="qyy_m_len">0</div><div class="qyy_m-lbl">字符长度 length</div></div>
+                    <div class="qyy_metric"><div class="qyy_m-num" id="qyy_m_words">0</div><div class="qyy_m-lbl">英文单词数</div></div>
+                    <div class="qyy_metric"><div class="qyy_m-num" id="qyy_m_zh">0</div><div class="qyy_m-lbl">中文字符数</div></div>
+                    <div class="qyy_metric"><div class="qyy_m-num" id="qyy_m_idx">-</div><div class="qyy_m-lbl">"齐" 的位置</div></div>
+                </div>
+
+                <div style="height:16px"></div>
+
+                <div class="qyy_str-btns">
+                    <button class="qyy_btn" onclick="qyy_strRun('upper')">toUpperCase</button>
+                    <button class="qyy_btn" onclick="qyy_strRun('lower')">toLowerCase</button>
+                    <button class="qyy_btn" onclick="qyy_strRun('trim')">trim 去空格</button>
+                    <button class="qyy_btn" onclick="qyy_strRun('idx')">indexOf("齐")</button>
+                    <button class="qyy_btn" onclick="qyy_strRun('sub')">substring(0,12)</button>
+                    <button class="qyy_btn" onclick="qyy_strRun('slice')">slice(-10) 末尾</button>
+                    <button class="qyy_btn" onclick="qyy_strRun('split')">split(",") 分割</button>
+                    <button class="qyy_btn" onclick="qyy_strRun('rep')">replace("Hello","Hi")</button>
+                    <button class="qyy_btn" onclick="qyy_strRun('tmpl')">模板字符串</button>
+                    <button class="qyy_btn qyy_btn--ghost" onclick="qyy_strRun('reset')">🔄 重置输出</button>
+                </div>
+
+                <div class="qyy_str-output" id="qyy_str_out">点击上方按钮查看方法效果 ✨</div>
+            </div>
+
+            <div class="qyy_code"><span class="qyy_c">// 齐英伊 - 字符串常用方法</span>
+<span class="qyy_k">const</span> <span class="qyy_v">qyy_quote</span> = <span class="qyy_s">"Hello, 我是齐英伊"</span>;
+
+qyy_quote.<span class="qyy_v">length</span>              <span class="qyy_c">// 字符数</span>
+qyy_quote.<span class="qyy_v">indexOf</span>(<span class="qyy_s">"齐"</span>)     <span class="qyy_c">// 7</span>
+qyy_quote.<span class="qyy_v">substring</span>(<span class="qyy_n">0</span>,<span class="qyy_n">5</span>)  <span class="qyy_c">// "Hello"</span>
+qyy_quote.<span class="qyy_v">toUpperCase</span>()       <span class="qyy_c">// 大写</span>
+qyy_quote.<span class="qyy_v">split</span>(<span class="qyy_s">","</span>)        <span class="qyy_c">// 数组</span>
+
+<span class="qyy_c">// 模板字符串 (反引号):</span>
+<span class="qyy_s">`你好，${qyy_quote}！`</span></div>
+        </div>
+
+        <div class="qyy_foot">
+            由 <span>齐英伊</span> 用 JavaScript 对象 &amp; 字符串方法生成 · 原生代码
+        </div>
+    </div>
+
+    <script>
+        // =========================================================
+        // Tab 切换
+        // =========================================================
+        function qyy_switch(qyy_which) {
+            document.getElementById('qyy_obj').style.display = qyy_which === 'obj' ? '' : 'none';
+            document.getElementById('qyy_str').style.display = qyy_which === 'str' ? '' : 'none';
+            const qyy_tabs = document.querySelectorAll('.qyy_tab');
+            qyy_tabs[0].classList.toggle('qyy_tab--active', qyy_which === 'obj');
+            qyy_tabs[1].classList.toggle('qyy_tab--active', qyy_which === 'str');
+        }
+
+        // =========================================================
+        // 一、对象演示 - 快递地址卡
+        // =========================================================
+        let qyy_address = {
+            '收件人': '齐英伊',
+            '省份': '山东省',
+            '城市': {
+                '市区': '青岛市黄岛区',
+                '街道': '长江中路 123 号'
+            },
+            '邮编': 266400
+        };
+
+        function qyy_renderCard() {
+            const qyy_card = document.getElementById('qyy_delivery_card');
+            qyy_card.innerHTML = '';
+
+            // 收件人
+            qyy_card.innerHTML +=
+                '<div class="qyy_field"><span class="qyy_key">收件人</span><span class="qyy_val">' +
+                qyy_address['收件人'] + '</span></div>';
+            // 省份
+            qyy_card.innerHTML +=
+                '<div class="qyy_field"><span class="qyy_key">省份</span><span class="qyy_val">' +
+                qyy_address['省份'] + '</span></div>';
+            // 嵌套: 城市
+            qyy_card.innerHTML +=
+                '<div class="qyy_field"><span class="qyy_key">城市↴</span><span class="qyy_val">';
+            if (typeof qyy_address['城市'] === 'object' && qyy_address['城市'] !== null) {
+                for (const k in qyy_address['城市']) {
+                    qyy_card.innerHTML += '<span style="color:#d97706">●</span> ' + k + ': <b>' + qyy_address['城市'][k] + '</b><br>';
+                }
+            }
+            qyy_card.innerHTML += '</span></div>';
+            // 邮编
+            qyy_card.innerHTML +=
+                '<div class="qyy_field"><span class="qyy_key">邮编</span><span class="qyy_val">' +
+                qyy_address['邮编'] + '</span></div>';
+            // 可选: 手机号
+            if (qyy_address['手机号']) {
+                qyy_card.innerHTML +=
+                    '<div class="qyy_field"><span class="qyy_key">📱 手机</span><span class="qyy_val">' +
+                    qyy_address['手机号'] + '</span></div>';
+            }
+        }
+
+        function qyy_renderTable() {
+            const qyy_tb = document.getElementById('qyy_obj_tbody');
+            qyy_tb.innerHTML = '';
+            for (const k in qyy_address) {
+                const qyy_v = qyy_address[k];
+                const qyy_type = Array.isArray(qyy_v) ? 'Array' : typeof qyy_v;
+                let qyy_show = '';
+                if (typeof qyy_v === 'object' && qyy_v !== null) {
+                    qyy_show = JSON.stringify(qyy_v);
+                } else {
+                    qyy_show = String(qyy_v);
+                }
+                qyy_tb.innerHTML +=
+                    '<tr><td style="font-family:Consolas,monospace;color:#7c3aed">' + k + '</td>' +
+                    '<td><span style="background:#f1f5f9;padding:2px 8px;border-radius:10px;font-size:0.75rem">' + qyy_type + '</span></td>' +
+                    '<td>' + qyy_show + '</td></tr>';
+            }
+        }
+
+        function qyy_addPhone() {
+            if (!qyy_address['手机号']) {
+                qyy_address['手机号'] = '138****829';
+                qyy_renderCard(); qyy_renderTable();
+            }
+        }
+        function qyy_delPhone() {
+            delete qyy_address['手机号'];
+            qyy_renderCard(); qyy_renderTable();
+        }
+        function qyy_changeName() {
+            const qyy_names = ['齐英伊', '齐英伊-同学', 'Yingyi Qi', '齐·英伊'];
+            const qyy_idx = qyy_names.indexOf(qyy_address['收件人']);
+            qyy_address['收件人'] = qyy_names[(qyy_idx + 1) % qyy_names.length];
+            qyy_renderCard(); qyy_renderTable();
+        }
+        function qyy_resetObj() {
+            qyy_address = {
+                '收件人': '齐英伊',
+                '省份': '山东省',
+                '城市': { '市区': '青岛市黄岛区', '街道': '长江中路 123 号' },
+                '邮编': 266400
+            };
+            qyy_renderCard(); qyy_renderTable();
+        }
+
+        // 初始化对象
+        qyy_renderCard();
+        qyy_renderTable();
+
+        // =========================================================
+        // 二、字符串演示 - 文本处理台
+        // =========================================================
+        let qyy_quote = 'Hello, 我是齐英伊, Nice to meet you!';
+        const qyy_quoteOut = document.getElementById('qyy_quote');
+        const qyy_strOut = document.getElementById('qyy_str_out');
+
+        function qyy_updateMetrics() {
+            const qyy_s = qyy_quote;
+            document.getElementById('qyy_m_len').textContent = qyy_s.length;
+            // 英文单词数: 空格+标点分割
+            const qyy_words = qyy_s.match(/[A-Za-z]+/g) || [];
+            document.getElementById('qyy_m_words').textContent = qyy_words.length;
+            // 中文字符数
+            const qyy_zh = qyy_s.match(/[\u4e00-\u9fa5]/g) || [];
+            document.getElementById('qyy_m_zh').textContent = qyy_zh.length;
+            // "齐" 的位置
+            document.getElementById('qyy_m_idx').textContent = qyy_s.indexOf('齐');
+        }
+
+        function qyy_strRun(qyy_op) {
+            const qyy_s = qyy_quote;
+            let qyy_res = '';
+            switch (qyy_op) {
+                case 'upper':
+                    qyy_res = 'toUpperCase()\n' + qyy_s.toUpperCase();
+                    break;
+                case 'lower':
+                    qyy_res = 'toLowerCase()\n' + qyy_s.toLowerCase();
+                    break;
+                case 'trim':
+                    qyy_res = 'trim() 去前后空格\n"' + qyy_s.trim() + '"';
+                    break;
+                case 'idx':
+                    const qyy_p = qyy_s.indexOf('齐');
+                    qyy_res = 'indexOf("齐") = ' + qyy_p + '\n' +
+                              'charAt(' + qyy_p + ') = "' + qyy_s.charAt(qyy_p) + '"';
+                    break;
+                case 'sub':
+                    qyy_res = 'substring(0, 12)\n"' + qyy_s.substring(0, 12) + '"';
+                    break;
+                case 'slice':
+                    qyy_res = 'slice(-10) 最后 10 字符\n"' + qyy_s.slice(-10) + '"';
+                    break;
+                case 'split':
+                    const qyy_parts = qyy_s.split(',');
+                    qyy_res = 'split(",") 分割 → 数组 (' + qyy_parts.length + ' 项)\n';
+                    qyy_parts.forEach((qyy_p, qyy_i) => {
+                        qyy_res += '[' + qyy_i + '] "' + qyy_p.trim() + '"\n';
+                    });
+                    break;
+                case 'rep':
+                    qyy_res = 'replace("Hello", "Hi")\n' + qyy_s.replace('Hello', 'Hi');
+                    break;
+                case 'tmpl':
+                    const qyy_name = '齐英伊';
+                    const qyy_age = 20;
+                    qyy_res = '模板字符串 (反引号)\n' +
+                              '`我是 ${qyy_name}, 今年 ${qyy_age} 岁`\n\n' +
+                              '我是 ' + qyy_name + ', 今年 ' + qyy_age + ' 岁';
+                    break;
+                case 'reset':
+                    qyy_res = '点击上方按钮查看方法效果 ✨';
+                    break;
+            }
+            qyy_strOut.textContent = qyy_res;
+        }
+
+        // 初始化指标
+        qyy_updateMetrics();
+
+        // 控制台输出 (齐英伊调试)
+        console.log('===== 16-2 对象与字符串 =====');
+        console.log('快递对象:', qyy_address);
+        console.log('字符串 length:', qyy_quote.length);
+        console.log('indexOf("齐"):', qyy_quote.indexOf('齐'));
+    </script>
+</body>
+</html>
