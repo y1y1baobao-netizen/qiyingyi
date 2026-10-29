@@ -23,16 +23,16 @@
         /* ===== Tabs ===== */
         .qyy_tabs {
             display: flex;
-            border-bottom: 2px solid #d9001b;
+            border-bottom: 3px solid #d9001b;
         }
         .qyy_tab {
             flex: 1;
             padding: 12px 0;
             text-align: center;
-            font-size: 14px;
-            color: #666;
+            font-size: 15px;
+            font-weight: bold;
+            color: #3366cc;
             cursor: pointer;
-            position: relative;
             user-select: none;
             transition: color 0.15s;
         }
@@ -43,11 +43,11 @@
         .qyy_tab:hover { color: #d9001b; }
 
         /* ===== 列表 ===== */
-        .qyy_list { padding: 4px 0; }
+        .qyy_list { padding: 6px 0; }
         .qyy_list-item {
             display: flex;
             align-items: flex-start;
-            padding: 9px 18px;
+            padding: 10px 18px;
             cursor: pointer;
             transition: background 0.15s;
         }
@@ -55,16 +55,18 @@
 
         .qyy_dot {
             color: #d9001b;
-            font-size: 12px;
+            font-size: 14px;
             line-height: 22px;
             margin-right: 8px;
             flex-shrink: 0;
+            font-weight: bold;
         }
 
         .qyy_title {
             flex: 1;
-            font-size: 13px;
-            color: #333;
+            font-size: 14px;
+            font-weight: bold;
+            color: #222;
             line-height: 22px;
         }
         .qyy_title:hover { color: #d9001b; }
@@ -77,8 +79,8 @@
         }
 
         @media (max-width: 480px) {
-            .qyy_list-item { padding: 8px 14px; }
-            .qyy_title { font-size: 12px; }
+            .qyy_list-item { padding: 9px 14px; }
+            .qyy_title { font-size: 13px; }
         }
     </style>
 </head>
@@ -153,7 +155,7 @@
             const qyy_t = qyy_el.querySelector('.qyy_title').textContent;
             alert(qyy_t + '\n（齐英伊 · 旅游投诉网站复刻）');
         }
-        console.log('===== 16-4 旅游投诉三Tab · 红色圆点列表 =====');
+        console.log('===== 16-4 旅游投诉三Tab =====');
     </script>
 </body>
 </html>
