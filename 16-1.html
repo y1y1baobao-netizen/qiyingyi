@@ -1,0 +1,452 @@
+<!-- 姓名: 齐英伊 日期: 2026-10-29 功能名称: JavaScript 数组方法形象演示 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>16-1 数组方法 · 齐英伊829</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .qyy_wrap {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            padding: 36px 32px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+        .qyy_head {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 18px;
+            border-bottom: 2px dashed #e2e8f0;
+        }
+        .qyy_head h1 { font-size: 1.8rem; color: #1e293b; margin-bottom: 8px; }
+        .qyy_head .qyy_sub { font-size: 0.88rem; color: #64748b; }
+        .qyy_head .qyy_sub .qyy_name { color: #764ba2; font-weight: bold; }
+
+        /* ===== 数组可视化区 ===== */
+        .qyy_stage {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: 2px dashed #a78bfa;
+            border-radius: 14px;
+            padding: 24px 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .qyy_stage-label {
+            font-size: 0.82rem;
+            color: #6d28d9;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        .qyy_arr {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            min-height: 56px;
+        }
+        .qyy_arr .qyy_cell {
+            width: 52px; height: 52px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.15rem;
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(102,126,234,0.4);
+            animation: qyy_pop 0.3s ease;
+        }
+        .qyy_arr .qyy_cell .qyy_idx {
+            font-size: 0.6rem;
+            font-weight: normal;
+            opacity: 0.85;
+            margin-top: -2px;
+        }
+        @keyframes qyy_pop {
+            from { transform: scale(0.2); opacity: 0; }
+            to   { transform: scale(1);   opacity: 1; }
+        }
+        /* 色带 */
+        .qyy_c0 { background: linear-gradient(135deg, #f87171, #ef4444); }
+        .qyy_c1 { background: linear-gradient(135deg, #fb923c, #f97316); }
+        .qyy_c2 { background: linear-gradient(135deg, #facc15, #eab308); }
+        .qyy_c3 { background: linear-gradient(135deg, #4ade80, #22c55e); }
+        .qyy_c4 { background: linear-gradient(135deg, #38bdf8, #0ea5e9); }
+        .qyy_c5 { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
+        .qyy_c6 { background: linear-gradient(135deg, #f472b6, #ec4899); }
+        .qyy_c7 { background: linear-gradient(135deg, #2dd4bf, #14b8a6); }
+
+        .qyy_arr.qyy_arr--empty {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            font-style: italic;
+            align-items: center;
+        }
+
+        /* ===== 指标卡 ===== */
+        .qyy_metrics {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .qyy_metric {
+            flex: 1;
+            min-width: 90px;
+            background: #ede9fe;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+        }
+        .qyy_metric .qyy_m-num { font-size: 1.3rem; font-weight: bold; color: #6d28d9; }
+        .qyy_metric .qyy_m-lbl { font-size: 0.72rem; color: #7c3aed; margin-top: 2px; }
+
+        /* ===== 方法分组 ===== */
+        .qyy_group {
+            margin-bottom: 18px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .qyy_group > .qyy_ghead {
+            background: #1e293b;
+            color: #fbbf24;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .qyy_ghead .qyy_dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #fbbf24;
+        }
+        .qyy_btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px;
+            background: #f8fafc;
+        }
+        .qyy_btn {
+            background: #fff;
+            border: 1px solid #a78bfa;
+            color: #6d28d9;
+            padding: 7px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-family: Consolas, Monaco, monospace;
+            transition: all 0.15s;
+        }
+        .qyy_btn:hover {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: #fff;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(102,126,234,0.4);
+        }
+        .qyy_btn.qyy_btn--warn { border-color: #f87171; color: #dc2626; }
+        .qyy_btn.qyy_btn--warn:hover { background: #ef4444; color: #fff; border-color: transparent; }
+        .qyy_btn.qyy_btn--reset {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: #fff; border: none; font-weight: bold;
+        }
+
+        /* ===== 结果 / 代码 ===== */
+        .qyy_result {
+            background: #0f172a;
+            color: #86efac;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            padding: 14px 16px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            min-height: 60px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .qyy_result .qyy_green { color: #86efac; }
+        .qyy_result .qyy_yellow { color: #fbbf24; }
+        .qyy_result .qyy_blue { color: #60a5fa; }
+        .qyy_result .qyy_red { color: #f87171; }
+
+        .qyy_foot {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 0.82rem;
+            color: #94a3b8;
+        }
+        .qyy_foot span { color: #6d28d9; font-weight: bold; }
+
+        @media (max-width: 600px) {
+            .qyy_wrap { padding: 22px 14px; }
+            .qyy_arr .qyy_cell { width: 44px; height: 44px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="qyy_wrap">
+        <div class="qyy_head">
+            <h1>🧱 JavaScript 数组方法</h1>
+            <p class="qyy_sub">班级: 计算机24008 &nbsp;|&nbsp; 姓名: <span class="qyy_name">齐英伊</span> &nbsp;|&nbsp; 学号: 24001010829</p>
+        </div>
+
+        <!-- 可视化舞台 -->
+        <div class="qyy_stage">
+            <div class="qyy_stage-label">📍 当前数组 qyy_arr（点击下方方法按钮即时变化）</div>
+            <div class="qyy_arr" id="qyy_arr"></div>
+        </div>
+
+        <!-- 指标 -->
+        <div class="qyy_metrics">
+            <div class="qyy_metric"><div class="qyy_m-num" id="qyy_len">0</div><div class="qyy_m-lbl">length</div></div>
+            <div class="qyy_metric"><div class="qyy_m-num" id="qyy_first">-</div><div class="qyy_m-lbl">arr[0] 首项</div></div>
+            <div class="qyy_metric"><div class="qyy_m-num" id="qyy_last">-</div><div class="qyy_m-lbl">末项</div></div>
+            <div class="qyy_metric"><div class="qyy_m-num" id="qyy_sum">0</div><div class="qyy_m-lbl">累加和</div></div>
+        </div>
+
+        <!-- 上一次操作的控制台 -->
+        <div class="qyy_result" id="qyy_result">点击下方方法按钮 👇 观察数组变化与返回值</div>
+
+        <!-- ===== 分组 ===== -->
+        <!-- ① 栈与队列 -->
+        <div class="qyy_group">
+            <div class="qyy_ghead"><span class="qyy_dot"></span>① 栈/队列 增删（改变原数组）</div>
+            <div class="qyy_btns">
+                <button class="qyy_btn" onclick="qyy_run('push')">push(9) 尾部加</button>
+                <button class="qyy_btn qyy_btn--warn" onclick="qyy_run('pop')">pop() 尾部删</button>
+                <button class="qyy_btn" onclick="qyy_run('unshift')">unshift(0) 头部加</button>
+                <button class="qyy_btn qyy_btn--warn" onclick="qyy_run('shift')">shift() 头部删</button>
+            </div>
+        </div>
+
+        <!-- ② splice / slice / concat -->
+        <div class="qyy_group">
+            <div class="qyy_ghead"><span class="qyy_dot"></span>② 剪接 slice / splice / concat</div>
+            <div class="qyy_btns">
+                <button class="qyy_btn" onclick="qyy_run('slice1')">slice(1,4) 切片</button>
+                <button class="qyy_btn" onclick="qyy_run('splice_del')">splice(2,1) 删1项</button>
+                <button class="qyy_btn" onclick="qyy_run('splice_ins')">splice(2,0,99) 插入</button>
+                <button class="qyy_btn" onclick="qyy_run('concat')">concat([99]) 合并</button>
+                <button class="qyy_btn" onclick="qyy_run('join')">join("-") 拼接</button>
+            </div>
+        </div>
+
+        <!-- ③ 查找 -->
+        <div class="qyy_group">
+            <div class="qyy_ghead"><span class="qyy_dot"></span>③ 查找 indexOf / includes / find</div>
+            <div class="qyy_btns">
+                <button class="qyy_btn" onclick="qyy_run('idx5')">indexOf(5)</button>
+                <button class="qyy_btn" onclick="qyy_run('has5')">includes(5)</button>
+                <button class="qyy_btn" onclick="qyy_run('findEven')">find 第一个偶数</button>
+                <button class="qyy_btn" onclick="qyy_run('findIdx')">findIndex n&gt;3</button>
+            </div>
+        </div>
+
+        <!-- ④ 过滤 / 映射 / 归约 -->
+        <div class="qyy_group">
+            <div class="qyy_ghead"><span class="qyy_dot"></span>④ 高阶函数 filter / map / reduce</div>
+            <div class="qyy_btns">
+                <button class="qyy_btn" onclick="qyy_run('filterEven')">filter 偶数</button>
+                <button class="qyy_btn" onclick="qyy_run('mapDouble')">map ×2</button>
+                <button class="qyy_btn" onclick="qyy_run('reduceSum')">reduce 求和</button>
+                <button class="qyy_btn" onclick="qyy_run('everyGt0')">every 全部&gt;0?</button>
+                <button class="qyy_btn" onclick="qyy_run('someEven')">some 有偶数?</button>
+            </div>
+        </div>
+
+        <!-- ⑤ 排序 / 反转 / 遍历 -->
+        <div class="qyy_group">
+            <div class="qyy_ghead"><span class="qyy_dot"></span>⑤ 排序 / 反转 / 遍历</div>
+            <div class="qyy_btns">
+                <button class="qyy_btn qyy_btn--warn" onclick="qyy_run('sortAsc')">sort 升序</button>
+                <button class="qyy_btn qyy_btn--warn" onclick="qyy_run('sortDesc')">sort 降序</button>
+                <button class="qyy_btn qyy_btn--warn" onclick="qyy_run('reverse')">reverse 反转</button>
+                <button class="qyy_btn" onclick="qyy_run('forEach')">forEach 遍历打印</button>
+            </div>
+        </div>
+
+        <!-- ⑥ 重置 -->
+        <div class="qyy_group">
+            <div class="qyy_ghead"><span class="qyy_dot"></span>⑥ 重新开始</div>
+            <div class="qyy_btns">
+                <button class="qyy_btn qyy_btn--reset" onclick="qyy_reset()">🔄 重置为 [3,7,1,5,9,2,8,4]</button>
+            </div>
+        </div>
+
+        <div class="qyy_foot">
+            由 <span>齐英伊</span> 用 JavaScript 数组方法生成 · 原生代码
+        </div>
+    </div>
+
+    <script>
+        // 初始数组 (默认 8 个数字)
+        let qyy_arr = [3, 7, 1, 5, 9, 2, 8, 4];
+        const qyy_colors = ['qyy_c0', 'qyy_c1', 'qyy_c2', 'qyy_c3', 'qyy_c4', 'qyy_c5', 'qyy_c6', 'qyy_c7'];
+
+        // ========== 渲染 ==========
+        function qyy_render() {
+            const qyy_box = document.getElementById('qyy_arr');
+            qyy_box.innerHTML = '';
+            if (qyy_arr.length === 0) {
+                qyy_box.classList.add('qyy_arr--empty');
+                qyy_box.innerHTML = '（空数组，请 push / unshift 添加元素）';
+            } else {
+                qyy_box.classList.remove('qyy_arr--empty');
+                qyy_arr.forEach((qyy_v, qyy_i) => {
+                    const qyy_div = document.createElement('div');
+                    qyy_div.className = 'qyy_cell ' + qyy_colors[qyy_i % qyy_colors.length];
+                    qyy_div.innerHTML = qyy_v + '<span class="qyy_idx">[' + qyy_i + ']</span>';
+                    qyy_box.appendChild(qyy_div);
+                });
+            }
+            // 指标
+            document.getElementById('qyy_len').textContent = qyy_arr.length;
+            document.getElementById('qyy_first').textContent = qyy_arr.length ? qyy_arr[0] : '-';
+            document.getElementById('qyy_last').textContent = qyy_arr.length ? qyy_arr[qyy_arr.length - 1] : '-';
+            document.getElementById('qyy_sum').textContent = qyy_arr.reduce((a, b) => a + b, 0);
+        }
+
+        function qyy_log(qyy_msg) {
+            document.getElementById('qyy_result').textContent = qyy_msg;
+        }
+
+        // ========== 方法调度 ==========
+        function qyy_run(qyy_op) {
+            let qyy_ret, qyy_msg;
+            switch (qyy_op) {
+                // ---- 栈/队列 ----
+                case 'push':
+                    qyy_ret = qyy_arr.push(9);
+                    qyy_msg = `.push(9)  →  返回新长度 ${qyy_ret}\n数组变为: [${qyy_arr.join(', ')}]`;
+                    break;
+                case 'pop':
+                    if (!qyy_arr.length) { qyy_log('数组空, pop() 返回 undefined'); return; }
+                    qyy_ret = qyy_arr.pop();
+                    qyy_msg = `.pop()  →  弹出尾部元素 ${qyy_ret}\n数组变为: [${qyy_arr.join(', ')}]`;
+                    break;
+                case 'unshift':
+                    qyy_ret = qyy_arr.unshift(0);
+                    qyy_msg = `.unshift(0)  →  返回新长度 ${qyy_ret}\n数组变为: [${qyy_arr.join(', ')}]`;
+                    break;
+                case 'shift':
+                    if (!qyy_arr.length) { qyy_log('数组空, shift() 返回 undefined'); return; }
+                    qyy_ret = qyy_arr.shift();
+                    qyy_msg = `.shift()  →  弹出头部元素 ${qyy_ret}\n数组变为: [${qyy_arr.join(', ')}]`;
+                    break;
+
+                // ---- splice / slice / concat ----
+                case 'slice1':
+                    qyy_ret = qyy_arr.slice(1, 4);
+                    qyy_msg = `.slice(1, 4)  →  切片 [${qyy_ret.join(', ')}]\n原数组不变: [${qyy_arr.join(', ')}]`;
+                    break;
+                case 'splice_del':
+                    qyy_ret = qyy_arr.splice(2, 1);
+                    qyy_msg = `.splice(2, 1)  →  从索引2删除1项, 返回 [${qyy_ret.join(', ')}]\n数组变为: [${qyy_arr.join(', ')}]`;
+                    break;
+                case 'splice_ins':
+                    qyy_ret = qyy_arr.splice(2, 0, 99);
+                    qyy_msg = `.splice(2, 0, 99)  →  索引2处插入 99, 返回 []\n数组变为: [${qyy_arr.join(', ')}]`;
+                    break;
+                case 'concat':
+                    qyy_ret = qyy_arr.concat([99]);
+                    qyy_msg = `.concat([99])  →  新数组 [${qyy_ret.join(', ')}]\n原数组不变: [${qyy_arr.join(', ')}]`;
+                    break;
+                case 'join':
+                    qyy_ret = qyy_arr.join('-');
+                    qyy_msg = `.join("-")  →  拼接成字符串 "${qyy_ret}"\n原数组不变: [${qyy_arr.join(', ')}]`;
+                    break;
+
+                // ---- 查找 ----
+                case 'idx5':
+                    qyy_ret = qyy_arr.indexOf(5);
+                    qyy_msg = `.indexOf(5)  →  ${qyy_ret === -1 ? '-1 (不存在)' : '索引 ' + qyy_ret}`;
+                    break;
+                case 'has5':
+                    qyy_ret = qyy_arr.includes(5);
+                    qyy_msg = `.includes(5)  →  ${qyy_ret}${qyy_ret ? ' ✅ 有' : ' ❌ 没有'}`;
+                    break;
+                case 'findEven':
+                    qyy_ret = qyy_arr.find(n => n % 2 === 0);
+                    qyy_msg = `.find(n => n%2===0)  →  第一个偶数: ${qyy_ret === undefined ? 'undefined' : qyy_ret}`;
+                    break;
+                case 'findIdx':
+                    qyy_ret = qyy_arr.findIndex(n => n > 3);
+                    qyy_msg = `.findIndex(n => n>3)  →  第一个大于3的索引: ${qyy_ret === -1 ? '-1 (没找到)' : qyy_ret}`;
+                    break;
+
+                // ---- 高阶函数 ----
+                case 'filterEven':
+                    qyy_ret = qyy_arr.filter(n => n % 2 === 0);
+                    qyy_msg = `.filter(n => n%2===0)  →  偶数: [${qyy_ret.join(', ')}]`;
+                    break;
+                case 'mapDouble':
+                    qyy_ret = qyy_arr.map(n => n * 2);
+                    qyy_msg = `.map(n => n*2)  →  ×2后: [${qyy_ret.join(', ')}]`;
+                    break;
+                case 'reduceSum':
+                    qyy_ret = qyy_arr.reduce((a, b) => a + b, 0);
+                    qyy_msg = `.reduce((a,b)=>a+b, 0)  →  累加和 = ${qyy_ret}`;
+                    break;
+                case 'everyGt0':
+                    qyy_ret = qyy_arr.every(n => n > 0);
+                    qyy_msg = `.every(n => n>0)  →  ${qyy_ret}${qyy_ret ? ' ✅ 全部 > 0' : ' ❌ 有元素 ≤ 0'}`;
+                    break;
+                case 'someEven':
+                    qyy_ret = qyy_arr.some(n => n % 2 === 0);
+                    qyy_msg = `.some(n => n%2===0)  →  ${qyy_ret}${qyy_ret ? ' ✅ 存在偶数' : ' ❌ 没有偶数'}`;
+                    break;
+
+                // ---- 排序 / 反转 / 遍历 ----
+                case 'sortAsc':
+                    qyy_ret = qyy_arr.sort((a, b) => a - b);
+                    qyy_msg = `.sort((a,b)=>a-b)  →  升序 [${qyy_arr.join(', ')}]`;
+                    break;
+                case 'sortDesc':
+                    qyy_ret = qyy_arr.sort((a, b) => b - a);
+                    qyy_msg = `.sort((a,b)=>b-a)  →  降序 [${qyy_arr.join(', ')}]`;
+                    break;
+                case 'reverse':
+                    qyy_ret = qyy_arr.reverse();
+                    qyy_msg = `.reverse()  →  反转 [${qyy_arr.join(', ')}]`;
+                    break;
+                case 'forEach':
+                    let qyy_out = '';
+                    qyy_arr.forEach((n, i) => { qyy_out += `  [${i}] = ${n}\n`; });
+                    qyy_msg = `.forEach((n,i)=>...)  →\n${qyy_out}`;
+                    break;
+            }
+            qyy_render();
+            qyy_log(qyy_msg);
+        }
+
+        function qyy_reset() {
+            qyy_arr = [3, 7, 1, 5, 9, 2, 8, 4];
+            qyy_render();
+            qyy_log('已重置为初始数组 [3, 7, 1, 5, 9, 2, 8, 4]\n点击方法按钮开始实验 ✨');
+        }
+
+        // 初始化
+        qyy_render();
+        qyy_log('初始数组: [3, 7, 1, 5, 9, 2, 8, 4]\n点击下方方法按钮 👇 观察数组变化与返回值');
+
+        // 控制台 (齐英伊调试)
+        console.log('===== 16-1 数组方法 =====');
+        console.log('初始数组:', qyy_arr);
+        console.log('length:', qyy_arr.length);
+    </script>
+</body>
+</html>
