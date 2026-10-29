@@ -1,0 +1,308 @@
+<!-- 姓名: 齐英伊 日期: 2026-10-29 功能名称: 旅游投诉网站三Tab复刻 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>16-4 旅游投诉调查 · 齐英伊829</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: #f0f0f0;
+            padding: 40px 20px;
+        }
+        .qyy_wrap {
+            max-width: 640px;
+            margin: 0 auto;
+            background: #fff;
+            border: 1px solid #dcdcdc;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        /* ===== Tabs ===== */
+        .qyy_tabs {
+            display: flex;
+            border-bottom: 1px solid #e5e5e5;
+            background: #fafafa;
+        }
+        .qyy_tab {
+            flex: 1;
+            padding: 12px 0;
+            text-align: center;
+            font-size: 15px;
+            color: #666;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.15s, background 0.15s;
+            user-select: none;
+        }
+        .qyy_tab:hover { color: #d9001b; }
+        .qyy_tab.qyy_tab--active {
+            color: #d9001b;
+            font-weight: bold;
+            background: #fff;
+        }
+        .qyy_tab.qyy_tab--active::after {
+            content: "";
+            position: absolute;
+            bottom: -1px;
+            left: 10%;
+            width: 80%;
+            height: 2px;
+            background: #d9001b;
+        }
+
+        /* ===== 列表 ===== */
+        .qyy_list { padding: 6px 0; }
+        .qyy_list-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-bottom: 1px dashed #eee;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .qyy_list-item:last-child { border-bottom: none; }
+        .qyy_list-item:hover { background: #fff5f5; }
+
+        .qyy_rank {
+            width: 20px;
+            height: 20px;
+            min-width: 20px;
+            border-radius: 3px;
+            background: #d9001b;
+            color: #fff;
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-family: Arial, sans-serif;
+        }
+        .qyy_rank.qyy_rank--hot {
+            background: #ff5a00;
+        }
+
+        .qyy_title {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .qyy_title:hover { color: #d9001b; }
+
+        .qyy_arrow {
+            color: #ccc;
+            font-size: 12px;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+
+        /* ===== 底部 ===== */
+        .qyy_foot {
+            text-align: center;
+            padding: 16px;
+            font-size: 0.78rem;
+            color: #bbb;
+        }
+
+        @media (max-width: 480px) {
+            .qyy_list-item { padding: 9px 14px; }
+            .qyy_title { font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="qyy_wrap">
+        <!-- ===== Tabs ===== -->
+        <div class="qyy_tabs">
+            <div class="qyy_tab qyy_tab--active" onclick="qyy_switch('ts')">最新投诉</div>
+            <div class="qyy_tab" onclick="qyy_switch('hg')">官方回应</div>
+            <div class="qyy_tab" onclick="qyy_switch('dz')">追踪调查</div>
+        </div>
+
+        <!-- ===== 最新投诉 ===== -->
+        <div class="qyy_pane" id="qyy_ts">
+            <div class="qyy_list">
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank qyy_rank--hot">1</div>
+                    <div class="qyy_title">北京火车站出租车乱象调查 司机计价器坏</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank qyy_rank--hot">2</div>
+                    <div class="qyy_title">公园他人掌写刻字"毁容" 同伴被</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank qyy_rank--hot">3</div>
+                    <div class="qyy_title">昆明地铁站"辣手催" 网友谴责(组图)</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">4</div>
+                    <div class="qyy_title">四川一星级公园建酒店 年开放"变</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">5</div>
+                    <div class="qyy_title">北京地坛公园开幕未满两月 茶楼"曝</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">6</div>
+                    <div class="qyy_title">北京金丝楠木擅建英文字母"签名"破坏</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">7</div>
+                    <div class="qyy_title">动物园购物园区玩猫 低价门票"暗藏</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">8</div>
+                    <div class="qyy_title">女子不满"无物购"投诉旅行社 称西传</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">9</div>
+                    <div class="qyy_title">老年人参团旅游权益受损 旅行社瞒对老人</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 官方回应 ===== -->
+        <div class="qyy_pane" id="qyy_hg" style="display:none">
+            <div class="qyy_list">
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank qyy_rank--hot">1</div>
+                    <div class="qyy_title">大绿鸭、尾随牌凑热闹 法官解读"山寨鸭"是</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank qyy_rank--hot">2</div>
+                    <div class="qyy_title">国家旅游局回应 "团队价格体系"</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank qyy_rank--hot">3</div>
+                    <div class="qyy_title">国家旅游局回应 新旅游法实施后旅行社</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">4</div>
+                    <div class="qyy_title">出游纠纷可依《旅游法》维权 明确游技</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">5</div>
+                    <div class="qyy_title">解读新旅游法三 "零负团费" 自费实可心</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">6</div>
+                    <div class="qyy_title">《旅游法》将抑制"零负团费"和"门黑经"</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">7</div>
+                    <div class="qyy_title">文明旅游入旅游合同 行为指南和公约将作</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">8</div>
+                    <div class="qyy_title">天津立康旅行社服务质量发布 投诉涉及</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">9</div>
+                    <div class="qyy_title">敦煌: 国家法定节假日有些景区免半价</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 追踪调查 ===== -->
+        <div class="qyy_pane" id="qyy_dz" style="display:none">
+            <div class="qyy_list">
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank qyy_rank--hot">1</div>
+                    <div class="qyy_title">《旅游法》实施半月 自费景区遭正规一日游</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank qyy_rank--hot">2</div>
+                    <div class="qyy_title">追踪香格里拉旅游 价暴涨: 涉事导游等已</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank qyy_rank--hot">3</div>
+                    <div class="qyy_title">导游挣新政 "攻略": 远离旅行社自己订</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">4</div>
+                    <div class="qyy_title">九寨沟为何变成"死胡同"? ——数千游客</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">5</div>
+                    <div class="qyy_title">九寨沟为何仍现游客滞留?</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">6</div>
+                    <div class="qyy_title">旅游之尴尬: "腾爷"博物馆、女士性感进</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">7</div>
+                    <div class="qyy_title">记者暗访兵马俑景区: 玉品店子门票过期</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">8</div>
+                    <div class="qyy_title">假冒香港游借售长城 玉店买怒骂女士</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+                <div class="qyy_list-item" onclick="qyy_hit(this)">
+                    <div class="qyy_rank">9</div>
+                    <div class="qyy_title">39家旅游单位违法被罚1800万 购物结盟统</div>
+                    <div class="qyy_arrow">›</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="qyy_foot">仿旅游投诉调查网站 · 齐英伊 24001010829</div>
+    </div>
+
+    <script>
+        const qyy_tabs = ['ts', 'hg', 'dz'];
+        function qyy_switch(qyy_which) {
+            qyy_tabs.forEach(qyy_k => {
+                document.getElementById('qyy_' + qyy_k).style.display = qyy_k === qyy_which ? '' : 'none';
+            });
+            document.querySelectorAll('.qyy_tab').forEach((qyy_el, qyy_i) => {
+                qyy_el.classList.toggle('qyy_tab--active', qyy_tabs[qyy_i] === qyy_which);
+            });
+        }
+
+        function qyy_hit(qyy_el) {
+            const qyy_t = qyy_el.querySelector('.qyy_title').textContent;
+            const qyy_n = qyy_el.querySelector('.qyy_rank').textContent;
+            alert('点击了第 ' + qyy_n + ' 条:\n' + qyy_t + '\n（齐英伊 · 旅游投诉网站复刻）');
+            console.log('[qyy_hit] #' + qyy_n, qyy_t);
+        }
+
+        console.log('===== 16-4 旅游投诉三Tab =====');
+        console.log('3 个 Tab × 9 条 = 27 条内容');
+    </script>
+</body>
+</html>
