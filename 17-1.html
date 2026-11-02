@@ -1,0 +1,437 @@
+<!-- 姓名: 齐英伊 日期: 2026-11-02 功能名称: JSON 数据格式展示 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <title>17-1 JSON 数据格式 · 齐英伊829</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #1e293b;
+        }
+        .qyy_wrap {
+            max-width: 980px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            padding: 36px 32px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+        .qyy_head {
+            text-align: center;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #e2e8f0;
+        }
+        .qyy_head h1 { font-size: 1.8rem; color: #1e293b; margin-bottom: 8px; }
+        .qyy_head .qyy_sub { font-size: 0.88rem; color: #64748b; }
+        .qyy_head .qyy_name { color: #764ba2; font-weight: bold; }
+
+        .qyy_sec { margin-bottom: 30px; }
+        .qyy_sec-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.05rem;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+        .qyy_sec-title .qyy_no {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: #fff;
+            font-size: 0.82rem;
+            flex-shrink: 0;
+        }
+        .qyy_sec-title .qyy_hint {
+            font-size: 0.76rem;
+            font-weight: normal;
+            color: #94a3b8;
+        }
+
+        /* 概念卡 */
+        .qyy_cards {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .qyy_card {
+            flex: 1 1 200px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px 18px;
+        }
+        .qyy_card h4 { font-size: 0.92rem; color: #4338ca; margin-bottom: 8px; }
+        .qyy_card p { font-size: 0.82rem; color: #64748b; line-height: 1.7; }
+
+        /* 代码区 */
+        .qyy_code {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 18px 20px;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 0.84rem;
+            line-height: 1.9;
+            overflow-x: auto;
+            color: #e2e8f0;
+            white-space: pre;
+        }
+        .qyy_k { color: #c4b5fd; }
+        .qyy_s { color: #86efac; }
+        .qyy_n { color: #fdba74; }
+        .qyy_b { color: #93c5fd; }
+        .qyy_nu { color: #f472b6; }
+        .qyy_p { color: #94a3b8; }
+
+        /* 规则列表 */
+        .qyy_rules { display: flex; flex-direction: column; gap: 10px; }
+        .qyy_rule {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            background: #f8fafc;
+            border-left: 4px solid #764ba2;
+            border-radius: 8px;
+            padding: 10px 14px;
+        }
+        .qyy_rule .qyy_ok { color: #16a34a; font-weight: bold; flex-shrink: 0; }
+        .qyy_rule .qyy_no-txt { color: #dc2626; font-weight: bold; flex-shrink: 0; }
+        .qyy_rule p { font-size: 0.82rem; color: #475569; line-height: 1.7; }
+        .qyy_rule code {
+            background: #eef2ff;
+            color: #4338ca;
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-family: Consolas, monospace;
+        }
+
+        /* 对比双栏 */
+        .qyy_compare {
+            display: flex;
+            gap: 18px;
+        }
+        .qyy_compare > div { flex: 1; min-width: 0; }
+        .qyy_compare .qyy_lab {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        /* 交互演示 */
+        .qyy_demo {
+            display: flex;
+            gap: 18px;
+        }
+        .qyy_demo > div { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+        .qyy_demo .qyy_lab {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        #qyy_input {
+            width: 100%;
+            height: 260px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 12px;
+            font-family: Consolas, monospace;
+            font-size: 0.82rem;
+            line-height: 1.7;
+            resize: vertical;
+            outline: none;
+            color: #1e293b;
+        }
+        #qyy_input:focus { border-color: #764ba2; box-shadow: 0 0 0 3px rgba(118,75,162,0.15); }
+        #qyy_tree {
+            height: 260px;
+            overflow: auto;
+            background: #1e293b;
+            border-radius: 10px;
+            padding: 12px;
+            font-family: Consolas, monospace;
+            font-size: 0.82rem;
+            line-height: 1.75;
+            color: #e2e8f0;
+        }
+        .qyy_actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 14px 0 10px;
+        }
+        .qyy_btn {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.84rem;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .qyy_btn:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(102,126,234,0.35); }
+        .qyy_btn.qyy_btn--ghost {
+            background: #fff;
+            color: #764ba2;
+            border: 1px solid #c7b3e0;
+        }
+        .qyy_msg {
+            font-size: 0.8rem;
+            color: #64748b;
+            min-height: 20px;
+            margin-top: 6px;
+        }
+        .qyy_msg.qyy_msg--err { color: #dc2626; }
+        .qyy_msg.qyy_msg--ok { color: #16a34a; }
+
+        .qyy_foot {
+            text-align: center;
+            font-size: 0.78rem;
+            color: #cbd5e1;
+            padding-top: 16px;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        @media (max-width: 760px) {
+            body { padding: 20px 12px; }
+            .qyy_wrap { padding: 24px 18px; border-radius: 14px; }
+            .qyy_compare, .qyy_demo { flex-direction: column; }
+            #qyy_input, #qyy_tree { height: 200px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="qyy_wrap">
+        <div class="qyy_head">
+            <h1>JSON 数据格式</h1>
+            <p class="qyy_sub">JavaScript Object Notation · <span class="qyy_name">齐英伊 24001010829</span></p>
+        </div>
+
+        <!-- 1. JSON 是什么 -->
+        <div class="qyy_sec">
+            <div class="qyy_sec-title">
+                <span class="qyy_no">1</span>JSON 是什么
+                <span class="qyy_hint">一种轻量级的数据交换格式</span>
+            </div>
+            <div class="qyy_cards">
+                <div class="qyy_card">
+                    <h4>{ } 对象</h4>
+                    <p>用花括号包裹，存放「键 : 值」对。键必须用双引号。</p>
+                </div>
+                <div class="qyy_card">
+                    <h4>[ ] 数组</h4>
+                    <p>用方括号包裹，存放有序的值列表，值之间用逗号分隔。</p>
+                </div>
+                <div class="qyy_card">
+                    <h4>嵌套</h4>
+                    <p>对象里可以放数组，数组里可以放对象，层层嵌套表示复杂结构。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 示例 -->
+        <div class="qyy_sec">
+            <div class="qyy_sec-title">
+                <span class="qyy_no">2</span>一段完整的 JSON
+                <span class="qyy_hint">学生信息</span>
+            </div>
+            <div class="qyy_code"><span class="qyy_p">{</span>
+  <span class="qyy_k">"name"</span><span class="qyy_p">:</span> <span class="qyy_s">"齐英伊"</span><span class="qyy_p">,</span>
+  <span class="qyy_k">"id"</span><span class="qyy_p">:</span> <span class="qyy_s">"24001010829"</span><span class="qyy_p">,</span>
+  <span class="qyy_k">"age"</span><span class="qyy_p">:</span> <span class="qyy_n">20</span><span class="qyy_p">,</span>
+  <span class="qyy_k">"isStudent"</span><span class="qyy_p">:</span> <span class="qyy_b">true</span><span class="qyy_p">,</span>
+  <span class="qyy_k">"graduated"</span><span class="qyy_p">:</span> <span class="qyy_nu">null</span><span class="qyy_p">,</span>
+  <span class="qyy_k">"courses"</span><span class="qyy_p">:</span> <span class="qyy_p">[</span>
+    <span class="qyy_s">"高级网页设计"</span><span class="qyy_p">,</span>
+    <span class="qyy_s">"JavaScript 基础"</span>
+  <span class="qyy_p">]</span><span class="qyy_p">,</span>
+  <span class="qyy_k">"address"</span><span class="qyy_p">:</span> <span class="qyy_p">{</span>
+    <span class="qyy_k">"city"</span><span class="qyy_p">:</span> <span class="qyy_s">"成都"</span><span class="qyy_p">,</span>
+    <span class="qyy_k">"zip"</span><span class="qyy_p">:</span> <span class="qyy_s">"610000"</span>
+  <span class="qyy_p">}</span>
+<span class="qyy_p">}</span></div>
+        </div>
+
+        <!-- 3. 语法规则 -->
+        <div class="qyy_sec">
+            <div class="qyy_sec-title">
+                <span class="qyy_no">3</span>六条语法规则
+            </div>
+            <div class="qyy_rules">
+                <div class="qyy_rule"><span class="qyy_ok">✓</span><p>键名必须用<code>双引号</code>包裹，不能用单引号，也不能不加引号。</p></div>
+                <div class="qyy_rule"><span class="qyy_ok">✓</span><p>值只能是六种类型：<code>字符串</code>、<code>数字</code>、<code>布尔</code>、<code>null</code>、<code>对象</code>、<code>数组</code>。</p></div>
+                <div class="qyy_rule"><span class="qyy_no-txt">✗</span><p>不允许注释：<code>// 说明</code>和<code>/* 说明 */</code>都会让解析报错。</p></div>
+                <div class="qyy_rule"><span class="qyy_no-txt">✗</span><p>最后一个成员后面不能有逗号，<code>"a":1,}</code> 是非法写法。</p></div>
+                <div class="qyy_rule"><span class="qyy_no-txt">✗</span><p>不允许出现 <code>undefined</code>、<code>function</code>、<code>NaN</code> 这些 JS 独有的值。</p></div>
+                <div class="qyy_rule"><span class="qyy_ok">✓</span><p>字符串里的双引号要用反斜杠转义：<code>"say \"hi\""</code>。</p></div>
+            </div>
+        </div>
+
+        <!-- 4. JSON 与 JS 对象 -->
+        <div class="qyy_sec">
+            <div class="qyy_sec-title">
+                <span class="qyy_no">4</span>JSON 与 JavaScript 对象的区别
+            </div>
+            <div class="qyy_compare">
+                <div>
+                    <div class="qyy_lab">JSON（文本格式）</div>
+                    <div class="qyy_code"><span class="qyy_p">{</span>
+  <span class="qyy_k">"name"</span><span class="qyy_p">:</span> <span class="qyy_s">"齐英伊"</span><span class="qyy_p">,</span>
+  <span class="qyy_k">"age"</span><span class="qyy_p">:</span> <span class="qyy_n">20</span>
+<span class="qyy_p">}</span></div>
+                </div>
+                <div>
+                    <div class="qyy_lab">JS 对象（代码）</div>
+                    <div class="qyy_code"><span class="qyy_p">{</span>
+  <span class="qyy_k">name</span><span class="qyy_p">:</span> <span class="qyy_s">'齐英伊'</span><span class="qyy_p">,</span>
+  <span class="qyy_k">age</span><span class="qyy_p">:</span> <span class="qyy_n">20</span>
+<span class="qyy_p">}</span></div>
+                </div>
+            </div>
+            <div class="qyy_code" style="margin-top:14px"><span class="qyy_p">//</span> 字符串 → 对象：解析
+<span class="qyy_k">const</span> qyy_obj = <span class="qyy_b">JSON</span>.parse(<span class="qyy_s">'{"name":"齐英伊","age":20}'</span>);
+
+<span class="qyy_p">//</span> 对象 → 字符串：序列化
+<span class="qyy_k">const</span> qyy_str = <span class="qyy_b">JSON</span>.stringify(qyy_obj);</div>
+        </div>
+
+        <!-- 5. 交互演示 -->
+        <div class="qyy_sec">
+            <div class="qyy_sec-title">
+                <span class="qyy_no">5</span>动手试一试
+                <span class="qyy_hint">改左边文本，看右边结构</span>
+            </div>
+            <div class="qyy_demo">
+                <div>
+                    <div class="qyy_lab">JSON 文本</div>
+                    <textarea id="qyy_input" spellcheck="false">{
+  "name": "齐英伊",
+  "id": "24001010829",
+  "age": 20,
+  "isStudent": true,
+  "graduated": null,
+  "courses": ["高级网页设计", "JavaScript 基础"],
+  "address": { "city": "成都", "zip": "610000" }
+}</textarea>
+                </div>
+                <div>
+                    <div class="qyy_lab">解析后的树形结构</div>
+                    <div id="qyy_tree"></div>
+                </div>
+            </div>
+            <div class="qyy_actions">
+                <button class="qyy_btn" onclick="qyy_parseTree()">解析成树</button>
+                <button class="qyy_btn" onclick="qyy_format()">格式化（缩进 2 空格）</button>
+                <button class="qyy_btn" onclick="qyy_minify()">压缩成一行</button>
+                <button class="qyy_btn qyy_btn--ghost" onclick="qyy_reset()">恢复示例</button>
+            </div>
+            <div class="qyy_msg" id="qyy_msg">点击「解析成树」开始</div>
+        </div>
+
+        <div class="qyy_foot">齐英伊的《高级网页设计》课堂实践 · 17-1 JSON</div>
+    </div>
+
+    <script>
+        const qyy_input = document.getElementById('qyy_input');
+        const qyy_tree = document.getElementById('qyy_tree');
+        const qyy_msg = document.getElementById('qyy_msg');
+
+        const qyy_sample = '{\n  "name": "齐英伊",\n  "id": "24001010829",\n  "age": 20,\n  "isStudent": true,\n  "graduated": null,\n  "courses": ["高级网页设计", "JavaScript 基础"],\n  "address": { "city": "成都", "zip": "610000" }\n}';
+
+        function qyy_tip(qyy_text, qyy_type) {
+            qyy_msg.textContent = qyy_text;
+            qyy_msg.className = 'qyy_msg' + (qyy_type ? ' qyy_msg--' + qyy_type : '');
+        }
+
+        /* 读取并解析输入框内容，失败时给出错误提示 */
+        function qyy_read() {
+            try {
+                return { qyy_ok: true, qyy_data: JSON.parse(qyy_input.value) };
+            } catch (qyy_err) {
+                qyy_tip('解析失败：' + qyy_err.message, 'err');
+                qyy_tree.innerHTML = '<span class="qyy_nu">// 语法有误，无法生成结构</span>';
+                return { qyy_ok: false };
+            }
+        }
+
+        /* 叶子值上色 */
+        function qyy_leaf(qyy_val) {
+            if (typeof qyy_val === 'string') return '<span class="qyy_s">"' + qyy_val + '"</span>';
+            if (typeof qyy_val === 'number') return '<span class="qyy_n">' + qyy_val + '</span>';
+            if (typeof qyy_val === 'boolean') return '<span class="qyy_b">' + qyy_val + '</span>';
+            return '<span class="qyy_nu">' + qyy_val + '</span>';
+        }
+
+        /* 递归生成树形结构的 HTML */
+        function qyy_treeHTML(qyy_val, qyy_level, qyy_key) {
+            const qyy_pad = '  '.repeat(qyy_level);
+            const qyy_head = qyy_key === undefined
+                ? ''
+                : '<span class="qyy_k">"' + qyy_key + '"</span><span class="qyy_p">: </span>';
+            if (Array.isArray(qyy_val)) {
+                if (qyy_val.length === 0) return qyy_pad + qyy_head + '<span class="qyy_p">[ ]</span>\n';
+                let qyy_out = qyy_pad + qyy_head + '<span class="qyy_p">[</span>\n';
+                qyy_val.forEach(function (qyy_item) {
+                    qyy_out += qyy_treeHTML(qyy_item, qyy_level + 1, undefined);
+                });
+                return qyy_out + qyy_pad + '<span class="qyy_p">]</span>\n';
+            }
+            if (qyy_val !== null && typeof qyy_val === 'object') {
+                const qyy_keys = Object.keys(qyy_val);
+                let qyy_out = qyy_pad + qyy_head + '<span class="qyy_p">{</span>\n';
+                qyy_keys.forEach(function (qyy_k) {
+                    qyy_out += qyy_treeHTML(qyy_val[qyy_k], qyy_level + 1, qyy_k);
+                });
+                return qyy_out + qyy_pad + '<span class="qyy_p">}</span>\n';
+            }
+            return qyy_pad + qyy_head + qyy_leaf(qyy_val) + '\n';
+        }
+
+        function qyy_parseTree() {
+            const qyy_r = qyy_read();
+            if (!qyy_r.qyy_ok) return;
+            qyy_tree.innerHTML = qyy_treeHTML(qyy_r.qyy_data, 0, undefined);
+            qyy_tip('解析成功：顶层是 ' + (Array.isArray(qyy_r.qyy_data) ? '数组' : typeof qyy_r.qyy_data), 'ok');
+        }
+
+        function qyy_format() {
+            const qyy_r = qyy_read();
+            if (!qyy_r.qyy_ok) return;
+            qyy_input.value = JSON.stringify(qyy_r.qyy_data, null, 2);
+            qyy_parseTree();
+            qyy_tip('已格式化，缩进 2 个空格', 'ok');
+        }
+
+        function qyy_minify() {
+            const qyy_r = qyy_read();
+            if (!qyy_r.qyy_ok) return;
+            qyy_input.value = JSON.stringify(qyy_r.qyy_data);
+            qyy_parseTree();
+            qyy_tip('已压缩成一行，去掉了所有空白', 'ok');
+        }
+
+        function qyy_reset() {
+            qyy_input.value = qyy_sample;
+            qyy_parseTree();
+            qyy_tip('已恢复示例数据', 'ok');
+        }
+
+        qyy_parseTree();
+        console.log('===== 17-1 JSON 语法与解析演示 =====');
+    </script>
+</body>
+</html>

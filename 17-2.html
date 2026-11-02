@@ -1,0 +1,341 @@
+<!-- 姓名: 齐英伊 日期: 2026-11-02 功能名称: fetch 获取随机狗狗图片 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <title>17-2 随机狗狗图片 · 齐英伊829</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #1e293b;
+        }
+        .qyy_wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            padding: 36px 32px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+        .qyy_head {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #e2e8f0;
+        }
+        .qyy_head h1 { font-size: 1.8rem; color: #1e293b; margin-bottom: 8px; }
+        .qyy_head .qyy_sub { font-size: 0.88rem; color: #64748b; }
+        .qyy_head .qyy_name { color: #764ba2; font-weight: bold; }
+
+        /* 接口信息条 */
+        .qyy_api {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.8rem;
+            color: #475569;
+            margin-bottom: 20px;
+        }
+        .qyy_tag {
+            background: #16a34a;
+            color: #fff;
+            border-radius: 4px;
+            padding: 1px 8px;
+            font-size: 0.72rem;
+            font-weight: bold;
+        }
+        .qyy_api code {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-family: Consolas, monospace;
+            color: #4338ca;
+            word-break: break-all;
+        }
+
+        /* 展示区 */
+        .qyy_stage {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 18px;
+        }
+        .qyy_img-box {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .qyy_img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            animation: qyy_fade 0.5s ease;
+        }
+        @keyframes qyy_fade {
+            from { opacity: 0; transform: scale(1.03); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* 加载骨架 */
+        .qyy_skeleton {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 37%, #e2e8f0 63%);
+            background-size: 400% 100%;
+            animation: qyy_shimmer 1.3s infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        @keyframes qyy_shimmer {
+            from { background-position: 100% 50%; }
+            to { background-position: 0 50%; }
+        }
+
+        /* 错误态 */
+        .qyy_error {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #fef2f2;
+            color: #b91c1c;
+            font-size: 0.9rem;
+        }
+
+        /* 指标 */
+        .qyy_stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+        .qyy_stat {
+            flex: 1 1 140px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 10px 14px;
+        }
+        .qyy_stat .qyy_lab { font-size: 0.72rem; color: #94a3b8; margin-bottom: 4px; }
+        .qyy_stat .qyy_val {
+            font-size: 0.86rem;
+            color: #1e293b;
+            font-weight: bold;
+            word-break: break-all;
+        }
+        .qyy_stat .qyy_val.qyy_val--ok { color: #16a34a; }
+
+        /* 按钮 */
+        .qyy_actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+        .qyy_btn {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 22px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .qyy_btn:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(102,126,234,0.35); }
+        .qyy_btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+        .qyy_btn.qyy_btn--ghost {
+            background: #fff;
+            color: #764ba2;
+            border: 1px solid #c7b3e0;
+        }
+
+        /* 原始 JSON */
+        .qyy_raw {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 16px 18px;
+            font-family: Consolas, monospace;
+            font-size: 0.8rem;
+            line-height: 1.8;
+            color: #e2e8f0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .qyy_k { color: #c4b5fd; }
+        .qyy_s { color: #86efac; }
+        .qyy_p { color: #94a3b8; }
+
+        .qyy_sec-title {
+            font-size: 0.95rem;
+            color: #1e293b;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .qyy_foot {
+            text-align: center;
+            font-size: 0.78rem;
+            color: #cbd5e1;
+            padding-top: 16px;
+            border-top: 1px dashed #e2e8f0;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 760px) {
+            body { padding: 20px 12px; }
+            .qyy_wrap { padding: 24px 18px; border-radius: 14px; }
+            .qyy_img-box { height: 240px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="qyy_wrap">
+        <div class="qyy_head">
+            <h1>随机狗狗图片</h1>
+            <p class="qyy_sub">fetch 请求接口并渲染图片 · <span class="qyy_name">齐英伊 24001010829</span></p>
+        </div>
+
+        <div class="qyy_api">
+            <span class="qyy_tag">GET</span>
+            <code>https://dog.ceo/api/breeds/image/random</code>
+            <span>跨域已开放 · 原生 fetch</span>
+        </div>
+
+        <div class="qyy_actions">
+            <button class="qyy_btn" id="qyy_btn" onclick="qyy_loadDog()">换一只狗狗</button>
+            <button class="qyy_btn qyy_btn--ghost" onclick="qyy_showJson()">查看原始 JSON</button>
+        </div>
+
+        <div class="qyy_stage">
+            <div class="qyy_img-box" id="qyy_imgBox">
+                <div class="qyy_skeleton">正在请求接口…</div>
+            </div>
+
+            <div class="qyy_stats">
+                <div class="qyy_stat">
+                    <div class="qyy_lab">接口状态</div>
+                    <div class="qyy_val" id="qyy_status">—</div>
+                </div>
+                <div class="qyy_stat">
+                    <div class="qyy_lab">狗狗品种</div>
+                    <div class="qyy_val" id="qyy_breed">—</div>
+                </div>
+                <div class="qyy_stat">
+                    <div class="qyy_lab">响应耗时</div>
+                    <div class="qyy_val" id="qyy_time">—</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="qyy_sec-title">接口返回的数据</div>
+        <div class="qyy_raw" id="qyy_raw">点击「换一只狗狗」发起请求…</div>
+
+        <div class="qyy_foot">齐英伊的《高级网页设计》课堂实践 · 17-2 fetch 请求</div>
+    </div>
+
+    <script>
+        const qyy_API = 'https://dog.ceo/api/breeds/image/random';
+        const qyy_imgBox = document.getElementById('qyy_imgBox');
+        const qyy_statusEl = document.getElementById('qyy_status');
+        const qyy_breedEl = document.getElementById('qyy_breed');
+        const qyy_timeEl = document.getElementById('qyy_time');
+        const qyy_rawEl = document.getElementById('qyy_raw');
+        const qyy_btn = document.getElementById('qyy_btn');
+        let qyy_lastJson = null;
+
+        /* 从图片地址里取出品种名，例如 breeds/hound-afghan/xxx.jpg */
+        function qyy_breedOf(qyy_url) {
+            const qyy_parts = qyy_url.split('/');
+            const qyy_i = qyy_parts.indexOf('breeds');
+            if (qyy_i === -1) return qyy_parts[qyy_parts.length - 2] || '未知';
+            return (qyy_parts[qyy_i + 1] || '未知').replace(/-/g, ' ');
+        }
+
+        /* JSON 语法着色 */
+        function qyy_color(qyy_text) {
+            return qyy_text
+                .replace(/"([^"]+)":/g, '<span class="qyy_k">"$1"</span><span class="qyy_p">:</span>')
+                .replace(/: "([^"]*)"/g, ': <span class="qyy_s">"$1"</span>')
+                .replace(/([{}\[\]])/g, '<span class="qyy_p">$1</span>');
+        }
+
+        async function qyy_loadDog() {
+            qyy_btn.disabled = true;
+            qyy_statusEl.textContent = '请求中…';
+            qyy_statusEl.className = 'qyy_val';
+            qyy_breedEl.textContent = '—';
+            qyy_timeEl.textContent = '—';
+            qyy_rawEl.textContent = '请求发送中…';
+            qyy_imgBox.innerHTML = '<div class="qyy_skeleton">正在请求接口…</div>';
+
+            const qyy_start = performance.now();
+            try {
+                const qyy_res = await fetch(qyy_API);
+                const qyy_json = await qyy_res.json();
+                const qyy_ms = Math.round(performance.now() - qyy_start);
+
+                if (qyy_json.status !== 'success') throw new Error('接口返回状态：' + qyy_json.status);
+
+                qyy_lastJson = qyy_json;
+                qyy_imgBox.innerHTML = '<img src="' + qyy_json.message + '" alt="随机狗狗图片">';
+                qyy_statusEl.textContent = qyy_json.status;
+                qyy_statusEl.className = 'qyy_val qyy_val--ok';
+                qyy_breedEl.textContent = qyy_breedOf(qyy_json.message);
+                qyy_timeEl.textContent = qyy_ms + ' ms';
+                qyy_rawEl.innerHTML = qyy_color(JSON.stringify(qyy_json, null, 2));
+                console.log('=== 17-2 接口返回 ===', qyy_json);
+            } catch (qyy_err) {
+                qyy_imgBox.innerHTML =
+                    '<div class="qyy_error">' +
+                        '<div>请求失败</div>' +
+                        '<div style="font-size:.78rem;color:#94a3b8">' + qyy_err.message + '</div>' +
+                    '</div>';
+                qyy_statusEl.textContent = 'failed';
+                qyy_statusEl.className = 'qyy_val';
+                qyy_rawEl.textContent = '请求失败：' + qyy_err.message;
+                console.error('=== 17-2 请求失败 ===', qyy_err);
+            } finally {
+                qyy_btn.disabled = false;
+            }
+        }
+
+        function qyy_showJson() {
+            if (!qyy_lastJson) {
+                qyy_rawEl.textContent = '还没有数据，请先点「换一只狗狗」。';
+                return;
+            }
+            qyy_rawEl.innerHTML = qyy_color(JSON.stringify(qyy_lastJson, null, 2));
+        }
+
+        qyy_loadDog();
+        console.log('===== 17-2 fetch 随机狗狗图片 =====');
+    </script>
+</body>
+</html>

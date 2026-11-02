@@ -1,0 +1,394 @@
+<!-- 姓名: 齐英伊 日期: 2026-11-02 功能名称: fetch 获取商品详情 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <title>17-3 商品详情 · 齐英伊829</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #1e293b;
+        }
+        .qyy_wrap {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+        .qyy_top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px dashed #e2e8f0;
+        }
+        .qyy_back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: #764ba2;
+            font-size: 0.86rem;
+            font-weight: bold;
+            border: 1px solid #c7b3e0;
+            border-radius: 20px;
+            padding: 6px 16px;
+            transition: background 0.15s;
+        }
+        .qyy_back:hover { background: #f5f0fa; }
+        .qyy_top .qyy_api {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            color: #475569;
+        }
+        .qyy_tag {
+            background: #16a34a;
+            color: #fff;
+            border-radius: 4px;
+            padding: 1px 8px;
+            font-size: 0.72rem;
+            font-weight: bold;
+        }
+        .qyy_top code {
+            background: #f1f5f9;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-family: Consolas, monospace;
+            color: #4338ca;
+        }
+
+        /* 主体 */
+        .qyy_main {
+            display: flex;
+            gap: 28px;
+            margin-bottom: 24px;
+        }
+        .qyy_media { flex: 0 0 340px; min-width: 0; }
+        .qyy_big {
+            width: 100%;
+            height: 320px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .qyy_big img { width: 100%; height: 100%; object-fit: contain; }
+        .qyy_thumbs {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .qyy_thumb {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            background: #f8fafc;
+            transition: border-color 0.15s;
+        }
+        .qyy_thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .qyy_thumb.qyy_thumb--on { border-color: #764ba2; }
+
+        .qyy_info { flex: 1; min-width: 0; }
+        .qyy_cat {
+            display: inline-block;
+            background: #eef2ff;
+            color: #4338ca;
+            font-size: 0.72rem;
+            border-radius: 10px;
+            padding: 3px 10px;
+            margin-bottom: 10px;
+        }
+        .qyy_info h1 { font-size: 1.35rem; line-height: 1.4; margin-bottom: 12px; }
+
+        .qyy_price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+            background: #fff7f7;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+        }
+        .qyy_price { font-size: 1.7rem; font-weight: bold; color: #dc2626; }
+        .qyy_old { font-size: 0.85rem; color: #94a3b8; text-decoration: line-through; }
+        .qyy_off {
+            background: #dc2626;
+            color: #fff;
+            font-size: 0.72rem;
+            border-radius: 4px;
+            padding: 2px 8px;
+        }
+
+        .qyy_facts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .qyy_fact {
+            flex: 1 1 100px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 8px 12px;
+        }
+        .qyy_fact .qyy_lab { font-size: 0.7rem; color: #94a3b8; margin-bottom: 3px; }
+        .qyy_fact .qyy_val { font-size: 0.84rem; font-weight: bold; color: #1e293b; }
+
+        .qyy_desc {
+            font-size: 0.85rem;
+            color: #475569;
+            line-height: 1.85;
+            margin-bottom: 14px;
+        }
+        .qyy_tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+        .qyy_tag-item {
+            background: #f5f0fa;
+            color: #764ba2;
+            font-size: 0.75rem;
+            border-radius: 12px;
+            padding: 3px 12px;
+        }
+        .qyy_serv {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+        .qyy_serv span::before { content: "✓ "; color: #16a34a; font-weight: bold; }
+
+        /* 评价 */
+        .qyy_sec-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+            padding-left: 10px;
+            border-left: 4px solid #764ba2;
+        }
+        .qyy_reviews { display: flex; gap: 14px; flex-wrap: wrap; }
+        .qyy_review {
+            flex: 1 1 240px;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px 16px;
+        }
+        .qyy_review .qyy_rhead {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+        .qyy_review .qyy_star { color: #f59e0b; font-weight: bold; }
+        .qyy_review p { font-size: 0.8rem; color: #475569; line-height: 1.7; }
+
+        /* 翻页 */
+        .qyy_pager {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 24px;
+        }
+        .qyy_pager a {
+            text-decoration: none;
+            border: 1px solid #c7b3e0;
+            color: #764ba2;
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-size: 0.84rem;
+            font-weight: bold;
+            transition: background 0.15s;
+        }
+        .qyy_pager a:hover { background: #f5f0fa; }
+        .qyy_pager a.qyy_disabled { opacity: .4; pointer-events: none; }
+
+        /* 状态 */
+        .qyy_state {
+            text-align: center;
+            padding: 70px 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        .qyy_state.qyy_state--err { color: #dc2626; }
+        .qyy_spin {
+            width: 34px;
+            height: 34px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #764ba2;
+            border-radius: 50%;
+            margin: 0 auto 14px;
+            animation: qyy_spin 0.9s linear infinite;
+        }
+        @keyframes qyy_spin { to { transform: rotate(360deg); } }
+
+        .qyy_foot {
+            text-align: center;
+            font-size: 0.78rem;
+            color: #cbd5e1;
+            padding-top: 14px;
+            border-top: 1px dashed #e2e8f0;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 820px) {
+            .qyy_main { flex-direction: column; }
+            .qyy_media { flex: 1 1 auto; }
+            .qyy_big { height: 260px; }
+        }
+        @media (max-width: 560px) {
+            body { padding: 20px 12px; }
+            .qyy_wrap { padding: 22px 18px; border-radius: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="qyy_wrap">
+        <div class="qyy_top">
+            <a class="qyy_back" href="17-3.html">‹ 返回列表</a>
+            <div class="qyy_api">
+                <span class="qyy_tag">GET</span>
+                <code id="qyy_url">https://dummyjson.com/products/1</code>
+            </div>
+        </div>
+
+        <div id="qyy_body">
+            <div class="qyy_state">
+                <div class="qyy_spin"></div>
+                正在请求商品详情…
+            </div>
+        </div>
+
+        <div class="qyy_foot">齐英伊的《高级网页设计》课堂实践 · 17-3 详情页</div>
+    </div>
+
+    <script>
+        const qyy_body = document.getElementById('qyy_body');
+        const qyy_urlEl = document.getElementById('qyy_url');
+
+        /* 从地址栏 ?id=1 取商品编号，没有就默认 1 */
+        const qyy_id = Number(new URLSearchParams(location.search).get('id')) || 1;
+        const qyy_API = 'https://dummyjson.com/products/' + qyy_id;
+        qyy_urlEl.textContent = qyy_API;
+
+        function qyy_esc(qyy_text) {
+            return String(qyy_text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        /* 生成评价列表 */
+        function qyy_reviewHTML(qyy_reviews) {
+            if (!qyy_reviews || !qyy_reviews.length) return '<p class="qyy_desc">暂无评价</p>';
+            return qyy_reviews.slice(0, 3).map(function (qyy_r) {
+                return '<div class="qyy_review">' +
+                        '<div class="qyy_rhead">' +
+                            '<span>' + qyy_esc(qyy_r.reviewerName) + '</span>' +
+                            '<span class="qyy_star">★ ' + qyy_r.rating + '</span>' +
+                        '</div>' +
+                        '<p>' + qyy_esc(qyy_r.comment) + '</p>' +
+                    '</div>';
+            }).join('');
+        }
+
+        /* 生成详情主体 */
+        function qyy_detailHTML(qyy_p) {
+            const qyy_old = (qyy_p.price / (1 - qyy_p.discountPercentage / 100)).toFixed(2);
+            const qyy_thumbs = qyy_p.images.map(function (qyy_src, qyy_i) {
+                return '<div class="qyy_thumb' + (qyy_i === 0 ? ' qyy_thumb--on' : '') + '" onclick="qyy_swap(this, \'' + qyy_src + '\')">' +
+                        '<img src="' + qyy_src + '" alt="图片' + (qyy_i + 1) + '">' +
+                    '</div>';
+            }).join('');
+
+            return '<div class="qyy_main">' +
+                    '<div class="qyy_media">' +
+                        '<div class="qyy_big" id="qyy_big"><img src="' + qyy_p.images[0] + '" alt="' + qyy_esc(qyy_p.title) + '"></div>' +
+                        '<div class="qyy_thumbs">' + qyy_thumbs + '</div>' +
+                    '</div>' +
+                    '<div class="qyy_info">' +
+                        '<span class="qyy_cat">' + qyy_esc(qyy_p.category) + '</span>' +
+                        '<h1>' + qyy_esc(qyy_p.title) + '</h1>' +
+                        '<div class="qyy_price-row">' +
+                            '<span class="qyy_price">$' + qyy_p.price + '</span>' +
+                            '<span class="qyy_old">$' + qyy_old + '</span>' +
+                            '<span class="qyy_off">省 ' + Math.round(qyy_p.discountPercentage) + '%</span>' +
+                        '</div>' +
+                        '<div class="qyy_facts">' +
+                            '<div class="qyy_fact"><div class="qyy_lab">评分</div><div class="qyy_val">★ ' + qyy_p.rating + '</div></div>' +
+                            '<div class="qyy_fact"><div class="qyy_lab">库存</div><div class="qyy_val">' + qyy_p.stock + ' 件</div></div>' +
+                            '<div class="qyy_fact"><div class="qyy_lab">品牌</div><div class="qyy_val">' + qyy_esc(qyy_p.brand || '—') + '</div></div>' +
+                        '</div>' +
+                        '<p class="qyy_desc">' + qyy_esc(qyy_p.description) + '</p>' +
+                        '<div class="qyy_tags">' + qyy_p.tags.map(function (qyy_t) {
+                            return '<span class="qyy_tag-item">' + qyy_esc(qyy_t) + '</span>';
+                        }).join('') + '</div>' +
+                        '<div class="qyy_serv">' +
+                            '<span>' + qyy_esc(qyy_p.returnPolicy) + '</span>' +
+                            '<span>' + qyy_esc(qyy_p.warrantyInformation) + '</span>' +
+                            '<span>' + qyy_esc(qyy_p.shippingInformation) + '</span>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="qyy_sec-title">用户评价（共 ' + (qyy_p.reviews ? qyy_p.reviews.length : 0) + ' 条）</div>' +
+                '<div class="qyy_reviews">' + qyy_reviewHTML(qyy_p.reviews) + '</div>' +
+                '<div class="qyy_pager">' +
+                    '<a href="17-3-detail.html?id=' + Math.max(1, qyy_id - 1) + '"' + (qyy_id <= 1 ? ' class="qyy_disabled"' : '') + '>‹ 上一件</a>' +
+                    '<a href="17-3-detail.html?id=' + (qyy_id + 1) + '">下一件 ›</a>' +
+                '</div>';
+        }
+
+        /* 切换主图 */
+        function qyy_swap(qyy_el, qyy_src) {
+            document.getElementById('qyy_big').innerHTML = '<img src="' + qyy_src + '" alt="商品图片">';
+            document.querySelectorAll('.qyy_thumb').forEach(function (qyy_t) {
+                qyy_t.classList.remove('qyy_thumb--on');
+            });
+            qyy_el.classList.add('qyy_thumb--on');
+        }
+
+        async function qyy_loadDetail() {
+            try {
+                const qyy_res = await fetch(qyy_API);
+                if (!qyy_res.ok) throw new Error('HTTP ' + qyy_res.status);
+                const qyy_p = await qyy_res.json();
+                qyy_body.innerHTML = qyy_detailHTML(qyy_p);
+                document.title = qyy_p.title + ' · 17-3 商品详情';
+                console.log('=== 17-3 商品详情接口返回 ===', qyy_p);
+            } catch (qyy_err) {
+                qyy_body.innerHTML =
+                    '<div class="qyy_state qyy_state--err">' +
+                        '详情请求失败：' + qyy_esc(qyy_err.message) + '<br>' +
+                        '<a href="17-3.html" style="color:#764ba2">‹ 返回列表</a>' +
+                    '</div>';
+                console.error('=== 17-3 详情请求失败 ===', qyy_err);
+            }
+        }
+
+        qyy_loadDetail();
+        console.log('===== 17-3 商品详情页 · id=' + qyy_id + ' =====');
+    </script>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!-- 姓名: 齐英伊 日期: 2026-11-02 功能名称: fetch 获取商品列表 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <title>17-3 商品列表 · 齐英伊829</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #1e293b;
+        }
+        .qyy_wrap {
+            max-width: 1080px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            padding: 36px 32px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+        .qyy_head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding-bottom: 18px;
+            border-bottom: 2px dashed #e2e8f0;
+        }
+        .qyy_head h1 { font-size: 1.7rem; color: #1e293b; margin-bottom: 6px; }
+        .qyy_head .qyy_sub { font-size: 0.85rem; color: #64748b; }
+        .qyy_head .qyy_name { color: #764ba2; font-weight: bold; }
+
+        .qyy_api {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.8rem;
+            color: #475569;
+            margin-bottom: 20px;
+        }
+        .qyy_tag {
+            background: #16a34a;
+            color: #fff;
+            border-radius: 4px;
+            padding: 1px 8px;
+            font-size: 0.72rem;
+            font-weight: bold;
+        }
+        .qyy_api code {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-family: Consolas, monospace;
+            color: #4338ca;
+            word-break: break-all;
+        }
+
+        /* 商品网格 */
+        .qyy_grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+        .qyy_card {
+            flex: 1 1 calc(25% - 14px);
+            min-width: 210px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        }
+        .qyy_card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 34px rgba(102,126,234,0.28);
+            border-color: #c7b3e0;
+        }
+        .qyy_thumb {
+            width: 100%;
+            height: 170px;
+            background: #f8fafc;
+            overflow: hidden;
+        }
+        .qyy_thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        .qyy_card-body { padding: 12px 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+        .qyy_cat {
+            align-self: flex-start;
+            background: #eef2ff;
+            color: #4338ca;
+            font-size: 0.7rem;
+            border-radius: 10px;
+            padding: 2px 9px;
+        }
+        .qyy_title {
+            font-size: 0.88rem;
+            font-weight: bold;
+            color: #1e293b;
+            line-height: 1.45;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 42px;
+        }
+        .qyy_meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 2px;
+        }
+        .qyy_price { font-size: 1.05rem; font-weight: bold; color: #dc2626; }
+        .qyy_rate { font-size: 0.78rem; color: #f59e0b; font-weight: bold; }
+        .qyy_info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            color: #94a3b8;
+            border-top: 1px dashed #e2e8f0;
+            padding-top: 8px;
+            margin-top: 4px;
+        }
+        .qyy_more { color: #764ba2; font-weight: bold; }
+
+        /* 状态 */
+        .qyy_state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        .qyy_state.qyy_state--err { color: #dc2626; }
+        .qyy_spin {
+            width: 34px;
+            height: 34px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #764ba2;
+            border-radius: 50%;
+            margin: 0 auto 14px;
+            animation: qyy_spin 0.9s linear infinite;
+        }
+        @keyframes qyy_spin { to { transform: rotate(360deg); } }
+
+        .qyy_count {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 0.78rem;
+            border-radius: 12px;
+            padding: 3px 12px;
+        }
+
+        .qyy_foot {
+            text-align: center;
+            font-size: 0.78rem;
+            color: #cbd5e1;
+            padding-top: 16px;
+            border-top: 1px dashed #e2e8f0;
+            margin-top: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .qyy_card { flex: 1 1 calc(50% - 9px); }
+        }
+        @media (max-width: 560px) {
+            body { padding: 20px 12px; }
+            .qyy_wrap { padding: 24px 18px; border-radius: 14px; }
+            .qyy_card { flex: 1 1 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="qyy_wrap">
+        <div class="qyy_head">
+            <div>
+                <h1>商品列表</h1>
+                <p class="qyy_sub">fetch 请求接口渲染列表 · <span class="qyy_name">齐英伊 24001010829</span></p>
+            </div>
+            <span class="qyy_count" id="qyy_count">共 0 件商品</span>
+        </div>
+
+        <div class="qyy_api">
+            <span class="qyy_tag">GET</span>
+            <code>https://dummyjson.com/products?limit=8</code>
+            <span>点击卡片查看详情 →</span>
+        </div>
+
+        <div class="qyy_grid" id="qyy_grid">
+            <div class="qyy_state" style="flex:1 1 100%">
+                <div class="qyy_spin"></div>
+                正在请求商品数据…
+            </div>
+        </div>
+
+        <div class="qyy_foot">齐英伊的《高级网页设计》课堂实践 · 17-3 列表页</div>
+    </div>
+
+    <script>
+        const qyy_API = 'https://dummyjson.com/products?limit=8';
+        const qyy_grid = document.getElementById('qyy_grid');
+        const qyy_count = document.getElementById('qyy_count');
+
+        /* 转义文本，避免商品标题里的符号破坏结构 */
+        function qyy_esc(qyy_text) {
+            return String(qyy_text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        /* 由接口数据生成一张商品卡片 */
+        function qyy_cardHTML(qyy_p) {
+            return '<a class="qyy_card" href="17-3-detail.html?id=' + qyy_p.id + '">' +
+                    '<div class="qyy_thumb"><img src="' + qyy_p.thumbnail + '" alt="' + qyy_esc(qyy_p.title) + '" loading="lazy"></div>' +
+                    '<div class="qyy_card-body">' +
+                        '<span class="qyy_cat">' + qyy_esc(qyy_p.category) + '</span>' +
+                        '<div class="qyy_title">' + qyy_esc(qyy_p.title) + '</div>' +
+                        '<div class="qyy_meta">' +
+                            '<span class="qyy_price">$' + qyy_p.price + '</span>' +
+                            '<span class="qyy_rate">★ ' + qyy_p.rating + '</span>' +
+                        '</div>' +
+                        '<div class="qyy_info">' +
+                            '<span>库存 ' + qyy_p.stock + '</span>' +
+                            '<span class="qyy_more">查看详情 ›</span>' +
+                        '</div>' +
+                    '</div>' +
+                '</a>';
+        }
+
+        async function qyy_loadList() {
+            try {
+                const qyy_res = await fetch(qyy_API);
+                if (!qyy_res.ok) throw new Error('HTTP ' + qyy_res.status);
+                const qyy_data = await qyy_res.json();
+
+                qyy_count.textContent = '共 ' + qyy_data.total + ' 件商品，当前显示 ' + qyy_data.products.length + ' 件';
+                qyy_grid.innerHTML = qyy_data.products.map(qyy_cardHTML).join('');
+                console.log('=== 17-3 商品列表接口返回 ===', qyy_data);
+            } catch (qyy_err) {
+                qyy_grid.innerHTML =
+                    '<div class="qyy_state qyy_state--err" style="flex:1 1 100%">' +
+                        '列表请求失败：' + qyy_esc(qyy_err.message) +
+                    '</div>';
+                qyy_count.textContent = '加载失败';
+                console.error('=== 17-3 列表请求失败 ===', qyy_err);
+            }
+        }
+
+        qyy_loadList();
+        console.log('===== 17-3 商品列表页 =====');
+    </script>
+</body>
+</html>
