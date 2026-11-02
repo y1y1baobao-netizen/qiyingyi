@@ -1,0 +1,538 @@
+<!-- 姓名: 齐英伊 日期: 2026-11-02 功能名称: Promise 与 async 异步包饺子流程 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <title>17-6 异步包饺子 · 齐英伊829</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #1e293b;
+        }
+        .qyy_wrap {
+            max-width: 960px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            padding: 34px 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+        .qyy_head {
+            text-align: center;
+            margin-bottom: 22px;
+            padding-bottom: 18px;
+            border-bottom: 2px dashed #e2e8f0;
+        }
+        .qyy_head h1 { font-size: 1.7rem; margin-bottom: 8px; }
+        .qyy_head .qyy_sub { font-size: 0.85rem; color: #64748b; }
+        .qyy_head .qyy_name { color: #764ba2; font-weight: bold; }
+
+        /* 控制条 */
+        .qyy_controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 14px 18px;
+            margin-bottom: 22px;
+        }
+        .qyy_btn {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 22px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .qyy_btn:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(102,126,234,0.35); }
+        .qyy_btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+        .qyy_btn.qyy_btn--ghost {
+            background: #fff;
+            color: #764ba2;
+            border: 1px solid #c7b3e0;
+        }
+        .qyy_clockbox {
+            margin-left: auto;
+            text-align: right;
+            font-size: 0.78rem;
+            color: #64748b;
+        }
+        .qyy_clockbox .qyy_time {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #764ba2;
+            font-family: Consolas, monospace;
+        }
+        .qyy_stage-now {
+            font-size: 0.8rem;
+            color: #475569;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 6px 14px;
+        }
+
+        /* 流程 */
+        .qyy_flow { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+        .qyy_step {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            border: 1px solid #e2e8f0;
+            border-left: 5px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 14px 18px;
+            background: #f8fafc;
+            transition: all 0.25s;
+        }
+        .qyy_step.qyy_step--running {
+            border-left-color: #667eea;
+            background: #eef2ff;
+            box-shadow: 0 6px 18px rgba(102,126,234,0.18);
+        }
+        .qyy_step.qyy_step--done {
+            border-left-color: #16a34a;
+            background: #f0fdf4;
+        }
+        .qyy_step-ico {
+            font-size: 1.4rem;
+            line-height: 1.4;
+            flex-shrink: 0;
+        }
+        .qyy_step-main { flex: 1; min-width: 0; }
+        .qyy_step-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+        .qyy_step-name { font-size: 0.94rem; font-weight: bold; }
+        .qyy_step-badge {
+            font-size: 0.72rem;
+            border-radius: 10px;
+            padding: 2px 10px;
+            background: #e2e8f0;
+            color: #64748b;
+            white-space: nowrap;
+        }
+        .qyy_step--running .qyy_step-badge { background: #c7d2fe; color: #3730a3; }
+        .qyy_step--done .qyy_step-badge { background: #bbf7d0; color: #15803d; }
+        .qyy_step-desc { font-size: 0.76rem; color: #64748b; line-height: 1.6; }
+        .qyy_bar {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .qyy_bar > i {
+            display: block;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 3px;
+            transition: width 0.1s linear;
+        }
+        .qyy_step--done .qyy_bar > i { background: #16a34a; }
+
+        /* 并行步骤 */
+        .qyy_para { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+        .qyy_sub {
+            flex: 1 1 200px;
+            min-width: 0;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 10px 14px;
+        }
+        .qyy_sub.qyy_sub--running { border-color: #667eea; }
+        .qyy_sub.qyy_sub--done { border-color: #16a34a; background: #f7fef9; }
+        .qyy_sub-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 2px;
+        }
+        .qyy_sub-name { font-size: 0.84rem; font-weight: bold; }
+        .qyy_sub-time { font-size: 0.72rem; color: #94a3b8; }
+        .qyy_sub .qyy_badge {
+            font-size: 0.68rem;
+            color: #64748b;
+        }
+        .qyy_sub--running .qyy_badge { color: #4338ca; font-weight: bold; }
+        .qyy_sub--done .qyy_badge { color: #16a34a; font-weight: bold; }
+
+        /* 日志 */
+        .qyy_sec-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-left: 10px;
+            border-left: 4px solid #764ba2;
+        }
+        #qyy_log {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-family: Consolas, monospace;
+            font-size: 0.78rem;
+            line-height: 1.9;
+            color: #e2e8f0;
+            height: 170px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-bottom: 22px;
+        }
+        #qyy_log .qyy_g { color: #86efac; }
+        #qyy_log .qyy_y { color: #fdba74; }
+        #qyy_log .qyy_b { color: #93c5fd; }
+
+        /* 代码 */
+        .qyy_code {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 16px 18px;
+            font-family: Consolas, monospace;
+            font-size: 0.8rem;
+            line-height: 1.9;
+            color: #e2e8f0;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        .qyy_kw { color: #c4b5fd; }
+        .qyy_fn { color: #86efac; }
+        .qyy_cm { color: #64748b; }
+        .qyy_p { color: #94a3b8; }
+
+        .qyy_foot {
+            text-align: center;
+            font-size: 0.78rem;
+            color: #cbd5e1;
+            padding-top: 14px;
+            border-top: 1px dashed #e2e8f0;
+            margin-top: 22px;
+        }
+
+        @media (max-width: 620px) {
+            body { padding: 20px 12px; }
+            .qyy_wrap { padding: 22px 18px; border-radius: 14px; }
+            .qyy_clockbox { margin-left: 0; text-align: left; }
+            .qyy_para { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="qyy_wrap">
+        <div class="qyy_head">
+            <h1>异步包饺子</h1>
+            <p class="qyy_sub">Promise + async / await 演示串行与并行 · <span class="qyy_name">齐英伊 24001010829</span></p>
+        </div>
+
+        <div class="qyy_controls">
+            <button class="qyy_btn" id="qyy_startBtn" onclick="qyy_cook()">开始包饺子</button>
+            <button class="qyy_btn qyy_btn--ghost" onclick="qyy_reset()">重置</button>
+            <span class="qyy_stage-now" id="qyy_now">等待开始</span>
+            <div class="qyy_clockbox">
+                <div class="qyy_time" id="qyy_totalTime">0.0 s</div>
+                <div>总耗时（预计 17 秒）</div>
+            </div>
+        </div>
+
+        <div class="qyy_flow">
+            <div class="qyy_step" id="qyy_step_buy">
+                <span class="qyy_step-ico">🛒</span>
+                <div class="qyy_step-main">
+                    <div class="qyy_step-top">
+                        <span class="qyy_step-name">1. 买原料</span>
+                        <span class="qyy_step-badge">等待中</span>
+                    </div>
+                    <div class="qyy_step-desc">去菜市场买面粉、猪肉、韭菜和调料，耗时 6 秒</div>
+                    <div class="qyy_bar"><i id="qyy_bar_buy"></i></div>
+                </div>
+            </div>
+
+            <div class="qyy_step" id="qyy_step_take">
+                <span class="qyy_step-ico">🧺</span>
+                <div class="qyy_step-main">
+                    <div class="qyy_step-top">
+                        <span class="qyy_step-name">2. 取原料</span>
+                        <span class="qyy_step-badge">等待中</span>
+                    </div>
+                    <div class="qyy_step-desc">把买回来的原料从袋子里取出来、洗净，耗时 2 秒</div>
+                    <div class="qyy_bar"><i id="qyy_bar_take"></i></div>
+                </div>
+            </div>
+
+            <div class="qyy_step" id="qyy_step_prep">
+                <span class="qyy_step-ico">⚡</span>
+                <div class="qyy_step-main">
+                    <div class="qyy_step-top">
+                        <span class="qyy_step-name">3. 同时进行：和面 &amp; 和馅</span>
+                        <span class="qyy_step-badge">等待中</span>
+                    </div>
+                    <div class="qyy_step-desc">两件事互不依赖，用 Promise.all 同时开始，谁都不用等谁</div>
+                    <div class="qyy_para">
+                        <div class="qyy_sub" id="qyy_sub_dough">
+                            <div class="qyy_sub-top">
+                                <span class="qyy_sub-name">🍚 和面</span>
+                                <span class="qyy_sub-time">4 秒</span>
+                            </div>
+                            <span class="qyy_badge">等待中</span>
+                            <div class="qyy_bar"><i id="qyy_bar_dough"></i></div>
+                        </div>
+                        <div class="qyy_sub" id="qyy_sub_filling">
+                            <div class="qyy_sub-top">
+                                <span class="qyy_sub-name">🥬 和馅</span>
+                                <span class="qyy_sub-time">3 秒</span>
+                            </div>
+                            <span class="qyy_badge">等待中</span>
+                            <div class="qyy_bar"><i id="qyy_bar_filling"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="qyy_step" id="qyy_step_wrap">
+                <span class="qyy_step-ico">🥟</span>
+                <div class="qyy_step-main">
+                    <div class="qyy_step-top">
+                        <span class="qyy_step-name">4. 包饺子</span>
+                        <span class="qyy_step-badge">等待中</span>
+                    </div>
+                    <div class="qyy_step-desc">面皮和馅都准备好之后才能包，耗时 5 秒</div>
+                    <div class="qyy_bar"><i id="qyy_bar_wrap"></i></div>
+                </div>
+            </div>
+
+            <div class="qyy_step" id="qyy_step_eat">
+                <span class="qyy_step-ico">😋</span>
+                <div class="qyy_step-main">
+                    <div class="qyy_step-top">
+                        <span class="qyy_step-name">5. 吃饺子</span>
+                        <span class="qyy_step-badge">等待中</span>
+                    </div>
+                    <div class="qyy_step-desc">包完才能吃，耗时 2 秒</div>
+                    <div class="qyy_bar"><i id="qyy_bar_eat"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="qyy_sec-title">执行日志</div>
+        <div id="qyy_log"><span class="qyy_cm">// 点击「开始包饺子」查看流程</span></div>
+
+        <div class="qyy_sec-title">驱动流程的代码</div>
+        <div class="qyy_code"><span class="qyy_kw">async function</span> <span class="qyy_fn">qyy_cook</span>() {
+  <span class="qyy_kw">await</span> <span class="qyy_fn">qyy_buy</span>();                              <span class="qyy_cm">// 买原料 6s</span>
+  <span class="qyy_kw">await</span> <span class="qyy_fn">qyy_take</span>();                             <span class="qyy_cm">// 取原料 2s</span>
+  <span class="qyy_kw">await</span> Promise.<span class="qyy_fn">all</span>([                       <span class="qyy_cm">// 同时进行，等最慢的那个</span>
+    <span class="qyy_fn">qyy_dough</span>(),    <span class="qyy_cm">// 和面 4s</span>
+    <span class="qyy_fn">qyy_filling</span>()  <span class="qyy_cm">// 和馅 3s</span>
+  ]);
+  <span class="qyy_kw">await</span> <span class="qyy_fn">qyy_wrap</span>();                            <span class="qyy_cm">// 包饺子 5s</span>
+  <span class="qyy_kw">await</span> <span class="qyy_fn">qyy_eat</span>();                             <span class="qyy_cm">// 吃饺子 2s</span>
+}
+
+<span class="qyy_p">// 每个步骤都是一个 Promise，内部用 setTimeout 模拟耗时</span>
+<span class="qyy_kw">function</span> <span class="qyy_fn">qyy_buy</span>() {
+  <span class="qyy_kw">return new</span> <span class="qyy_fn">Promise</span>(<span class="qyy_kw">function</span> (resolve) {
+    <span class="qyy_fn">setTimeout</span>(resolve, <span class="qyy_p">6000</span>);
+  });
+}</div>
+
+        <div class="qyy_foot">齐英伊的《高级网页设计》课堂实践 · 17-6 异步流程</div>
+    </div>
+
+    <script>
+        const qyy_logEl = document.getElementById('qyy_log');
+        const qyy_startBtn = document.getElementById('qyy_startBtn');
+        const qyy_nowEl = document.getElementById('qyy_now');
+        const qyy_totalEl = document.getElementById('qyy_totalTime');
+
+        let qyy_running = false;
+        let qyy_clockId = null;
+        let qyy_clockStart = 0;
+
+        const qyy_stepIds = ['buy', 'take', 'prep', 'wrap', 'eat'];
+        const qyy_barIds = ['buy', 'take', 'dough', 'filling', 'wrap', 'eat'];
+
+        function qyy_log(qyy_text, qyy_cls) {
+            const qyy_line = document.createElement('div');
+            if (qyy_cls) qyy_line.className = qyy_cls;
+            qyy_line.textContent = qyy_text;
+            qyy_logEl.appendChild(qyy_line);
+            qyy_logEl.scrollTop = qyy_logEl.scrollHeight;
+        }
+
+        function qyy_now(qyy_text) {
+            qyy_nowEl.textContent = qyy_text;
+        }
+
+        /* 修改某个步骤的状态：等待中 / 进行中 / 完成 */
+        function qyy_mark(qyy_id, qyy_state) {
+            const qyy_box = document.getElementById('qyy_step_' + qyy_id);
+            if (!qyy_box) return;
+            qyy_box.classList.remove('qyy_step--running', 'qyy_step--done');
+            const qyy_badge = qyy_box.querySelector('.qyy_step-badge');
+            if (qyy_state === 'running') {
+                qyy_box.classList.add('qyy_step--running');
+                qyy_badge.textContent = '进行中…';
+            } else if (qyy_state === 'done') {
+                qyy_box.classList.add('qyy_step--done');
+                qyy_badge.textContent = '✓ 完成';
+            } else {
+                qyy_badge.textContent = '等待中';
+            }
+        }
+
+        function qyy_markSub(qyy_id, qyy_state) {
+            const qyy_box = document.getElementById('qyy_sub_' + qyy_id);
+            if (!qyy_box) return;
+            qyy_box.classList.remove('qyy_sub--running', 'qyy_sub--done');
+            const qyy_badge = qyy_box.querySelector('.qyy_badge');
+            if (qyy_state === 'running') {
+                qyy_box.classList.add('qyy_sub--running');
+                qyy_badge.textContent = '进行中…';
+            } else if (qyy_state === 'done') {
+                qyy_box.classList.add('qyy_sub--done');
+                qyy_badge.textContent = '✓ 完成';
+            }
+        }
+
+        function qyy_bar(qyy_id, qyy_percent) {
+            const qyy_el = document.getElementById('qyy_bar_' + qyy_id);
+            if (qyy_el) qyy_el.style.width = qyy_percent + '%';
+        }
+
+        /* 核心：一个用 setTimeout 模拟耗时的 Promise 步骤 */
+        function qyy_runStep(qyy_barId, qyy_ms, qyy_hook) {
+            return new Promise(function (qyy_resolve) {
+                if (qyy_hook && qyy_hook.qyy_start) qyy_hook.qyy_start();
+                const qyy_t0 = performance.now();
+                const qyy_timer = setInterval(function () {
+                    const qyy_p = Math.min(1, (performance.now() - qyy_t0) / qyy_ms);
+                    qyy_bar(qyy_barId, qyy_p * 100);
+                }, 50);
+
+                setTimeout(function () {
+                    clearInterval(qyy_timer);
+                    qyy_bar(qyy_barId, 100);
+                    if (qyy_hook && qyy_hook.qyy_done) qyy_hook.qyy_done();
+                    qyy_resolve();
+                }, qyy_ms);
+            });
+        }
+
+        /* 总耗时计时器 */
+        function qyy_clockOn() {
+            qyy_clockStart = performance.now();
+            qyy_clockId = setInterval(function () {
+                qyy_totalEl.textContent = ((performance.now() - qyy_clockStart) / 1000).toFixed(1) + ' s';
+            }, 100);
+        }
+
+        function qyy_clockOff() {
+            if (qyy_clockId !== null) {
+                clearInterval(qyy_clockId);
+                qyy_clockId = null;
+            }
+        }
+
+        /* 主流程：async / await 串联，Promise.all 并行 */
+        async function qyy_cook() {
+            if (qyy_running) return;
+            qyy_running = true;
+            qyy_startBtn.disabled = true;
+            qyy_logEl.innerHTML = '';
+            qyy_log('开始下厨 🍳', 'qyy_y');
+            qyy_clockOn();
+
+            qyy_now('买原料中…');
+            qyy_mark('buy', 'running');
+            qyy_log('第一步：买原料（6 秒）', 'qyy_b');
+            await qyy_runStep('buy', 6000, {
+                qyy_done: function () { qyy_mark('buy', 'done'); }
+            });
+            qyy_log('✓ 原料买回来了', 'qyy_g');
+
+            qyy_now('取原料中…');
+            qyy_mark('take', 'running');
+            qyy_log('第二步：取原料（2 秒）', 'qyy_b');
+            await qyy_runStep('take', 2000, {
+                qyy_done: function () { qyy_mark('take', 'done'); }
+            });
+            qyy_log('✓ 原料已取出、洗净', 'qyy_g');
+
+            qyy_now('同时和面、和馅…');
+            qyy_mark('prep', 'running');
+            qyy_log('第三步：和面（4 秒）与和馅（3 秒）同时开始，等两者都完成', 'qyy_b');
+            await Promise.all([
+                qyy_runStep('dough', 4000, {
+                    qyy_start: function () { qyy_markSub('dough', 'running'); },
+                    qyy_done: function () {
+                        qyy_markSub('dough', 'done');
+                        qyy_log('✓ 面和好了（4 秒）', 'qyy_g');
+                    }
+                }),
+                qyy_runStep('filling', 3000, {
+                    qyy_start: function () { qyy_markSub('filling', 'running'); },
+                    qyy_done: function () {
+                        qyy_markSub('filling', 'done');
+                        qyy_log('✓ 馅和好了（3 秒，先于和面完成，但仍要等和面）', 'qyy_g');
+                    }
+                })
+            ]);
+            qyy_mark('prep', 'done');
+            qyy_log('✓ 面与馅全部就绪，并行动作结束', 'qyy_g');
+
+            qyy_now('包饺子中…');
+            qyy_mark('wrap', 'running');
+            qyy_log('第四步：包饺子（5 秒）', 'qyy_b');
+            await qyy_runStep('wrap', 5000, {
+                qyy_done: function () { qyy_mark('wrap', 'done'); }
+            });
+            qyy_log('✓ 饺子包好了，一共 30 个', 'qyy_g');
+
+            qyy_now('吃饺子中…');
+            qyy_mark('eat', 'running');
+            qyy_log('第五步：吃饺子（2 秒）', 'qyy_b');
+            await qyy_runStep('eat', 2000, {
+                qyy_done: function () { qyy_mark('eat', 'done'); }
+            });
+
+            qyy_clockOff();
+            const qyy_total = ((performance.now() - qyy_clockStart) / 1000).toFixed(1);
+            qyy_totalEl.textContent = qyy_total + ' s';
+            qyy_now('全部完成 🎉');
+            qyy_log('🎉 全部完成，总耗时 ' + qyy_total + ' 秒（并行省了 3 秒）', 'qyy_y');
+
+            qyy_running = false;
+            qyy_startBtn.disabled = false;
+        }
+
+        /* 重置所有状态 */
+        function qyy_reset() {
+            if (qyy_running) return;   // 跑动中不重置，避免流程错乱
+            qyy_stepIds.forEach(function (qyy_id) { qyy_mark(qyy_id, 'pending'); });
+            ['dough', 'filling'].forEach(function (qyy_id) { qyy_markSub(qyy_id, 'pending'); });
+            qyy_barIds.forEach(function (qyy_id) { qyy_bar(qyy_id, 0); });
+            qyy_totalEl.textContent = '0.0 s';
+            qyy_now('等待开始');
+            qyy_logEl.innerHTML = '<span class="qyy_cm">// 已重置，点击「开始包饺子」重新演示</span>';
+        }
+
+        console.log('===== 17-6 异步包饺子 =====');
+    </script>
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!-- 姓名: 齐英伊 日期: 2026-11-02 功能名称: fetch 接口测试工具 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <title>17-4 接口测试 · 齐英伊829</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #1e293b;
+        }
+        .qyy_wrap {
+            max-width: 960px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            padding: 34px 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+        .qyy_head {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 18px;
+            border-bottom: 2px dashed #e2e8f0;
+        }
+        .qyy_head h1 { font-size: 1.7rem; margin-bottom: 8px; }
+        .qyy_head .qyy_sub { font-size: 0.85rem; color: #64748b; }
+        .qyy_head .qyy_name { color: #764ba2; font-weight: bold; }
+
+        .qyy_sec-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+            padding-left: 10px;
+            border-left: 4px solid #764ba2;
+        }
+
+        /* 请求行 */
+        .qyy_methods { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+        .qyy_method {
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            color: #64748b;
+            border-radius: 20px;
+            padding: 6px 18px;
+            font-size: 0.82rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .qyy_method:hover { border-color: #764ba2; color: #764ba2; }
+        .qyy_method.qyy_method--on {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-color: transparent;
+            color: #fff;
+        }
+
+        .qyy_row { display: flex; gap: 10px; margin-bottom: 12px; }
+        #qyy_url {
+            flex: 1;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-family: Consolas, monospace;
+            font-size: 0.82rem;
+            outline: none;
+            color: #1e293b;
+            min-width: 0;
+        }
+        #qyy_url:focus { border-color: #764ba2; box-shadow: 0 0 0 3px rgba(118,75,162,0.15); }
+
+        .qyy_btn {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 22px;
+            cursor: pointer;
+            font-size: 0.86rem;
+            white-space: nowrap;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .qyy_btn:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(102,126,234,0.35); }
+        .qyy_btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+        .qyy_btn.qyy_btn--ghost {
+            background: #fff;
+            color: #764ba2;
+            border: 1px solid #c7b3e0;
+        }
+
+        .qyy_presets { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+        .qyy_preset {
+            background: #f5f0fa;
+            color: #764ba2;
+            border: 1px solid #ddcdea;
+            border-radius: 14px;
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        .qyy_preset:hover { background: #ede4f6; }
+
+        .qyy_lab { font-size: 0.78rem; color: #64748b; margin-bottom: 6px; font-weight: bold; }
+        #qyy_bodyInput {
+            width: 100%;
+            height: 130px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-family: Consolas, monospace;
+            font-size: 0.8rem;
+            line-height: 1.7;
+            resize: vertical;
+            outline: none;
+            color: #1e293b;
+        }
+        #qyy_bodyInput:focus { border-color: #764ba2; box-shadow: 0 0 0 3px rgba(118,75,162,0.15); }
+        #qyy_bodyInput:disabled { background: #f1f5f9; color: #94a3b8; }
+
+        /* 结果 */
+        .qyy_result {
+            margin-top: 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .qyy_result-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            background: #f8fafc;
+            padding: 10px 16px;
+            font-size: 0.8rem;
+            color: #475569;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .qyy_code-badge {
+            border-radius: 4px;
+            padding: 2px 9px;
+            font-weight: bold;
+            font-size: 0.76rem;
+            background: #e2e8f0;
+            color: #475569;
+        }
+        .qyy_code-badge.qyy_ok { background: #dcfce7; color: #15803d; }
+        .qyy_code-badge.qyy_bad { background: #fee2e2; color: #b91c1c; }
+
+        .qyy_resp {
+            background: #1e293b;
+            padding: 16px 18px;
+            font-family: Consolas, monospace;
+            font-size: 0.8rem;
+            line-height: 1.8;
+            color: #e2e8f0;
+            max-height: 340px;
+            overflow: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .qyy_k { color: #c4b5fd; }
+        .qyy_s { color: #86efac; }
+        .qyy_n { color: #fdba74; }
+        .qyy_b { color: #93c5fd; }
+        .qyy_nu { color: #f472b6; }
+        .qyy_p { color: #94a3b8; }
+
+        .qyy_alert {
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 0.82rem;
+            line-height: 1.7;
+            margin-top: 12px;
+        }
+        .qyy_alert.qyy_alert--err {
+            background: #fef2f2;
+            border-left: 4px solid #dc2626;
+            color: #b91c1c;
+        }
+        .qyy_alert.qyy_alert--ok {
+            background: #f0fdf4;
+            border-left: 4px solid #16a34a;
+            color: #15803d;
+        }
+        .qyy_alert b { display: block; margin-bottom: 4px; }
+
+        .qyy_empty {
+            padding: 50px 20px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.86rem;
+        }
+
+        .qyy_foot {
+            text-align: center;
+            font-size: 0.78rem;
+            color: #cbd5e1;
+            padding-top: 14px;
+            border-top: 1px dashed #e2e8f0;
+            margin-top: 22px;
+        }
+
+        @media (max-width: 620px) {
+            body { padding: 20px 12px; }
+            .qyy_wrap { padding: 22px 18px; border-radius: 14px; }
+            .qyy_row { flex-direction: column; }
+            .qyy_btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="qyy_wrap">
+        <div class="qyy_head">
+            <h1>远程接口测试</h1>
+            <p class="qyy_sub">GET / POST 请求 · 显示返回数据与错误提示 · <span class="qyy_name">齐英伊 24001010829</span></p>
+        </div>
+
+        <div class="qyy_sec-title">请求设置</div>
+
+        <div class="qyy_methods" id="qyy_methods">
+            <button class="qyy_method qyy_method--on" onclick="qyy_setMethod('GET', this)">GET</button>
+            <button class="qyy_method" onclick="qyy_setMethod('POST', this)">POST</button>
+            <button class="qyy_method" onclick="qyy_setMethod('PUT', this)">PUT</button>
+            <button class="qyy_method" onclick="qyy_setMethod('DELETE', this)">DELETE</button>
+        </div>
+
+        <div class="qyy_row">
+            <input id="qyy_url" type="text" value="https://jsonplaceholder.typicode.com/posts/1" spellcheck="false">
+            <button class="qyy_btn" id="qyy_sendBtn" onclick="qyy_send()">发送请求</button>
+        </div>
+
+        <div class="qyy_presets">
+            <span class="qyy_preset" onclick="qyy_preset('GET', 'https://jsonplaceholder.typicode.com/posts/1')">GET 单条数据</span>
+            <span class="qyy_preset" onclick="qyy_preset('GET', 'https://jsonplaceholder.typicode.com/posts?_limit=3')">GET 列表数据</span>
+            <span class="qyy_preset" onclick="qyy_preset('POST', 'https://jsonplaceholder.typicode.com/posts')">POST 新建数据</span>
+            <span class="qyy_preset" onclick="qyy_preset('GET', 'https://jsonplaceholder.typicode.com/posts/99999')">404 错误示例</span>
+        </div>
+
+        <div class="qyy_lab">请求体（仅 POST / PUT 需要）</div>
+        <textarea id="qyy_bodyInput" spellcheck="false" disabled>{
+  "title": "齐英伊的接口测试",
+  "body": "这是一条通过 fetch POST 提交的数据",
+  "userId": 1
+}</textarea>
+
+        <div class="qyy_result">
+            <div class="qyy_result-head">
+                <span>响应状态</span>
+                <span class="qyy_code-badge" id="qyy_code">—</span>
+                <span id="qyy_time">耗时 —</span>
+                <span id="qyy_size">大小 —</span>
+            </div>
+            <div class="qyy_resp" id="qyy_resp">点击「发送请求」查看返回数据</div>
+        </div>
+
+        <div id="qyy_alertBox"></div>
+
+        <div class="qyy_foot">齐英伊的《高级网页设计》课堂实践 · 17-4 接口测试</div>
+    </div>
+
+    <script>
+        let qyy_method = 'GET';
+        const qyy_urlEl = document.getElementById('qyy_url');
+        const qyy_bodyEl = document.getElementById('qyy_bodyInput');
+        const qyy_codeEl = document.getElementById('qyy_code');
+        const qyy_timeEl = document.getElementById('qyy_time');
+        const qyy_sizeEl = document.getElementById('qyy_size');
+        const qyy_respEl = document.getElementById('qyy_resp');
+        const qyy_alertBox = document.getElementById('qyy_alertBox');
+        const qyy_sendBtn = document.getElementById('qyy_sendBtn');
+
+        /* 切换请求方法：只有 POST / PUT 才允许填请求体 */
+        function qyy_setMethod(qyy_m, qyy_el) {
+            qyy_method = qyy_m;
+            document.querySelectorAll('.qyy_method').forEach(function (qyy_b) {
+                qyy_b.classList.remove('qyy_method--on');
+            });
+            qyy_el.classList.add('qyy_method--on');
+            qyy_bodyEl.disabled = (qyy_m === 'GET' || qyy_m === 'DELETE');
+        }
+
+        /* 快捷示例 */
+        function qyy_preset(qyy_m, qyy_url) {
+            document.querySelectorAll('.qyy_method').forEach(function (qyy_b) {
+                const qyy_txt = qyy_b.textContent.trim();
+                qyy_b.classList.toggle('qyy_method--on', qyy_txt === qyy_m);
+            });
+            qyy_method = qyy_m;
+            qyy_urlEl.value = qyy_url;
+            qyy_bodyEl.disabled = (qyy_m === 'GET' || qyy_m === 'DELETE');
+        }
+
+        function qyy_tip(qyy_type, qyy_title, qyy_text) {
+            qyy_alertBox.innerHTML =
+                '<div class="qyy_alert qyy_alert--' + qyy_type + '">' +
+                    '<b>' + qyy_title + '</b>' + qyy_text +
+                '</div>';
+        }
+
+        /* JSON 语法着色 */
+        function qyy_color(qyy_text) {
+            return qyy_text
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"([^"]+)":/g, '<span class="qyy_k">"$1"</span><span class="qyy_p">:</span>')
+                .replace(/: "([^"]*)"/g, ': <span class="qyy_s">"$1"</span>')
+                .replace(/: (\d+\.?\d*)/g, ': <span class="qyy_n">$1</span>')
+                .replace(/: (true|false)/g, ': <span class="qyy_b">$1</span>')
+                .replace(/: (null)/g, ': <span class="qyy_nu">$1</span>')
+                .replace(/([{}\[\]])/g, '<span class="qyy_p">$1</span>');
+        }
+
+        /* 发送请求：统一处理成功、HTTP 错误、网络错误 */
+        async function qyy_send() {
+            const qyy_url = qyy_urlEl.value.trim();
+            if (!qyy_url) {
+                qyy_tip('err', '请求未发送', '接口地址不能为空，请先填写 URL。');
+                return;
+            }
+
+            qyy_sendBtn.disabled = true;
+            qyy_sendBtn.textContent = '请求中…';
+            qyy_codeEl.textContent = '—';
+            qyy_codeEl.className = 'qyy_code-badge';
+            qyy_timeEl.textContent = '耗时 —';
+            qyy_sizeEl.textContent = '大小 —';
+            qyy_respEl.textContent = '正在请求 ' + qyy_url;
+            qyy_alertBox.innerHTML = '';
+
+            const qyy_opts = { method: qyy_method };
+            if (qyy_method === 'POST' || qyy_method === 'PUT') {
+                qyy_opts.headers = { 'Content-Type': 'application/json; charset=UTF-8' };
+                qyy_opts.body = qyy_bodyEl.value;
+            }
+
+            const qyy_start = performance.now();
+            try {
+                const qyy_res = await fetch(qyy_url, qyy_opts);
+                const qyy_ms = Math.round(performance.now() - qyy_start);
+                const qyy_text = await qyy_res.text();
+
+                qyy_codeEl.textContent = qyy_res.status + ' ' + qyy_res.statusText;
+                qyy_codeEl.className = 'qyy_code-badge ' + (qyy_res.ok ? 'qyy_ok' : 'qyy_bad');
+                qyy_timeEl.textContent = '耗时 ' + qyy_ms + ' ms';
+                qyy_sizeEl.textContent = '大小 ' + qyy_text.length + ' 字符';
+
+                let qyy_data;
+                try {
+                    qyy_data = JSON.parse(qyy_text);
+                    qyy_respEl.innerHTML = qyy_color(JSON.stringify(qyy_data, null, 2));
+                } catch (qyy_e) {
+                    qyy_respEl.textContent = qyy_text || '（空响应）';
+                }
+
+                if (qyy_res.ok) {
+                    qyy_tip('ok', '请求成功 ' + qyy_res.status, '已收到服务器返回的数据，见上方响应体。');
+                } else {
+                    qyy_tip('err', 'HTTP 错误 ' + qyy_res.status,
+                        '服务器返回了非 2xx 状态码，说明请求未被正常处理。<br>' +
+                        '常见原因：地址写错、资源不存在（404）、参数不合法（400）、服务端异常（500）。');
+                }
+                console.log('=== 17-4 ' + qyy_method + ' ' + qyy_url + ' ===', qyy_data);
+            } catch (qyy_err) {
+                const qyy_ms = Math.round(performance.now() - qyy_start);
+                qyy_codeEl.textContent = '请求失败';
+                qyy_codeEl.className = 'qyy_code-badge qyy_bad';
+                qyy_timeEl.textContent = '耗时 ' + qyy_ms + ' ms';
+                qyy_respEl.textContent = '未能获取响应';
+                qyy_tip('err', '网络请求失败',
+                    '错误信息：' + qyy_err.message + '<br>' +
+                    '常见原因：断网、域名不存在、接口未开启跨域（CORS 被拦截）、HTTPS 证书无效。');
+                console.error('=== 17-4 网络错误 ===', qyy_err);
+            } finally {
+                qyy_sendBtn.disabled = false;
+                qyy_sendBtn.textContent = '发送请求';
+            }
+        }
+
+        console.log('===== 17-4 接口测试工具 =====');
+    </script>
+</body>
+</html>

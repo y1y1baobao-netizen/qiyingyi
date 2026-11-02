@@ -1,0 +1,399 @@
+<!-- 姓名: 齐英伊 日期: 2026-11-02 功能名称: JavaScript 两种定时器演示 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <title>17-5 两种定时器 · 齐英伊829</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #1e293b;
+        }
+        .qyy_wrap {
+            max-width: 960px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            padding: 34px 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+        .qyy_head {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 18px;
+            border-bottom: 2px dashed #e2e8f0;
+        }
+        .qyy_head h1 { font-size: 1.7rem; margin-bottom: 8px; }
+        .qyy_head .qyy_sub { font-size: 0.85rem; color: #64748b; }
+        .qyy_head .qyy_name { color: #764ba2; font-weight: bold; }
+
+        .qyy_grid { display: flex; gap: 20px; flex-wrap: wrap; }
+        .qyy_panel {
+            flex: 1 1 380px;
+            min-width: 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .qyy_panel-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        .qyy_panel-head .qyy_icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: #fff;
+        }
+        .qyy_panel-head h2 { font-size: 1rem; }
+        .qyy_panel .qyy_desc {
+            font-size: 0.78rem;
+            color: #64748b;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        .qyy_panel code {
+            background: #eef2ff;
+            color: #4338ca;
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-family: Consolas, monospace;
+            font-size: 0.75rem;
+        }
+
+        /* setTimeout 展示 */
+        .qyy_count {
+            text-align: center;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 14px;
+        }
+        .qyy_count .qyy_big {
+            font-size: 2.6rem;
+            font-weight: bold;
+            color: #764ba2;
+            line-height: 1.2;
+        }
+        .qyy_count .qyy_small { font-size: 0.76rem; color: #94a3b8; margin-top: 4px; }
+        .qyy_bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+        .qyy_bar > i {
+            display: block;
+            height: 100%;
+            width: 0;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.1s linear;
+        }
+
+        /* 秒表展示 */
+        .qyy_clock {
+            text-align: center;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 14px;
+        }
+        .qyy_clock .qyy_big {
+            font-size: 2.1rem;
+            font-weight: bold;
+            color: #1e293b;
+            font-family: Consolas, monospace;
+            line-height: 1.3;
+        }
+        .qyy_clock .qyy_small { font-size: 0.76rem; color: #94a3b8; margin-top: 4px; }
+        .qyy_clock.qyy_clock--run .qyy_big { color: #16a34a; }
+
+        .qyy_actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .qyy_btn {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .qyy_btn:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(102,126,234,0.3); }
+        .qyy_btn.qyy_btn--ghost {
+            background: #fff;
+            color: #764ba2;
+            border: 1px solid #c7b3e0;
+        }
+        .qyy_btn.qyy_btn--stop {
+            background: #fff;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+        }
+
+        .qyy_tip {
+            margin-top: 12px;
+            font-size: 0.78rem;
+            color: #64748b;
+            min-height: 20px;
+        }
+        .qyy_tip.qyy_tip--done {
+            background: #f0fdf4;
+            border-left: 4px solid #16a34a;
+            border-radius: 8px;
+            color: #15803d;
+            padding: 10px 14px;
+            font-size: 0.84rem;
+            font-weight: bold;
+        }
+
+        /* 日志 */
+        .qyy_logbox { margin-top: 24px; }
+        .qyy_sec-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-left: 10px;
+            border-left: 4px solid #764ba2;
+        }
+        #qyy_log {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-family: Consolas, monospace;
+            font-size: 0.78rem;
+            line-height: 1.9;
+            color: #e2e8f0;
+            height: 180px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        #qyy_log .qyy_g { color: #86efac; }
+        #qyy_log .qyy_y { color: #fdba74; }
+        #qyy_log .qyy_r { color: #fca5a5; }
+
+        .qyy_foot {
+            text-align: center;
+            font-size: 0.78rem;
+            color: #cbd5e1;
+            padding-top: 14px;
+            border-top: 1px dashed #e2e8f0;
+            margin-top: 22px;
+        }
+
+        @media (max-width: 620px) {
+            body { padding: 20px 12px; }
+            .qyy_wrap { padding: 22px 18px; border-radius: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="qyy_wrap">
+        <div class="qyy_head">
+            <h1>JavaScript 两种定时器</h1>
+            <p class="qyy_sub">setTimeout 单次执行 · setInterval 周期执行 · <span class="qyy_name">齐英伊 24001010829</span></p>
+        </div>
+
+        <div class="qyy_grid">
+            <!-- setTimeout -->
+            <div class="qyy_panel">
+                <div class="qyy_panel-head">
+                    <span class="qyy_icon">⏰</span>
+                    <h2>setTimeout —— 单次定时器</h2>
+                </div>
+                <p class="qyy_desc">
+                    在指定的毫秒数之后，<b>只执行一次</b>回调函数。用 <code>setTimeout(fn, ms)</code> 创建，
+                    用 <code>clearTimeout(id)</code> 取消。
+                </p>
+
+                <div class="qyy_count">
+                    <div class="qyy_big" id="qyy_countNum">3</div>
+                    <div class="qyy_small" id="qyy_countLab">秒后提醒（点击下方按钮开始）</div>
+                    <div class="qyy_bar"><i id="qyy_countBar"></i></div>
+                </div>
+
+                <div class="qyy_actions">
+                    <button class="qyy_btn" id="qyy_startTimeout" onclick="qyy_startTimeout()">开始 3 秒倒计时</button>
+                    <button class="qyy_btn qyy_btn--stop" onclick="qyy_cancelTimeout()">clearTimeout 取消</button>
+                </div>
+                <div class="qyy_tip" id="qyy_timeoutTip">定时器 ID：无</div>
+            </div>
+
+            <!-- setInterval -->
+            <div class="qyy_panel">
+                <div class="qyy_panel-head">
+                    <span class="qyy_icon">⏱️</span>
+                    <h2>setInterval —— 周期定时器</h2>
+                </div>
+                <p class="qyy_desc">
+                    每隔指定的毫秒数就<b>重复执行</b>回调函数，直到被取消。用
+                    <code>setInterval(fn, ms)</code> 创建，用 <code>clearInterval(id)</code> 取消。
+                </p>
+
+                <div class="qyy_clock" id="qyy_clock">
+                    <div class="qyy_big" id="qyy_clockNum">00:00.0</div>
+                    <div class="qyy_small" id="qyy_clockLab">每 100 毫秒刷新一次</div>
+                </div>
+
+                <div class="qyy_actions">
+                    <button class="qyy_btn" id="qyy_clockStart" onclick="qyy_startClock()">开始计时</button>
+                    <button class="qyy_btn qyy_btn--ghost" onclick="qyy_clockPause()">暂停</button>
+                    <button class="qyy_btn qyy_btn--stop" onclick="qyy_clockReset()">清零</button>
+                </div>
+                <div class="qyy_tip" id="qyy_clockTip">定时器 ID：无</div>
+            </div>
+        </div>
+
+        <div class="qyy_logbox">
+            <div class="qyy_sec-title">定时器调用日志</div>
+            <div id="qyy_log"><span class="qyy_y">// 等待操作…</span></div>
+        </div>
+
+        <div class="qyy_foot">齐英伊的《高级网页设计》课堂实践 · 17-5 定时器</div>
+    </div>
+
+    <script>
+        const qyy_logEl = document.getElementById('qyy_log');
+        const qyy_countNum = document.getElementById('qyy_countNum');
+        const qyy_countLab = document.getElementById('qyy_countLab');
+        const qyy_countBar = document.getElementById('qyy_countBar');
+        const qyy_timeoutTip = document.getElementById('qyy_timeoutTip');
+        const qyy_clock = document.getElementById('qyy_clock');
+        const qyy_clockNum = document.getElementById('qyy_clockNum');
+        const qyy_clockLab = document.getElementById('qyy_clockLab');
+        const qyy_clockTip = document.getElementById('qyy_clockTip');
+        const qyy_startBtn = document.getElementById('qyy_startTimeout');
+        const qyy_clockStartBtn = document.getElementById('qyy_clockStart');
+
+        /* 追加一行日志 */
+        function qyy_log(qyy_text, qyy_cls) {
+            const qyy_line = document.createElement('div');
+            if (qyy_cls) qyy_line.className = qyy_cls;
+            qyy_line.textContent = qyy_text;
+            qyy_logEl.appendChild(qyy_line);
+            qyy_logEl.scrollTop = qyy_logEl.scrollHeight;
+        }
+
+        /* ===== setTimeout 部分 ===== */
+        let qyy_timeoutId = null;     // setTimeout 返回的编号
+        let qyy_countTimer = null;    // 用于刷新倒计时显示的 setInterval
+        const qyy_TOTAL = 3000;
+
+        function qyy_startTimeout() {
+            qyy_cancelTimeout();
+            qyy_startBtn.disabled = true;
+            qyy_countNum.textContent = '3';
+            qyy_countLab.textContent = '秒后提醒';
+            qyy_countBar.style.width = '0%';
+
+            const qyy_t0 = Date.now();
+            qyy_timeoutId = setTimeout(function () {
+                qyy_countNum.textContent = '⏰';
+                qyy_countLab.textContent = '时间到！该起来活动一下了';
+                qyy_countBar.style.width = '100%';
+                qyy_timeoutTip.className = 'qyy_tip qyy_tip--done';
+                qyy_timeoutTip.textContent = '3 秒已到，回调执行完毕（只执行这一次）';
+                qyy_startBtn.disabled = false;
+                qyy_timeoutId = null;
+                qyy_log('setTimeout 触发：打印「⏰ 3 秒到了」', 'qyy_g');
+            }, qyy_TOTAL);
+
+            qyy_timeoutTip.className = 'qyy_tip';
+            qyy_timeoutTip.textContent = '定时器 ID：' + qyy_timeoutId;
+            qyy_log('setTimeout(function(){ … }, 3000)  → 返回 ID ' + qyy_timeoutId, 'qyy_y');
+
+            qyy_countTimer = setInterval(function () {
+                const qyy_pass = Date.now() - qyy_t0;
+                const qyy_left = Math.max(0, qyy_TOTAL - qyy_pass);
+                qyy_countNum.textContent = Math.ceil(qyy_left / 1000);
+                qyy_countBar.style.width = (qyy_pass / qyy_TOTAL * 100) + '%';
+                if (qyy_left <= 0) clearInterval(qyy_countTimer);
+            }, 100);
+        }
+
+        function qyy_cancelTimeout() {
+            if (qyy_timeoutId !== null) {
+                clearTimeout(qyy_timeoutId);
+                qyy_log('clearTimeout(' + qyy_timeoutId + ')  → 已取消，回调不会执行', 'qyy_r');
+                qyy_timeoutId = null;
+                qyy_timeoutTip.className = 'qyy_tip';
+                qyy_timeoutTip.textContent = '定时器 ID：已取消';
+            }
+            if (qyy_countTimer !== null) {
+                clearInterval(qyy_countTimer);
+                qyy_countTimer = null;
+            }
+            qyy_startBtn.disabled = false;
+            qyy_countNum.textContent = '0';
+            qyy_countLab.textContent = '已取消';
+        }
+
+        /* ===== setInterval 部分 ===== */
+        let qyy_intervalId = null;
+        let qyy_clockStart = 0;
+        let qyy_clockElapsed = 0;   // 已累计的毫秒数
+
+        function qyy_fmt(qyy_ms) {
+            const qyy_total = Math.floor(qyy_ms / 100);
+            const qyy_m = String(Math.floor(qyy_total / 600)).padStart(2, '0');
+            const qyy_s = String(Math.floor(qyy_total / 10) % 60).padStart(2, '0');
+            const qyy_d = qyy_total % 10;
+            return qyy_m + ':' + qyy_s + '.' + qyy_d;
+        }
+
+        function qyy_startClock() {
+            if (qyy_intervalId !== null) return;   // 已在运行
+            qyy_clockStart = Date.now() - qyy_clockElapsed;
+            qyy_intervalId = setInterval(function () {
+                qyy_clockElapsed = Date.now() - qyy_clockStart;
+                qyy_clockNum.textContent = qyy_fmt(qyy_clockElapsed);
+            }, 100);
+            qyy_clock.classList.add('qyy_clock--run');
+            qyy_clockStartBtn.disabled = true;
+            qyy_clockTip.textContent = '定时器 ID：' + qyy_intervalId;
+            qyy_log('setInterval(function(){ … }, 100)  → 返回 ID ' + qyy_intervalId, 'qyy_y');
+        }
+
+        function qyy_clockPause() {
+            if (qyy_intervalId === null) {
+                qyy_log('当前没有正在运行的 setInterval，无需暂停', 'qyy_r');
+                return;
+            }
+            clearInterval(qyy_intervalId);
+            qyy_log('clearInterval(' + qyy_intervalId + ')  → 暂停计时', 'qyy_r');
+            qyy_intervalId = null;
+            qyy_clock.classList.remove('qyy_clock--run');
+            qyy_clockStartBtn.disabled = false;
+            qyy_clockTip.textContent = '定时器 ID：已暂停';
+        }
+
+        function qyy_clockReset() {
+            qyy_clockPause();
+            qyy_clockElapsed = 0;
+            qyy_clockNum.textContent = '00:00.0';
+            qyy_clockTip.textContent = '定时器 ID：无';
+            qyy_log('计时清零', 'qyy_g');
+        }
+
+        console.log('===== 17-5 两种定时器 =====');
+    </script>
+</body>
+</html>
