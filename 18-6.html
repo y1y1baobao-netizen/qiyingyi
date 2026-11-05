@@ -1,0 +1,174 @@
+<!-- 姓名: 齐英伊 日期: 2026-11-05 功能名称: Mermaid 智能客服流程图 + ER 图 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <title>18-6 Mermaid 流程图 &amp; ER 图 · 齐英伊829</title>
+    <script src="cdn/mermaid.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+            color: #e2e8f0;
+        }
+        .qyy_wrap { max-width: 1000px; margin: 0 auto; }
+        .qyy_head {
+            text-align: center; margin-bottom: 24px; padding-bottom: 16px;
+            border-bottom: 1px dashed #334155;
+        }
+        .qyy_head h1 {
+            font-size: 1.4rem;
+            background: linear-gradient(90deg, #667eea, #a78bfa);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .qyy_head .qyy_sub { font-size: 0.78rem; color: #64748b; margin-top: 6px; }
+        .qyy_head .qyy_name { color: #c4b5fd; }
+        .qyy_card {
+            background: #0f172a; border: 1px solid #334155; border-radius: 14px;
+            padding: 24px; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+        }
+        .qyy_card-title {
+            font-size: 1rem; font-weight: bold; color: #a5b4fc;
+            margin-bottom: 8px; padding-left: 10px; border-left: 4px solid #667eea;
+        }
+        .qyy_card-desc { font-size: 0.76rem; color: #64748b; line-height: 1.7; margin-bottom: 18px; }
+        .qyy_mermaid {
+            background: #0a1120; border: 1px solid #1e293b; border-radius: 10px;
+            padding: 24px; overflow-x: auto;
+            display: flex; justify-content: center;
+        }
+        .qyy_foot {
+            text-align: center; font-size: 0.78rem; color: #475569; padding-top: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="qyy_wrap">
+        <div class="qyy_head">
+            <h1>Mermaid · 智能客服系统图</h1>
+            <p class="qyy_sub">① 流程图（Flowchart） · ② 实体关系图（ER Diagram） · <span class="qyy_name">齐英伊 24001010829</span></p>
+        </div>
+
+        <!-- 图 1：流程图 -->
+        <div class="qyy_card">
+            <div class="qyy_card-title">① 智能客服处理流程（Flowchart）</div>
+            <div class="qyy_card-desc">
+                描述一次用户咨询从「意图识别」到「知识库检索」再到「回答或转人工」的完整链路。
+            </div>
+            <div class="qyy_mermaid">
+<pre class="mermaid">
+flowchart TD
+    A([用户发起咨询]) --> B{意图识别}
+    B -->|常见问题| C[知识库检索]
+    B -->|复杂诉求| D[转人工客服]
+    C --> E[向量相似度匹配]
+    E --> F{置信度是否达标}
+    F -->|是| G[生成回答]
+    F -->|否| D
+    G --> H[答案发送给用户]
+    H --> I([满意度评价])
+    D --> I
+    I -->|不满意| C
+</pre>
+            </div>
+        </div>
+
+        <!-- 图 2：ER 图 -->
+        <div class="qyy_card">
+            <div class="qyy_card-title">② 智能客服数据库 ER 图（Entity Relationship）</div>
+            <div class="qyy_card-desc">
+                核心实体：客户、客服、会话、消息、知识条目、意图、工单，并标出主键与关联关系。
+            </div>
+            <div class="qyy_mermaid">
+<pre class="mermaid">
+erDiagram
+    CUSTOMER ||--o{ SESSION : "发起"
+    CUSTOMER ||--o{ TICKET : "提交"
+    AGENT    ||--o{ TICKET : "处理"
+    SESSION  ||--o{ MESSAGE : "包含"
+    KNOWLEDGE ||--o{ MESSAGE : "引用"
+    INTENT   ||--o{ SESSION : "归属"
+
+    CUSTOMER {
+        int    id           PK
+        string customer_name
+        string phone
+        string email
+    }
+    AGENT {
+        int    id           PK
+        string agent_name
+        string skill_group
+    }
+    SESSION {
+        int    id           PK
+        int    customer_id  FK
+        int    intent_id    FK
+        string status
+    }
+    MESSAGE {
+        int    id           PK
+        int    session_id   FK
+        int    knowledge_id FK
+        string content
+    }
+    KNOWLEDGE {
+        int    id           PK
+        string question
+        string answer
+        float  similarity
+    }
+    INTENT {
+        int    id           PK
+        string intent_name
+        float  confidence
+    }
+    TICKET {
+        int    id           PK
+        int    customer_id  FK
+        int    agent_id     FK
+        string status
+    }
+</pre>
+            </div>
+        </div>
+
+        <div class="qyy_foot">齐英伊的《高级网页设计》课堂实践 · 18-6 Mermaid</div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#1e293b',
+                primaryTextColor: '#e2e8f0',
+                primaryBorderColor: '#667eea',
+                lineColor: '#64748b',
+                secondaryColor: '#312e81',
+                tertiaryColor: '#1e1b4b',
+                fontSize: '14px',
+                clusterBkg: '#0f172a'
+            },
+            securityLevel: 'loose',
+            flowchart: { curve: 'basis', nodeSpacing: 40, rankSpacing: 50 },
+            er: { layoutDirection: 'TB' }
+        });
+
+        // 渲染所有 .mermaid 元素
+        mermaid.run({ querySelector: '.mermaid' }).catch(function (err) {
+            console.error('Mermaid 渲染失败：', err);
+            document.querySelectorAll('.mermaid').forEach(function (el) {
+                el.textContent = '图渲染失败：' + err.message;
+            });
+        });
+
+        console.log('===== 18-6 Mermaid =====');
+    </script>
+</body>
+</html>

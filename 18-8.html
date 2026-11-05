@@ -1,0 +1,314 @@
+<!-- 姓名: 齐英伊 日期: 2026-11-05 功能名称: ECharts 数据大屏（三列，中间地理图） -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <title>18-8 数据大屏 · 齐英伊829</title>
+    <script src="cdn/echarts.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: #0a0e1a;
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 16px;
+        }
+        .qyy_dash { max-width: 1440px; margin: 0 auto; }
+        .qyy_topbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 20px; margin-bottom: 14px;
+            background: linear-gradient(90deg, rgba(102,126,234,0.16), rgba(118,75,162,0.12) 60%, rgba(102,126,234,0.04));
+            border: 1px solid #27304a; border-radius: 10px;
+        }
+        .qyy_topbar h1 {
+            font-size: 1.25rem; letter-spacing: 2px;
+            background: linear-gradient(90deg, #a5b4fc, #e0e7ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .qyy_topbar .qyy_time { font-size: 0.8rem; color: #7c8db5; letter-spacing: 1px; }
+
+        .qyy_cols { display: grid; grid-template-columns: 1fr 1.55fr 1fr; gap: 14px; }
+        @media (max-width: 1000px) { .qyy_cols { grid-template-columns: 1fr; } }
+
+        .qyy_col { display: flex; flex-direction: column; gap: 14px; }
+
+        .qyy_panel {
+            background: #0e1424; border: 1px solid #25304d; border-radius: 10px;
+            padding: 12px; box-shadow: 0 0 20px rgba(84,112,198,0.08), inset 0 0 30px rgba(84,112,198,0.03);
+        }
+        .qyy_panel-title {
+            font-size: 0.82rem; color: #a5b4fc; padding-left: 8px; margin-bottom: 6px;
+            border-left: 3px solid #667eea; letter-spacing: 1px;
+        }
+        .qyy_chart { width: 100%; }
+        .qyy_h220 { height: 220px; }
+        .qyy_h400 { height: 400px; }
+        .qyy_h180 { height: 180px; }
+
+        .qyy_foot { text-align: center; font-size: 0.74rem; color: #3c4a6b; padding-top: 12px; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+    <div class="qyy_dash">
+        <div class="qyy_topbar">
+            <h1>智能客服数据可视化大屏</h1>
+            <span class="qyy_time">齐英伊 · 24001010829 · 实时数据</span>
+        </div>
+
+        <div class="qyy_cols">
+            <!-- 左列 -->
+            <div class="qyy_col">
+                <div class="qyy_panel">
+                    <div class="qyy_panel-title">近 7 日咨询量趋势</div>
+                    <div id="qyy_chart_trend" class="qyy_chart qyy_h220"></div>
+                </div>
+                <div class="qyy_panel">
+                    <div class="qyy_panel-title">各类目工单量</div>
+                    <div id="qyy_chart_bar" class="qyy_chart qyy_h220"></div>
+                </div>
+            </div>
+
+            <!-- 中列 -->
+            <div class="qyy_col">
+                <div class="qyy_panel">
+                    <div class="qyy_panel-title">全国工单分布（地理图）</div>
+                    <div id="qyy_chart_map" class="qyy_chart qyy_h400"></div>
+                </div>
+                <div class="qyy_panel">
+                    <div class="qyy_panel-title">问题类型占比</div>
+                    <div id="qyy_chart_pie" class="qyy_chart qyy_h220"></div>
+                </div>
+            </div>
+
+            <!-- 右列 -->
+            <div class="qyy_col">
+                <div class="qyy_panel">
+                    <div class="qyy_panel-title">客户满意度</div>
+                    <div id="qyy_chart_gauge" class="qyy_chart qyy_h220"></div>
+                </div>
+                <div class="qyy_panel">
+                    <div class="qyy_panel-title">TOP 城市咨询排行</div>
+                    <div id="qyy_chart_rank" class="qyy_chart qyy_h220"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="qyy_foot">齐英伊的《高级网页设计》课堂实践 · 18-8 数据大屏</div>
+    </div>
+
+    <script>
+        /* ===== 通用图表工厂 ===== */
+        function qyy_make(id) {
+            return echarts.init(document.getElementById(id), 'dark');
+        }
+
+        const qyy_charts = {
+            trend: qyy_make('qyy_chart_trend'),
+            bar:   qyy_make('qyy_chart_bar'),
+            pie:   qyy_make('qyy_chart_pie'),
+            gauge: qyy_make('qyy_chart_gauge'),
+            rank:  qyy_make('qyy_chart_rank')
+        };
+
+        /* 1. 折线图 */
+        qyy_charts.trend.setOption({
+            grid: { left: 40, right: 16, top: 30, bottom: 28 },
+            tooltip: { trigger: 'axis' },
+            xAxis: {
+                type: 'category', boundaryGap: false,
+                data: ['周一','周二','周三','周四','周五','周六','周日'],
+                axisLine: { lineStyle: { color: '#334155' } },
+                axisLabel: { color: '#94a3b8' }
+            },
+            yAxis: {
+                type: 'value',
+                splitLine: { lineStyle: { color: '#1e293b' } },
+                axisLabel: { color: '#94a3b8' }
+            },
+            series: [{
+                type: 'line', smooth: true,
+                data: [820, 932, 901, 934, 1290, 1330, 1320],
+                symbol: 'circle', symbolSize: 6,
+                lineStyle: { width: 3, color: '#818cf8' },
+                itemStyle: { color: '#c4b5fd' },
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: 'rgba(129,140,248,0.35)' },
+                        { offset: 1, color: 'rgba(129,140,248,0)' }
+                    ])
+                }
+            }]
+        });
+
+        /* 2. 柱状图 */
+        qyy_charts.bar.setOption({
+            grid: { left: 40, right: 16, top: 30, bottom: 28 },
+            tooltip: { trigger: 'axis' },
+            xAxis: {
+                type: 'category',
+                data: ['退货', '物流', '支付', '产品', '其他'],
+                axisLine: { lineStyle: { color: '#334155' } },
+                axisLabel: { color: '#94a3b8' }
+            },
+            yAxis: {
+                type: 'value',
+                splitLine: { lineStyle: { color: '#1e293b' } },
+                axisLabel: { color: '#94a3b8' }
+            },
+            series: [{
+                type: 'bar', barWidth: '55%',
+                data: [320, 268, 205, 152, 96],
+                itemStyle: {
+                    borderRadius: [6, 6, 0, 0],
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: '#a78bfa' },
+                        { offset: 1, color: '#667eea' }
+                    ])
+                },
+                label: { show: true, position: 'top', color: '#c4b5fd' }
+            }]
+        });
+
+        /* 3. 饼图（环形） */
+        qyy_charts.pie.setOption({
+            tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
+            legend: {
+                orient: 'vertical', right: 8, top: 'middle',
+                textStyle: { color: '#94a3b8', fontSize: 11 }
+            },
+            series: [{
+                type: 'pie', radius: ['42%', '68%'], center: ['38%', '50%'],
+                avoidLabelOverlap: true,
+                itemStyle: { borderColor: '#0e1424', borderWidth: 2 },
+                label: { color: '#cbd5e1', fontSize: 11 },
+                data: [
+                    { value: 1048, name: '物流咨询', itemStyle: { color: '#818cf8' } },
+                    { value: 735,  name: '退款售后', itemStyle: { color: '#a78bfa' } },
+                    { value: 580,  name: '商品咨询', itemStyle: { color: '#f472b6' } },
+                    { value: 484,  name: '支付问题', itemStyle: { color: '#fcd34d' } },
+                    { value: 300,  name: '其他',     itemStyle: { color: '#34d399' } }
+                ]
+            }]
+        });
+
+        /* 4. 仪表盘 */
+        qyy_charts.gauge.setOption({
+            series: [{
+                type: 'gauge', startAngle: 210, endAngle: -30,
+                min: 0, max: 100, progress: { show: true, width: 14 },
+                axisLine: { lineStyle: { width: 14, color: [[1, '#1e293b']] } },
+                axisTick: { show: false }, splitLine: { show: false }, axisLabel: { show: false },
+                pointer: { length: '60%', width: 4, itemStyle: { color: '#a5b4fc' } },
+                title: { color: '#94a3b8', fontSize: 12, offsetCenter: [0, '80%'] },
+                detail: {
+                    valueAnimation: true, fontSize: 28, fontWeight: 'bold',
+                    color: '#c4b5fd', formatter: '{value}%', offsetCenter: [0, '55%']
+                },
+                data: [{ value: 92 }]
+            }]
+        });
+
+        /* 5. 横向条形 TOP 城市 */
+        qyy_charts.rank.setOption({
+            grid: { left: 70, right: 20, top: 10, bottom: 10 },
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            xAxis: {
+                type: 'value', show: false
+            },
+            yAxis: {
+                type: 'category', inverse: true,
+                data: ['北京', '上海', '广州', '深圳', '杭州', '成都'],
+                axisLine: { show: false }, axisTick: { show: false },
+                axisLabel: { color: '#cbd5e1', fontSize: 12 }
+            },
+            series: [{
+                type: 'bar', barWidth: 14,
+                data: [860, 742, 618, 560, 472, 398].map(function (v, i) {
+                    return {
+                        value: v,
+                        itemStyle: { color: ['#818cf8','#a78bfa','#c4b5fd','#7dd3fc','#f9a8d4','#fcd34d'][i], borderRadius: [0,7,7,0] }
+                    };
+                }),
+                label: { show: true, position: 'right', color: '#a5b4fc' }
+            }]
+        });
+
+        /* 6. 中国地图（地理图）—— 依赖 fetch geoJSON */
+        const qyy_mapChart = qyy_make('qyy_chart_map');
+        qyy_mapChart.showLoading({ text: '加载中国地图…', color: '#a78bfa', maskColor: 'rgba(10,14,26,0.8)' });
+
+        fetch('cdn/china.json')
+            .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(function (qyy_geo) {
+                qyy_mapChart.hideLoading();
+                echarts.registerMap('china', qyy_geo);
+
+                qyy_mapChart.setOption({
+                    tooltip: {
+                        trigger: 'item',
+                        backgroundColor: '#1e293b', borderColor: '#475569',
+                        textStyle: { color: '#e2e8f0' }
+                    },
+                    geo: {
+                        map: 'china',
+                        roam: true,
+                        label: { show: false },
+                        itemStyle: {
+                            areaColor: '#1e293b',
+                            borderColor: '#3b4a6b',
+                            borderWidth: 1
+                        },
+                        emphasis: {
+                            label: { show: true, color: '#e0e7ff' },
+                            itemStyle: { areaColor: '#312e81' }
+                        }
+                    },
+                    series: [{
+                        name: '工单量',
+                        type: 'effectScatter',
+                        coordinateSystem: 'geo',
+                        symbolSize: function (val) { return Math.max(8, val[2] / 12); },
+                        rippleEffect: { brushType: 'stroke', scale: 3.5 },
+                        label: {
+                            show: true, position: 'right',
+                            formatter: '{b}', color: '#e0e7ff', fontSize: 11
+                        },
+                        itemStyle: { color: '#f9a8d4', shadowBlur: 8, shadowColor: '#f9a8d4' },
+                        data: [
+                            { name: '北京', value: [116.40, 39.90, 860] },
+                            { name: '上海', value: [121.47, 31.23, 742] },
+                            { name: '广州', value: [113.26, 23.13, 618] },
+                            { name: '深圳', value: [114.06, 22.55, 560] },
+                            { name: '杭州', value: [120.15, 30.28, 472] },
+                            { name: '成都', value: [104.06, 30.67, 398] },
+                            { name: '武汉', value: [114.30, 30.60, 355] },
+                            { name: '西安', value: [108.95, 34.27, 310] }
+                        ]
+                    }]
+                });
+            })
+            .catch(function (err) {
+                qyy_mapChart.hideLoading();
+                qyy_mapChart.setOption({
+                    title: {
+                        text: '地图加载失败',
+                        subtext: err.message, left: 'center', top: 'middle',
+                        textStyle: { color: '#ef4444' }, subtextStyle: { color: '#94a3b8' }
+                    }
+                });
+                console.error('加载中国地图失败：', err);
+            });
+
+        /* ===== 自适应 ===== */
+        window.addEventListener('resize', function () {
+            Object.keys(qyy_charts).forEach(function (k) { qyy_charts[k].resize(); });
+            qyy_mapChart.resize();
+        });
+
+        console.log('===== 18-8 数据大屏 =====');
+    </script>
+</body>
+</html>

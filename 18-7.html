@@ -1,0 +1,184 @@
+<!-- 姓名: 齐英伊 日期: 2026-11-05 功能名称: Three.js 两个图表（旋转立方体 + 粒子球） -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <title>18-7 Three.js 两图 · 齐英伊829</title>
+    <script src="cdn/three.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+            color: #e2e8f0;
+        }
+        .qyy_wrap { max-width: 1100px; margin: 0 auto; }
+        .qyy_head {
+            text-align: center; margin-bottom: 24px; padding-bottom: 16px;
+            border-bottom: 1px dashed #334155;
+        }
+        .qyy_head h1 {
+            font-size: 1.4rem;
+            background: linear-gradient(90deg, #667eea, #a78bfa);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .qyy_head .qyy_sub { font-size: 0.78rem; color: #64748b; margin-top: 6px; }
+        .qyy_head .qyy_name { color: #c4b5fd; }
+
+        .qyy_grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+        @media (max-width: 760px) { .qyy_grid { grid-template-columns: 1fr; } }
+
+        .qyy_card {
+            background: #0f172a; border: 1px solid #334155; border-radius: 14px;
+            padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+        }
+        .qyy_card-title {
+            font-size: 0.95rem; font-weight: bold; color: #a5b4fc;
+            margin-bottom: 8px; padding-left: 10px; border-left: 4px solid #667eea;
+        }
+        .qyy_card-desc { font-size: 0.74rem; color: #64748b; line-height: 1.6; margin-bottom: 14px; }
+        .qyy_stage {
+            width: 100%; height: 340px; border-radius: 10px;
+            border: 1px solid #1e293b; background: #0a1120;
+        }
+        .qyy_canvas { display: block; width: 100%; height: 100%; }
+
+        .qyy_foot { text-align: center; font-size: 0.78rem; color: #475569; padding-top: 22px; }
+    </style>
+</head>
+<body>
+    <div class="qyy_wrap">
+        <div class="qyy_head">
+            <h1>Three.js · WebGL 两图</h1>
+            <p class="qyy_sub">① 旋转立方体 · ② 粒子球 · <span class="qyy_name">齐英伊 24001010829</span></p>
+        </div>
+
+        <div class="qyy_grid">
+            <!-- 图 1：旋转立方体 -->
+            <div class="qyy_card">
+                <div class="qyy_card-title">① 旋转立方体（MeshNormalMaterial + 白线框）</div>
+                <div class="qyy_card-desc">
+                    使用法线材质（无需灯光即可五彩着色），外圈叠加白色线框，绕 X、Y 轴自动旋转。
+                </div>
+                <div class="qyy_stage"><canvas id="qyy_canvas_cube" class="qyy_canvas"></canvas></div>
+            </div>
+
+            <!-- 图 2：粒子球 -->
+            <div class="qyy_card">
+                <div class="qyy_card-title">② 粒子球（球面点云）</div>
+                <div class="qyy_card-desc">
+                    1500 个彩色粒子均匀分布在球面，带顶点色，整体缓慢自转，形成星球效果。
+                </div>
+                <div class="qyy_stage"><canvas id="qyy_canvas_ball" class="qyy_canvas"></canvas></div>
+            </div>
+        </div>
+
+        <div class="qyy_foot">齐英伊的《高级网页设计》课堂实践 · 18-7 Three.js</div>
+    </div>
+
+    <script>
+        /* ===== 通用：canvas 尺寸 ===== */
+        function qyy_readSize(canvas) {
+            return { w: canvas.clientWidth || 300, h: canvas.clientHeight || 300 };
+        }
+
+        /* ===== 图 1：旋转立方体 ===== */
+        const qyy_canvas_cube = document.getElementById('qyy_canvas_cube');
+        const qyy_scene1 = new THREE.Scene();
+        const qyy_size1 = qyy_readSize(qyy_canvas_cube);
+        const qyy_cam1 = new THREE.PerspectiveCamera(45, qyy_size1.w / qyy_size1.h, 0.1, 100);
+        qyy_cam1.position.z = 5.5;
+
+        const qyy_renderer1 = new THREE.WebGLRenderer({ canvas: qyy_canvas_cube, antialias: true, alpha: true });
+        qyy_renderer1.setClearColor(0x0a1120, 1);
+        qyy_renderer1.setPixelRatio(window.devicePixelRatio || 1);
+        qyy_renderer1.setSize(qyy_size1.w, qyy_size1.h, false);
+
+        const qyy_cubeGeo = new THREE.BoxGeometry(2.4, 2.4, 2.4);
+        const qyy_cube = new THREE.Mesh(qyy_cubeGeo, new THREE.MeshNormalMaterial());
+        qyy_scene1.add(qyy_cube);
+
+        const qyy_edgeGeo = new THREE.EdgesGeometry(qyy_cubeGeo);
+        const qyy_edges = new THREE.LineSegments(
+            qyy_edgeGeo,
+            new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.6 })
+        );
+        qyy_cube.add(qyy_edges);
+
+        /* ===== 图 2：粒子球 ===== */
+        const qyy_canvas_ball = document.getElementById('qyy_canvas_ball');
+        const qyy_scene2 = new THREE.Scene();
+        const qyy_size2 = qyy_readSize(qyy_canvas_ball);
+        const qyy_cam2 = new THREE.PerspectiveCamera(45, qyy_size2.w / qyy_size2.h, 0.1, 100);
+        qyy_cam2.position.z = 6;
+
+        const qyy_renderer2 = new THREE.WebGLRenderer({ canvas: qyy_canvas_ball, antialias: true, alpha: true });
+        qyy_renderer2.setClearColor(0x0a1120, 1);
+        qyy_renderer2.setPixelRatio(window.devicePixelRatio || 1);
+        qyy_renderer2.setSize(qyy_size2.w, qyy_size2.h, false);
+
+        const qyy_N = 1500;
+        const qyy_pos = new Float32Array(qyy_N * 3);
+        const qyy_col = new Float32Array(qyy_N * 3);
+        for (let i = 0; i < qyy_N; i++) {
+            const qyy_theta = Math.acos(2 * Math.random() - 1);   // 0..PI
+            const qyy_phi = Math.random() * Math.PI * 2;          // 0..2PI
+            const qyy_r = 2.4;
+            qyy_pos[i * 3]     = qyy_r * Math.sin(qyy_theta) * Math.cos(qyy_phi);
+            qyy_pos[i * 3 + 1] = qyy_r * Math.sin(qyy_theta) * Math.sin(qyy_phi);
+            qyy_pos[i * 3 + 2] = qyy_r * Math.cos(qyy_theta);
+
+            // 颜色：紫-蓝-粉渐变
+            qyy_col[i * 3]     = 0.6 + 0.4 * Math.sin(qyy_theta * 4);
+            qyy_col[i * 3 + 1] = 0.4 + 0.4 * Math.cos(qyy_phi * 2);
+            qyy_col[i * 3 + 2] = 0.9;
+        }
+        const qyy_ballGeo = new THREE.BufferGeometry();
+        qyy_ballGeo.setAttribute('position', new THREE.BufferAttribute(qyy_pos, 3));
+        qyy_ballGeo.setAttribute('color', new THREE.BufferAttribute(qyy_col, 3));
+        const qyy_ballMat = new THREE.PointsMaterial({
+            size: 0.06,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.9
+        });
+        const qyy_ball = new THREE.Points(qyy_ballGeo, qyy_ballMat);
+        qyy_scene2.add(qyy_ball);
+
+        /* ===== 动画循环 ===== */
+        function qyy_animate() {
+            requestAnimationFrame(qyy_animate);
+
+            qyy_cube.rotation.x += 0.010;
+            qyy_cube.rotation.y += 0.013;
+
+            qyy_ball.rotation.y += 0.005;
+            qyy_ball.rotation.x += 0.002;
+
+            qyy_renderer1.render(qyy_scene1, qyy_cam1);
+            qyy_renderer2.render(qyy_scene2, qyy_cam2);
+        }
+
+        /* ===== 自适应 ===== */
+        window.addEventListener('resize', function () {
+            const qyy_s1 = qyy_readSize(qyy_canvas_cube);
+            qyy_cam1.aspect = qyy_s1.w / qyy_s1.h;
+            qyy_cam1.updateProjectionMatrix();
+            qyy_renderer1.setSize(qyy_s1.w, qyy_s1.h, false);
+
+            const qyy_s2 = qyy_readSize(qyy_canvas_ball);
+            qyy_cam2.aspect = qyy_s2.w / qyy_s2.h;
+            qyy_cam2.updateProjectionMatrix();
+            qyy_renderer2.setSize(qyy_s2.w, qyy_s2.h, false);
+        });
+
+        qyy_animate();
+
+        console.log('===== 18-7 Three.js =====');
+    </script>
+</body>
+</html>
