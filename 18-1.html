@@ -152,8 +152,8 @@
             qyy_octx.fillStyle = '#000';
             qyy_octx.fillRect(0, 0, qyy_off.width, qyy_off.height);
 
-            /* 根据字数动态调整字号 */
-            let qyy_fontSize = Math.min(qyy_w / qyy_t.length * 1.2, qyy_h * 0.42);
+            /* 字号放大，让字尽可能占满画布 */
+            const qyy_fontSize = Math.min(qyy_w / qyy_t.length * 1.35, qyy_h * 0.52);
             qyy_octx.fillStyle = '#fff';
             qyy_octx.textAlign = 'center';
             qyy_octx.textBaseline = 'middle';
@@ -162,7 +162,8 @@
 
             const qyy_img = qyy_octx.getImageData(0, 0, qyy_off.width, qyy_off.height).data;
             const qyy_pts = [];
-            const qyy_step = Math.max(4, Math.floor(10 - qyy_t.length));   // 采样步长，字越多越稀
+            /* 采样步长固定小一点，字越复杂越要密 */
+            const qyy_step = 3;
             for (let qyy_y = qyy_pad; qyy_y < qyy_h - qyy_pad; qyy_y += qyy_step) {
                 for (let qyy_x = qyy_pad; qyy_x < qyy_w - qyy_pad; qyy_x += qyy_step) {
                     const qyy_idx = (qyy_y * qyy_w + qyy_x) * 4;
@@ -174,15 +175,16 @@
             return qyy_pts;
         }
 
-        /* 初始化粒子：随机分布在画布上，目标点是字 */
+        /* 初始化粒子：分布在画布上，目标点是字 */
         function qyy_initParticles(qyy_t) {
             const qyy_pts = qyy_getTextPoints(qyy_t);
             qyy_text = qyy_t;
+            console.log('采样得到目标点：' + qyy_pts.length + ' 个');
 
             /* 颜色表：紫色渐变系 */
             const qyy_pal = ['#a78bfa', '#c4b5fd', '#818cf8', '#e0e7ff', '#f0abfc'];
 
-            /* 如果粒子不够就补，多了就删 */
+            /* 粒子数不够就补，多了就删 */
             while (qyy_particles.length < qyy_pts.length) {
                 qyy_particles.push(new qyy_Particle());
             }
@@ -194,15 +196,15 @@
                 const p = qyy_particles[i];
                 p.qyy_tx = qyy_pts[i].x;
                 p.qyy_ty = qyy_pts[i].y;
-                /* 起始位置：离当前目标点远的一个随机点，产生从四面八方汇聚的感觉 */
+                /* 初始位置：稍微打乱目标点附近，离目标点不远 */
                 const qyy_angle = Math.random() * Math.PI * 2;
-                const qyy_r = qyy_w * 0.5;
-                p.qyy_x = qyy_w / 2 + Math.cos(qyy_angle) * qyy_r;
-                p.qyy_y = qyy_h / 2 + Math.sin(qyy_angle) * qyy_r;
+                const qyy_r = 60 + Math.random() * 100;
+                p.qyy_x = p.qyy_tx + Math.cos(qyy_angle) * qyy_r;
+                p.qyy_y = p.qyy_ty + Math.sin(qyy_angle) * qyy_r;
                 p.qyy_vx = 0;
                 p.qyy_vy = 0;
                 p.qyy_color = qyy_pal[Math.floor(Math.random() * qyy_pal.length)];
-                p.qyy_size = 1.4 + Math.random() * 1.2;
+                p.qyy_size = 1.6 + Math.random() * 1.4;
             }
         }
 
@@ -227,12 +229,13 @@
 
         /* 动画循环：弹簧力向目标点靠拢 + 鼠标排斥 */
         function qyy_tick() {
-            qyy_ctx.fillStyle = 'rgba(10, 10, 30, 0.28)';   // 半透明覆盖，拖出残影
+            /* 完全清空重绘，保证粒子字清晰可见；想残影就把下面这行换成半透明覆盖 */
+            qyy_ctx.fillStyle = '#0a0a1e';
             qyy_ctx.fillRect(0, 0, qyy_w, qyy_h);
 
-            const qyy_spring = 0.06;    // 弹簧系数
-            const qyy_damper = 0.82;    // 阻尼
-            const qyy_repel = 120;      // 鼠标排斥半径
+            const qyy_spring = 0.12;   // 弹簧系数（加大更快收敛）
+            const qyy_damper = 0.78;   // 阻尼
+            const qyy_repel = 140;     // 鼠标排斥半径
 
             for (let i = 0; i < qyy_particles.length; i++) {
                 const p = qyy_particles[i];
@@ -247,7 +250,7 @@
                     const qyy_dy = p.qyy_y - qyy_mouse.y;
                     const qyy_d = Math.sqrt(qyy_dx * qyy_dx + qyy_dy * qyy_dy);
                     if (qyy_d < qyy_repel && qyy_d > 0.01) {
-                        const qyy_f = (qyy_repel - qyy_d) / qyy_repel * 3;
+                        const qyy_f = (qyy_repel - qyy_d) / qyy_repel * 4;
                         p.qyy_vx += qyy_dx / qyy_d * qyy_f;
                         p.qyy_vy += qyy_dy / qyy_d * qyy_f;
                     }
@@ -258,10 +261,21 @@
                 p.qyy_x += p.qyy_vx;
                 p.qyy_y += p.qyy_vy;
 
+                /* 离目标点极近时，直接吸附归零速度，让字稳定清晰 */
+                const qyy_ddx = p.qyy_tx - p.qyy_x;
+                const qyy_ddy = p.qyy_ty - p.qyy_y;
+                const qyy_dd = Math.sqrt(qyy_ddx * qyy_ddx + qyy_ddy * qyy_ddy);
+                if (qyy_dd < 0.8) {
+                    p.qyy_x = p.qyy_tx;
+                    p.qyy_y = p.qyy_ty;
+                    p.qyy_vx = 0;
+                    p.qyy_vy = 0;
+                }
+
                 /* 发光点 */
                 qyy_ctx.beginPath();
                 qyy_ctx.fillStyle = p.qyy_color;
-                qyy_ctx.shadowBlur = 8;
+                qyy_ctx.shadowBlur = 6;
                 qyy_ctx.shadowColor = p.qyy_color;
                 qyy_ctx.arc(p.qyy_x, p.qyy_y, p.qyy_size, 0, Math.PI * 2);
                 qyy_ctx.fill();
@@ -273,6 +287,14 @@
 
         /* 按钮切换文字 */
         function qyy_switch(qyy_t, qyy_el) {
+            /* 之前的 bug：按钮传的是 'name' 这种占位字符串，这里做一层映射 */
+            const qyy_map = {
+                'name': '齐英伊',
+                'welcome': 'WELCOME',
+                'love': '❤ LOVE ❤',
+                'star': '★ STAR ★'
+            };
+            qyy_t = qyy_map[qyy_t] || qyy_t;
             document.querySelectorAll('.qyy_btn').forEach(function (b) { b.classList.remove('qyy_btn--on'); });
             qyy_el.classList.add('qyy_btn--on');
             qyy_initParticles(qyy_t);
