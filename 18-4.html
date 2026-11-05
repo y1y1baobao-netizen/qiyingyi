@@ -1,0 +1,289 @@
+<!-- 姓名: 齐英伊 日期: 2026-11-05 功能名称: ECharts 加载动画 + 悲惨世界环形图 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
+    <title>18-4 ECharts 两图合辑 · 齐英伊829</title>
+    <script src="cdn/echarts.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+            color: #e2e8f0;
+        }
+        .qyy_wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .qyy_head {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px dashed #334155;
+        }
+        .qyy_head h1 {
+            font-size: 1.45rem;
+            background: linear-gradient(90deg, #667eea, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .qyy_head .qyy_sub {
+            font-size: 0.78rem;
+            color: #64748b;
+            margin-top: 6px;
+        }
+        .qyy_head .qyy_name { color: #c4b5fd; }
+
+        .qyy_card {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+        }
+        .qyy_card-title {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #a5b4fc;
+            margin-bottom: 10px;
+            padding-left: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .qyy_card-desc {
+            font-size: 0.76rem;
+            color: #64748b;
+            line-height: 1.7;
+            margin-bottom: 14px;
+        }
+        .qyy_chart {
+            width: 100%;
+            background: #0a1120;
+            border-radius: 10px;
+            border: 1px solid #1e293b;
+        }
+        #qyy_chart_loading { height: 360px; }
+        #qyy_chart_graph   { height: 620px; }
+
+        .qyy_btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+        .qyy_btn {
+            background: #1e293b;
+            border: 1px solid #475569;
+            color: #cbd5e1;
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-size: 0.76rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .qyy_btn:hover { border-color: #a78bfa; color: #c4b5fd; }
+
+        .qyy_foot {
+            text-align: center;
+            font-size: 0.78rem;
+            color: #475569;
+            padding-top: 14px;
+        }
+
+        @media (max-width: 720px) {
+            body { padding: 18px 10px; }
+            #qyy_chart_loading { height: 280px; }
+            #qyy_chart_graph   { height: 480px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="qyy_wrap">
+        <div class="qyy_head">
+            <h1>ECharts 两图合辑</h1>
+            <p class="qyy_sub">① graphic 加载动画 · ② graph 环形关系图 · <span class="qyy_name">齐英伊 24001010829</span></p>
+        </div>
+
+        <!-- 图 1：加载动画 -->
+        <div class="qyy_card">
+            <div class="qyy_card-title">① graphic · 加载动画（Loading）</div>
+            <div class="qyy_card-desc">
+                用 ECharts 的 <code>graphic</code> 组件画 7 根条形柱，通过 <code>keyframeAnimation</code> 做上下波动的 loading 动画。
+                <br>数据来源：静态配置，无需远程请求。
+            </div>
+            <div id="qyy_chart_loading" class="qyy_chart"></div>
+            <div class="qyy_btn-row">
+                <button class="qyy_btn" onclick="qyy_loading_play()">重新播放</button>
+                <button class="qyy_btn" onclick="qyy_loading_alt()">换色方案</button>
+            </div>
+        </div>
+
+        <!-- 图 2：悲惨世界环形图 -->
+        <div class="qyy_card">
+            <div class="qyy_card-title">② graph · 悲惨世界人物关系环形图（Circular Layout）</div>
+            <div class="qyy_card-desc">
+                用 ECharts 的 <code>graph</code> 组件，布局 <code>circular</code>（环形），
+                展示《悲惨世界》登场人物之间的关系。鼠标悬停节点可查看详情，滚轮可缩放。
+                <br>数据来源：<code>cdn/les-miserables.json</code>（本地 fetch，无 CORS 问题）。
+            </div>
+            <div id="qyy_chart_graph" class="qyy_chart"></div>
+        </div>
+
+        <div class="qyy_foot">齐英伊的《高级网页设计》课堂实践 · 18-4 ECharts</div>
+    </div>
+
+    <script>
+        /* ===== 图 1：加载动画 ===== */
+        const qyy_chart1 = echarts.init(document.getElementById('qyy_chart_loading'), 'dark');
+
+        const qyy_palette = [
+            ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452'],
+            ['#a78bfa', '#c4b5fd', '#818cf8', '#66d9ef', '#f472b6', '#fcd34d', '#34d399']
+        ];
+        let qyy_colorIdx = 0;
+
+        function qyy_buildLoadingOption() {
+            const qyy_colors = qyy_palette[qyy_colorIdx];
+            return {
+                graphic: {
+                    elements: [{
+                        type: 'group',
+                        left: 'center',
+                        top: 'center',
+                        children: new Array(7).fill(0).map(function (_, i) {
+                            return {
+                                type: 'rect',
+                                x: i * 20,
+                                shape: { x: 0, y: -40, width: 10, height: 80 },
+                                style: { fill: qyy_colors[i] },
+                                keyframeAnimation: {
+                                    duration: 1000,
+                                    delay: i * 160,
+                                    loop: true,
+                                    keyframes: [
+                                        { percent: 0, scaleY: 1, easing: 'cubicIn' },
+                                        { percent: 0.5, scaleY: 0.3, easing: 'cubicIn' },
+                                        { percent: 1, scaleY: 1, easing: 'cubicOut' }
+                                    ]
+                                }
+                            };
+                        })
+                    }]
+                },
+                title: {
+                    text: 'Loading…',
+                    left: 'center',
+                    bottom: 30,
+                    textStyle: { color: '#94a3b8', fontSize: 14 }
+                }
+            };
+        }
+
+        qyy_chart1.setOption(qyy_buildLoadingOption());
+
+        function qyy_loading_play() {
+            qyy_chart1.dispose();
+            qyy_chart1 = echarts.init(document.getElementById('qyy_chart_loading'), 'dark');
+            qyy_chart1.setOption(qyy_buildLoadingOption());
+        }
+        function qyy_loading_alt() {
+            qyy_colorIdx = (qyy_colorIdx + 1) % qyy_palette.length;
+            qyy_chart1.setOption(qyy_buildLoadingOption());
+        }
+
+        /* ===== 图 2：悲惨世界环形图 ===== */
+        const qyy_chart2 = echarts.init(document.getElementById('qyy_chart_graph'), 'dark');
+
+        qyy_chart2.showLoading({
+            text: '正在读取 les-miserables.json…',
+            color: '#a78bfa',
+            textColor: '#e2e8f0',
+            maskColor: 'rgba(10,10,30,0.75)'
+        });
+
+        /* fetch 本地 JSON（因为已经下载到 cdn/ 目录了，同源加载） */
+        fetch('cdn/les-miserables.json')
+            .then(function (r) {
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                return r.json();
+            })
+            .then(function (graph) {
+                qyy_chart2.hideLoading();
+
+                graph.nodes.forEach(function (node) {
+                    node.label = { show: node.symbolSize > 30 };
+                });
+
+                qyy_chart2.setOption({
+                    title: {
+                        text: 'Les Miserables',
+                        subtext: 'Circular layout · 悲惨世界人物关系图',
+                        top: 'bottom',
+                        left: 'right',
+                        textStyle: { color: '#a5b4fc' },
+                        subtextStyle: { color: '#64748b' }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        borderColor: '#475569',
+                        textStyle: { color: '#e2e8f0' }
+                    },
+                    legend: [{
+                        data: graph.categories.map(function (a) { return a.name; }),
+                        textStyle: { color: '#cbd5e1' },
+                        bottom: 40
+                    }],
+                    animationDurationUpdate: 1500,
+                    animationEasingUpdate: 'quinticInOut',
+                    series: [{
+                        name: 'Les Miserables',
+                        type: 'graph',
+                        layout: 'circular',
+                        circular: { rotateLabel: true },
+                        data: graph.nodes,
+                        links: graph.links,
+                        categories: graph.categories,
+                        roam: true,
+                        label: {
+                            position: 'right',
+                            formatter: '{b}',
+                            color: '#e2e8f0'
+                        },
+                        lineStyle: {
+                            color: 'source',
+                            curveness: 0.3,
+                            opacity: 0.7
+                        },
+                        emphasis: {
+                            focus: 'adjacency',
+                            lineStyle: { width: 3 }
+                        }
+                    }]
+                });
+            })
+            .catch(function (err) {
+                qyy_chart2.hideLoading();
+                qyy_chart2.setOption({
+                    title: {
+                        text: '数据加载失败',
+                        subtext: err.message,
+                        left: 'center',
+                        top: 'middle',
+                        textStyle: { color: '#ef4444' },
+                        subtextStyle: { color: '#94a3b8' }
+                    }
+                });
+                console.error('加载 les-miserables.json 失败：', err);
+            });
+
+        /* 自适应 */
+        window.addEventListener('resize', function () {
+            qyy_chart1.resize();
+            qyy_chart2.resize();
+        });
+
+        console.log('===== 18-4 ECharts =====');
+    </script>
+</body>
+</html>
