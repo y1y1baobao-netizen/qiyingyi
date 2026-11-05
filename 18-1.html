@@ -72,16 +72,6 @@
             border-color: transparent;
             color: #fff;
         }
-        .qyy_hint {
-            position: absolute;
-            top: 50%;
-            left: 20px;
-            transform: translateY(-50%) rotate(-90deg);
-            font-size: 0.72rem;
-            color: #475569;
-            letter-spacing: 2px;
-            pointer-events: none;
-        }
         .qyy_name-tag {
             position: absolute;
             bottom: 24px;
@@ -97,17 +87,16 @@
 
     <div class="qyy_head">
         <h1>CANVAS · 粒子汇聚成字</h1>
-        <p class="qyy_sub">移动鼠标 / 触摸屏幕与粒子互动</p>
+        <p class="qyy_sub">移动鼠标与粒子互动 · 松手自动回到文字</p>
     </div>
 
     <div class="qyy_controls">
-        <button class="qyy_btn qyy_btn--on" onclick="qyy_switch('name', this)">齐英伊</button>
-        <button class="qyy_btn" onclick="qyy_switch('welcome', this)">WELCOME</button>
-        <button class="qyy_btn" onclick="qyy_switch('love', this)">❤️ LOVE ❤️</button>
-        <button class="qyy_btn" onclick="qyy_switch('star', this)">★ STAR ★</button>
+        <button class="qyy_btn qyy_btn--on" onclick="qyy_switch('齐英伊', this)">齐英伊</button>
+        <button class="qyy_btn" onclick="qyy_switch('WELCOME', this)">WELCOME</button>
+        <button class="qyy_btn" onclick="qyy_switch('我爱你', this)">我爱你</button>
+        <button class="qyy_btn" onclick="qyy_switch('加油！', this)">加油！</button>
     </div>
 
-    <div class="qyy_hint">move your cursor ←</div>
     <div class="qyy_name-tag">齐英伊 · 24001010829</div>
 
     <script>
@@ -115,7 +104,6 @@
         const qyy_ctx = qyy_canvas.getContext('2d');
         let qyy_w, qyy_h, qyy_dpr;
 
-        /* 自适应高 DPI */
         function qyy_resize() {
             qyy_dpr = window.devicePixelRatio || 1;
             qyy_w = qyy_canvas.clientWidth;
@@ -123,187 +111,156 @@
             qyy_canvas.width = qyy_w * qyy_dpr;
             qyy_canvas.height = qyy_h * qyy_dpr;
             qyy_ctx.setTransform(qyy_dpr, 0, 0, qyy_dpr, 0, 0);
-            if (qyy_text) qyy_initParticles(qyy_text);
+            if (qyy_text) qyy_build(qyy_text);
         }
         window.addEventListener('resize', qyy_resize);
 
-        /* 一个粒子 */
-        function qyy_Particle() {
-            this.qyy_x = 0;       // 当前位置
-            this.qyy_y = 0;
-            this.qyy_tx = 0;      // 目标位置（字上的点）
-            this.qyy_ty = 0;
-            this.qyy_vx = 0;      // 速度
-            this.qyy_vy = 0;
-            this.qyy_color = '#fff';
-            this.qyy_size = 1.6;
+        // ===== 单粒子对象 =====
+        function qyy_P(qyy_tx, qyy_ty) {
+            this.tx = qyy_tx;   // 目标位置（字上的点）
+            this.ty = qyy_ty;
+            this.x  = qyy_tx + (Math.random() - 0.5) * 30;   // 初始位置：离目标点很近
+            this.y  = qyy_ty + (Math.random() - 0.5) * 30;
+            this.vx = 0;
+            this.vy = 0;
+            this.color = '#c4b5fd';
         }
 
         let qyy_particles = [];
         let qyy_text = '齐英伊';
 
-        /* 把文字画进离屏 canvas，采样像素，得到目标点集 */
-        function qyy_getTextPoints(qyy_t) {
+        // ===== 从文字采样目标点 =====
+        function qyy_sample(qyy_t) {
             const qyy_off = document.createElement('canvas');
-            const qyy_octx = qyy_off.getContext('2d');
-            const qyy_pad = 40;
+            const qyy_o = qyy_off.getContext('2d');
             qyy_off.width = qyy_w;
             qyy_off.height = qyy_h;
-            qyy_octx.fillStyle = '#000';
-            qyy_octx.fillRect(0, 0, qyy_off.width, qyy_off.height);
+            qyy_o.fillStyle = '#000';
+            qyy_o.fillRect(0, 0, qyy_w, qyy_h);
 
-            /* 字号放大，让字尽可能占满画布 */
-            const qyy_fontSize = Math.min(qyy_w / qyy_t.length * 1.35, qyy_h * 0.52);
-            qyy_octx.fillStyle = '#fff';
-            qyy_octx.textAlign = 'center';
-            qyy_octx.textBaseline = 'middle';
-            qyy_octx.font = 'bold ' + qyy_fontSize + 'px "Microsoft YaHei", Arial, sans-serif';
-            qyy_octx.fillText(qyy_t, qyy_w / 2, qyy_h / 2);
+            // 字号：尽量大
+            const qyy_fs = Math.min(qyy_w / qyy_t.length * 1.4, qyy_h * 0.55);
+            qyy_o.fillStyle = '#fff';
+            qyy_o.textAlign = 'center';
+            qyy_o.textBaseline = 'middle';
+            qyy_o.font = 'bold ' + qyy_fs + 'px "Microsoft YaHei", "SimHei", Arial, sans-serif';
+            qyy_o.fillText(qyy_t, qyy_w / 2, qyy_h / 2);
 
-            const qyy_img = qyy_octx.getImageData(0, 0, qyy_off.width, qyy_off.height).data;
-            const qyy_pts = [];
-            /* 采样步长固定小一点，字越复杂越要密 */
+            const qyy_img = qyy_o.getImageData(0, 0, qyy_w, qyy_h).data;
+            const qyy_out = [];
             const qyy_step = 3;
-            for (let qyy_y = qyy_pad; qyy_y < qyy_h - qyy_pad; qyy_y += qyy_step) {
-                for (let qyy_x = qyy_pad; qyy_x < qyy_w - qyy_pad; qyy_x += qyy_step) {
-                    const qyy_idx = (qyy_y * qyy_w + qyy_x) * 4;
-                    if (qyy_img[qyy_idx + 3] > 128) {
-                        qyy_pts.push({ x: qyy_x, y: qyy_y });
+            for (let y = 20; y < qyy_h - 20; y += qyy_step) {
+                for (let x = 20; x < qyy_w - 20; x += qyy_step) {
+                    if (qyy_img[(y * qyy_w + x) * 4 + 3] > 128) {
+                        qyy_out.push({ x: x, y: y });
                     }
                 }
             }
-            return qyy_pts;
+            return qyy_out;
         }
 
-        /* 初始化粒子：分布在画布上，目标点是字 */
-        function qyy_initParticles(qyy_t) {
-            const qyy_pts = qyy_getTextPoints(qyy_t);
+        // ===== 构建粒子数组 =====
+        function qyy_build(qyy_t) {
             qyy_text = qyy_t;
-            console.log('采样得到目标点：' + qyy_pts.length + ' 个');
+            const qyy_pts = qyy_sample(qyy_t);
+            console.log('构建「' + qyy_t + '」：' + qyy_pts.length + ' 个点');
 
-            /* 颜色表：紫色渐变系 */
-            const qyy_pal = ['#a78bfa', '#c4b5fd', '#818cf8', '#e0e7ff', '#f0abfc'];
+            const qyy_pal = ['#a78bfa', '#c4b5fd', '#818cf8', '#e0e7ff', '#f0abfc', '#f9a8d4'];
 
-            /* 粒子数不够就补，多了就删 */
-            while (qyy_particles.length < qyy_pts.length) {
-                qyy_particles.push(new qyy_Particle());
-            }
+            // 数量对齐
             if (qyy_particles.length > qyy_pts.length) {
                 qyy_particles.length = qyy_pts.length;
+            }
+            while (qyy_particles.length < qyy_pts.length) {
+                qyy_particles.push(new qyy_P(0, 0));
             }
 
             for (let i = 0; i < qyy_pts.length; i++) {
                 const p = qyy_particles[i];
-                p.qyy_tx = qyy_pts[i].x;
-                p.qyy_ty = qyy_pts[i].y;
-                /* 初始位置：稍微打乱目标点附近，离目标点不远 */
-                const qyy_angle = Math.random() * Math.PI * 2;
-                const qyy_r = 60 + Math.random() * 100;
-                p.qyy_x = p.qyy_tx + Math.cos(qyy_angle) * qyy_r;
-                p.qyy_y = p.qyy_ty + Math.sin(qyy_angle) * qyy_r;
-                p.qyy_vx = 0;
-                p.qyy_vy = 0;
-                p.qyy_color = qyy_pal[Math.floor(Math.random() * qyy_pal.length)];
-                p.qyy_size = 1.6 + Math.random() * 1.4;
+                p.tx = qyy_pts[i].x;
+                p.ty = qyy_pts[i].y;
+                p.color = qyy_pal[i % qyy_pal.length];
             }
         }
 
-        /* 鼠标 / 触摸排斥 */
-        let qyy_mouse = { x: -9999, y: -9999, active: false };
+        // ===== 鼠标 =====
+        let qyy_m = { x: -9999, y: -9999, on: false };
         qyy_canvas.addEventListener('mousemove', function (e) {
-            const qyy_r = qyy_canvas.getBoundingClientRect();
-            qyy_mouse.x = e.clientX - qyy_r.left;
-            qyy_mouse.y = e.clientY - qyy_r.top;
-            qyy_mouse.active = true;
+            const r = qyy_canvas.getBoundingClientRect();
+            qyy_m.x = e.clientX - r.left;
+            qyy_m.y = e.clientY - r.top;
+            qyy_m.on = true;
         });
-        qyy_canvas.addEventListener('mouseleave', function () { qyy_mouse.active = false; });
+        qyy_canvas.addEventListener('mouseleave', function () { qyy_m.on = false; });
         qyy_canvas.addEventListener('touchmove', function (e) {
             e.preventDefault();
-            const qyy_r = qyy_canvas.getBoundingClientRect();
+            const r = qyy_canvas.getBoundingClientRect();
             const t = e.touches[0];
-            qyy_mouse.x = t.clientX - qyy_r.left;
-            qyy_mouse.y = t.clientY - qyy_r.top;
-            qyy_mouse.active = true;
+            qyy_m.x = t.clientX - r.left;
+            qyy_m.y = t.clientY - r.top;
+            qyy_m.on = true;
         }, { passive: false });
-        qyy_canvas.addEventListener('touchend', function () { qyy_mouse.active = false; });
+        qyy_canvas.addEventListener('touchend', function () { qyy_m.on = false; });
 
-        /* 动画循环：弹簧力向目标点靠拢 + 鼠标排斥 */
-        function qyy_tick() {
-            /* 完全清空重绘，保证粒子字清晰可见；想残影就把下面这行换成半透明覆盖 */
+        // ===== 动画循环 =====
+        function qyy_loop() {
+            // 完全清空，保证字清晰
             qyy_ctx.fillStyle = '#0a0a1e';
             qyy_ctx.fillRect(0, 0, qyy_w, qyy_h);
 
-            const qyy_spring = 0.12;   // 弹簧系数（加大更快收敛）
-            const qyy_damper = 0.78;   // 阻尼
-            const qyy_repel = 140;     // 鼠标排斥半径
+            const qyy_k = 0.15;     // 弹簧系数
+            const qyy_b = 0.85;     // 阻尼
+            const qyy_R = 150;      // 鼠标排斥半径
 
             for (let i = 0; i < qyy_particles.length; i++) {
                 const p = qyy_particles[i];
 
-                /* 弹簧：朝目标点加速 */
-                p.qyy_vx += (p.qyy_tx - p.qyy_x) * qyy_spring;
-                p.qyy_vy += (p.qyy_ty - p.qyy_y) * qyy_spring;
+                // 弹簧力
+                p.vx += (p.tx - p.x) * qyy_k;
+                p.vy += (p.ty - p.y) * qyy_k;
 
-                /* 鼠标排斥 */
-                if (qyy_mouse.active) {
-                    const qyy_dx = p.qyy_x - qyy_mouse.x;
-                    const qyy_dy = p.qyy_y - qyy_mouse.y;
-                    const qyy_d = Math.sqrt(qyy_dx * qyy_dx + qyy_dy * qyy_dy);
-                    if (qyy_d < qyy_repel && qyy_d > 0.01) {
-                        const qyy_f = (qyy_repel - qyy_d) / qyy_repel * 4;
-                        p.qyy_vx += qyy_dx / qyy_d * qyy_f;
-                        p.qyy_vy += qyy_dy / qyy_d * qyy_f;
+                // 鼠标排斥
+                if (qyy_m.on) {
+                    const dx = p.x - qyy_m.x;
+                    const dy = p.y - qyy_m.y;
+                    const d2 = dx * dx + dy * dy;
+                    if (d2 < qyy_R * qyy_R) {
+                        const d = Math.sqrt(d2) || 1;
+                        const f = (qyy_R - d) / qyy_R * 5;
+                        p.vx += dx / d * f;
+                        p.vy += dy / d * f;
                     }
                 }
 
-                p.qyy_vx *= qyy_damper;
-                p.qyy_vy *= qyy_damper;
-                p.qyy_x += p.qyy_vx;
-                p.qyy_y += p.qyy_vy;
+                p.vx *= qyy_b;
+                p.vy *= qyy_b;
+                p.x += p.vx;
+                p.y += p.vy;
 
-                /* 离目标点极近时，直接吸附归零速度，让字稳定清晰 */
-                const qyy_ddx = p.qyy_tx - p.qyy_x;
-                const qyy_ddy = p.qyy_ty - p.qyy_y;
-                const qyy_dd = Math.sqrt(qyy_ddx * qyy_ddx + qyy_ddy * qyy_ddy);
-                if (qyy_dd < 0.8) {
-                    p.qyy_x = p.qyy_tx;
-                    p.qyy_y = p.qyy_ty;
-                    p.qyy_vx = 0;
-                    p.qyy_vy = 0;
+                // 极近直接吸附归零
+                const ddx = p.tx - p.x, ddy = p.ty - p.y;
+                if (ddx * ddx + ddy * ddy < 0.4) {
+                    p.x = p.tx; p.y = p.ty; p.vx = 0; p.vy = 0;
                 }
 
-                /* 发光点 */
-                qyy_ctx.beginPath();
-                qyy_ctx.fillStyle = p.qyy_color;
-                qyy_ctx.shadowBlur = 6;
-                qyy_ctx.shadowColor = p.qyy_color;
-                qyy_ctx.arc(p.qyy_x, p.qyy_y, p.qyy_size, 0, Math.PI * 2);
-                qyy_ctx.fill();
+                // 画粒子（大方块，更醒目）
+                qyy_ctx.fillStyle = p.color;
+                qyy_ctx.fillRect(Math.round(p.x) - 1, Math.round(p.y) - 1, 3, 3);
             }
-            qyy_ctx.shadowBlur = 0;
 
-            requestAnimationFrame(qyy_tick);
+            requestAnimationFrame(qyy_loop);
         }
 
-        /* 按钮切换文字 */
         function qyy_switch(qyy_t, qyy_el) {
-            /* 之前的 bug：按钮传的是 'name' 这种占位字符串，这里做一层映射 */
-            const qyy_map = {
-                'name': '齐英伊',
-                'welcome': 'WELCOME',
-                'love': '❤ LOVE ❤',
-                'star': '★ STAR ★'
-            };
-            qyy_t = qyy_map[qyy_t] || qyy_t;
             document.querySelectorAll('.qyy_btn').forEach(function (b) { b.classList.remove('qyy_btn--on'); });
             qyy_el.classList.add('qyy_btn--on');
-            qyy_initParticles(qyy_t);
+            qyy_build(qyy_t);
         }
 
-        /* 启动 */
+        // ===== 启动 =====
         qyy_resize();
-        qyy_initParticles('齐英伊');
-        requestAnimationFrame(qyy_tick);
+        qyy_build('齐英伊');
+        requestAnimationFrame(qyy_loop);
 
         console.log('===== 18-1 Canvas 粒子文字 =====');
     </script>
